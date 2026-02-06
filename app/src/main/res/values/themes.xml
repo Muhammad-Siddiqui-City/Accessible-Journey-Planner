@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DayNight so the Dark Mode setting can switch to dark theme. -->
+    <style name="Theme.AJP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary</item>
+        <item name="colorAccent">@color/secondary</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:navigationBarColor">@color/card</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="ajp_background">@color/background</item>
+        <item name="ajp_foreground">@color/foreground</item>
+        <item name="ajp_card">@color/card</item>
+        <item name="ajp_border">@color/border</item>
+        <item name="ajp_muted">@color/muted</item>
+        <item name="ajp_muted_foreground">@color/muted_foreground</item>
+        <item name="ajp_primary">@color/primary</item>
+        <item name="ajp_primary_foreground">@color/primary_foreground</item>
+    </style>
+    <!-- High contrast: black background, white text, white outlines; off-white for legibility. -->
+    <style name="Theme.AJP.HighContrast" parent="Theme.AJP">
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorPrimary">#000000</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#FFFFFF</item>
+        <item name="ajp_background">#000000</item>
+        <item name="ajp_foreground">#FAFAFA</item>
+        <item name="ajp_card">#0D0D0D</item>
+        <item name="ajp_border">#FFFFFF</item>
+        <item name="ajp_muted">#1A1A1A</item>
+        <item name="ajp_muted_foreground">#B0B0B0</item>
+        <item name="ajp_primary">#000000</item>
+        <item name="ajp_primary_foreground">#FFFFFF</item>
+    </style>
+</resources>

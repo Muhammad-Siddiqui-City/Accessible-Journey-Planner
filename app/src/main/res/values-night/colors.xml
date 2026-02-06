@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme overrides when Dark Mode is on. -->
+    <color name="background">#121212</color>
+    <color name="foreground">#E0E0E0</color>
+    <color name="muted">#2C2C2C</color>
+    <color name="muted_foreground">#9E9E9E</color>
+    <color name="card">#1E1E1E</color>
+    <color name="border">#3C3C3C</color>
+    <color name="accent">#5C4A00</color>
+    <color name="accent_foreground">#E0E0E0</color>
+    <color name="cream_input">#2A2820</color>
+    <color name="purple_light_bg">#2A2430</color>
+    <color name="gradient_start">#1A2830</color>
+    <color name="gradient_end">#2A2430</color>
+    <color name="charts_container_bg">#1E2830</color>
+</resources>

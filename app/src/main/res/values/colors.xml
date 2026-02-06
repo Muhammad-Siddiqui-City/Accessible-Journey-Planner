@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Electric Blue & Teal (from Lovable index.css) -->
+    <color name="primary">#0055FF</color>
+    <color name="primary_foreground">#FFFFFF</color>
+    <color name="secondary">#00A896</color>
+    <color name="secondary_foreground">#FFFFFF</color>
+    <color name="background">#F5F5F0</color>
+    <color name="foreground">#000000</color>
+    <color name="muted">#E8E8E8</color>
+    <color name="muted_foreground">#6B7280</color>
+    <color name="card">#FFFFFF</color>
+    <color name="border">#E5E7EB</color>
+    <color name="destructive">#E32017</color>
+    <color name="success">#00A896</color>
+    <color name="warning">#FFB74D</color>
+    <color name="accent">#FFF9C4</color>
+    <color name="accent_foreground">#000000</color>
+
+    <!-- UI Glow Up: Lovable reference -->
+    <color name="teal_accent">#2A9D8F</color>
+    <color name="cream_input">#FFF9E6</color>
+    <color name="purple_light_bg">#F3E5F5</color>
+    <color name="gradient_start">#E0F7FA</color>
+    <color name="gradient_end">#F3E5F5</color>
+    <color name="charts_container_bg">#E3F2FD</color>
+
+    <!-- Line badge colors (from LineBadge.tsx) -->
+    <color name="line_victoria">#0098D4</color>
+    <color name="line_central">#E32017</color>
+    <color name="line_northern">#000000</color>
+    <color name="line_piccadilly">#003688</color>
+    <color name="line_jubilee">#A0A5A9</color>
+    <color name="line_bakerloo">#B36305</color>
+    <color name="line_circle">#FFD300</color>
+    <color name="line_district">#00782A</color>
+    <color name="line_elizabeth">#6950A1</color>
+    <color name="line_metropolitan">#9B0056</color>
+    <color name="line_overground">#EE7C0E</color>
+    <color name="line_dlr">#00A4A7</color>
+    <color name="line_bus">#E32017</color>
+    <color name="line_default">#666666</color>
+</resources>
