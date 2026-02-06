@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Accessible Journey Planner</string>
+
+    <!-- Navigation -->
+    <string name="home">Home</string>
+    <string name="journeys">Journeys</string>
+    <string name="analytics">Analytics</string>
+    <string name="settings">Settings</string>
+
+    <!-- Home -->
+    <string name="where_to">Where to?</string>
+    <string name="accessible_journey_planner">Accessible Journey Planner</string>
+    <string name="search_placeholder">Search stations, stops…</string>
+    <string name="voice_search">Voice search</string>
+    <string name="speak_station_name">Speak a station or stop name</string>
+    <string name="station_search_results">Stations and stops</string>
+    <string name="search_no_results">No stations or stops found. Try another name.</string>
+    <string name="distance_not_available">Tap for live arrivals</string>
+    <string name="nearby_stations">Nearby Stops/Stations</string>
+    <string name="live_arrivals">Live Arrivals</string>
+    <string name="popular_station">Popular Stations</string>
+    <string name="plan_journey">Plan Journey</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="disruptions">Disruptions</string>
+    <string name="disruptions_active">%d active</string>
+    <string name="distance_km_away">%1$.2f km away</string>
+    <string name="view_all">View all</string>
+    <string name="view_all_chevron">View all &gt;</string>
+    <string name="transport_modes">Transport Modes</string>
+    <string name="tube_rail">Tube &amp; Rail</string>
+    <string name="buses">Buses</string>
+    <string name="good_service">Good service</string>
+    <string name="good_service_on_local_lines">Good service on all local lines</string>
+    <string name="minor_delays">Minor delays</string>
+
+    <!-- Journey -->
+    <string name="find_your_best_route">Find your best route</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="destination">Destination</string>
+    <string name="current_location">Current Location</string>
+    <string name="depart_now">Depart now</string>
+    <string name="today">Today</string>
+    <string name="show_filters">Show filters</string>
+    <string name="hide_filters">Hide filters</string>
+    <string name="step_free_only">Step-free only</string>
+    <string name="avoid_crowds">Avoid crowds</string>
+    <string name="offline_mode">Offline mode</string>
+    <string name="find_routes">Find Routes</string>
+    <string name="suggested_routes">Suggested Routes</string>
+    <string name="transfers">transfers</string>
+    <string name="minutes">min</string>
+    <string name="best">Best</string>
+    <string name="step_free">Step-free</string>
+    <string name="route_preview">Route Preview</string>
+    <string name="route_preview_summary">15 min • 1 transfer</string>
+    <string name="crowding">CROWDING</string>
+    <string name="depart">Depart</string>
+    <string name="crowding_low">Low</string>
+    <string name="crowding_medium">Medium</string>
+    <string name="crowding_high">High</string>
+    <string name="zero_transfers">0 transfers</string>
+    <string name="one_transfer">1 transfer</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_fastest">Fastest</string>
+    <string name="sort_fewest_transfers">Fewest transfers</string>
+    <string name="sort_least_walking">Least walking</string>
+    <string name="sort_least_crowded">Least crowded</string>
+
+    <!-- Live Arrivals -->
+    <string name="no_upcoming_arrivals">No upcoming arrivals</string>
+    <string name="national_rail_arrivals_unavailable">National Rail live times are not available in this app. TfL does not provide real-time data for South Western Railway and other National Rail services. For live train times, check nationalrail.co.uk or your train operator\'s app.</string>
+    <string name="kings_cross_st_pancras">King\'s Cross St. Pancras</string>
+    <string name="platform">Platform</string>
+    <string name="all_lines">All Lines</string>
+    <string name="refresh">Refresh</string>
+    <string name="station_open">Station open</string>
+    <string name="updated_just_now">Updated just now</string>
+    <string name="no_step_free">No step-free</string>
+    <string name="next_train">Next train</string>
+    <string name="accessible">Accessible</string>
+    <string name="alerts">Alerts</string>
+
+    <!-- Route Details -->
+    <string name="route_details">Route Details</string>
+    <string name="alternatives">Alternatives</string>
+    <string name="step_by_step">Step by Step</string>
+    <string name="walk">Walk</string>
+    <string name="towards">towards</string>
+    <string name="step_free_route">Step-free route</string>
+    <string name="cached_offline">Cached offline</string>
+    <string name="journey_saved_offline">Journey saved offline</string>
+    <string name="save">Save</string>
+    <string name="journey_in_progress">Journey in progress</string>
+    <string name="start_navigation">Start Navigation</string>
+    <string name="share_journey">Share Journey</string>
+    <string name="share_journey_subject">My Journey Plan</string>
+    <string name="navigating">Navigating…</string>
+    <string name="from_label">From</string>
+    <string name="to_label">To</string>
+    <string name="kings_cross">King\'s Cross</string>
+    <string name="green_park">Green Park</string>
+
+    <!-- Analytics -->
+    <string name="your_journeys">Your Journeys</string>
+    <string name="this_week">This Week</string>
+    <string name="time_saved">Time Saved</string>
+    <string name="crowds_avoided">Crowds Avoided</string>
+    <string name="efficiency">Efficiency</string>
+    <string name="weekly_activity">Weekly Activity</string>
+    <string name="frequent_routes">Frequent Routes</string>
+    <string name="time_saved_trend">Time Saved Trend</string>
+    <string name="transport_modes_split">Transport Modes</string>
+    <string name="journeys_this_week">journeys this week</string>
+    <string name="saved_this_week">saved this week</string>
+    <string name="tap_bar_details">Tap any bar for details</string>
+    <string name="tap_point_details">Tap a point to see details</string>
+    <string name="great_week">Great week!</string>
+    <string name="great_week_message">You saved %d minutes by avoiding crowds. Keep it up!</string>
+    <string name="trips">trips</string>
+
+    <!-- Feedback -->
+    <string name="feedback">Feedback</string>
+    <string name="help_improve">Help us improve your experience</string>
+    <string name="rate_experience">Rate your experience</string>
+    <string name="issue_type">Issue type</string>
+    <string name="select_issue_type">Select an issue type</string>
+    <string name="comments">Comments</string>
+    <string name="tell_more">Tell us more about your experience…</string>
+    <string name="submit">Submit</string>
+    <string name="thank_you">Thank you for your feedback!</string>
+    <string name="feedback_helps">Your feedback helps us improve the Accessible Journey Planner for everyone.</string>
+    <string name="return_home">Return Home</string>
+    <string name="quick_tags">Quick tags</string>
+    <string name="feedback_anonymous">Your feedback is anonymous and helps us improve the app for everyone.</string>
+    <string name="crowding_information">Crowding Information</string>
+    <string name="accessibility">Accessibility</string>
+    <string name="route_suggestions">Route Suggestions</string>
+    <string name="app_issues">App Issues</string>
+    <string name="other">Other</string>
+
+    <!-- Settings - Mobility Profile -->
+    <string name="mobility_profile">Mobility Profile</string>
+    <string name="prioritize_step_free">Prioritize step-free routes</string>
+    <string name="walking_speed">Walking Speed</string>
+    <string name="max_walking_minutes">Max Walking (Minutes)</string>
+    <string name="speed_slow">Slow</string>
+    <string name="speed_average">Average</string>
+    <string name="speed_fast">Fast</string>
+
+    <!-- Settings -->
+    <string name="dark_mode">Dark Mode</string>
+    <string name="dark_mode_desc">Reduce eye strain in low light</string>
+    <string name="high_contrast">High contrast</string>
+    <string name="high_contrast_desc">WCAG 2.1 AAA compliant colors</string>
+    <string name="large_text">Large text</string>
+    <string name="large_text_desc">Increase font sizes for readability</string>
+    <string name="text_to_speech">Text to speech</string>
+    <string name="text_to_speech_desc">Voice announcements for directions</string>
+    <string name="language">Language</string>
+    <string name="station_names_official">Station and line names are shown in their official form (from TfL).</string>
+    <string name="english">English</string>
+    <string name="united_kingdom">United Kingdom</string>
+    <string name="espanol">Español</string>
+    <string name="espana">España</string>
+    <string name="chinese">中文</string>
+    <string name="china">简体</string>
+    <string name="arabic">العربية</string>
+    <string name="arab_region">العربية</string>
+    <string name="notifications">Notifications</string>
+    <string name="disruption_alerts">Disruption alerts</string>
+    <string name="disruption_alerts_desc">Get notified about service disruptions</string>
+    <string name="crowding_updates">Crowding updates</string>
+    <string name="crowding_updates_desc">Real-time crowding information</string>
+    <string name="privacy">Privacy</string>
+    <string name="data_secure">Your data is secure</string>
+    <string name="data_encrypted">Your data is encrypted and stored securely. We never share your personal information with third parties.</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="data_export">Data Export</string>
+    <string name="send_feedback">Send feedback</string>
+    <string name="version">Version 1.0.0</string>
+    <string name="made_with_love">Made with ❤️ for London</string>
+
+    <!-- NotFound -->
+    <string name="not_found_title">404</string>
+    <string name="oops_not_found">Oops! Page not found</string>
+</resources>
