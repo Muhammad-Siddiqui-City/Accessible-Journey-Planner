@@ -63,6 +63,14 @@ public interface TflApi {
     @GET("Line/{ids}/Status")
     Call<List<LineStatus>> getLineStatus(@Path("ids") String commaSeparatedIds);
 
+    /* --- BLOCK: Station disruptions ---
+     * PURPOSE: Get disruptions for a specific station by StopPoint ID.
+     * WHY: Used by LiftDisruptionChecker to check for lift/escalator disruptions at stations in routes.
+     * ISSUES: Returns list of disruption objects; may be empty if no disruptions.
+     */
+    @GET("StopPoint/{id}/Disruption")
+    Call<List<Object>> getStopPointDisruptions(@Path("id") String stopId);
+
     /* --- BLOCK: Search by name ---
      * PURPOSE: Search stops/stations by name (e.g. "Kings Cross").
      * WHY: TflSearchResponse has "matches" array; used in StationSearchFragment.
@@ -87,5 +95,6 @@ public interface TflApi {
             @Query("timeIs") String timeIs,
             @Query("walkingSpeed") String walkingSpeed,
             @Query("maxWalkingMinutes") Integer maxWalkingMinutes,
-            @Query("accessibilityPreference") String accessibilityPreference);
+            @Query("accessibilityPreference") String accessibilityPreference,
+            @Query("mode") String mode);
 }

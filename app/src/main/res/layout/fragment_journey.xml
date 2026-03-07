@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/ajp_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="88dp">
+
+        <!-- Primary header (same style as Analytics) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/primary_header_bg"
+            android:padding="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/plan_journey"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_primary_foreground" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/find_your_best_route"
+                android:textSize="16sp"
+                android:textColor="?attr/ajp_primary_foreground"
+                android:alpha="0.9"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Offline banner: shown when no network; links to Home for saved routes -->
+        <LinearLayout
+            android:id="@+id/offline_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFF3E0"
+            android:padding="16dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/youre_offline_view_saved"
+                android:textSize="14sp"
+                android:textColor="#E65100" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_go_to_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/go_to_home"
+                android:layout_marginTop="8dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="#E65100" />
+        </LinearLayout>
+
+        <!-- Search form card: theme-aware panel (same style as Analytics cards) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="16dp"
+            android:layout_margin="20dp">
+            <EditText
+                android:id="@+id/origin"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="@string/current_location"
+                android:textColorHint="?attr/ajp_muted_foreground"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingVertical="12dp"
+                android:drawableStart="@drawable/ic_my_location"
+                android:drawablePadding="12dp"
+                android:background="@drawable/bg_input_outlined"
+                android:textSize="16sp" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_down"
+                android:contentDescription="@null"
+                android:padding="8dp"
+                android:layout_marginVertical="4dp" />
+            <EditText
+                android:id="@+id/destination"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="@string/destination"
+                android:textColorHint="?attr/ajp_muted_foreground"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingVertical="12dp"
+                android:drawableStart="@drawable/ic_destination_pin"
+                android:drawablePadding="12dp"
+                android:background="@drawable/bg_input_outlined"
+                android:textSize="16sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_today"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="@string/today"
+                    android:textAllCaps="false"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_input_outlined"
+                    app:backgroundTint="@null"
+                    app:icon="@drawable/ic_calendar"
+                    app:iconGravity="textStart"
+                    app:iconTint="?attr/ajp_foreground"
+                    app:iconPadding="8dp"
+                    android:textColor="?attr/ajp_foreground" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_depart_now"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="@string/depart_now"
+                    android:textAllCaps="false"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_input_outlined"
+                    app:backgroundTint="@null"
+                    app:icon="@drawable/ic_clock"
+                    app:iconGravity="textStart"
+                    app:iconTint="?attr/ajp_foreground"
+                    app:iconPadding="8dp"
+                    android:textColor="?attr/ajp_foreground" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/show_filters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/show_filters"
+                android:textColor="?attr/ajp_primary"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:clickable="true"
+                android:focusable="true" />
+            <LinearLayout
+                android:id="@+id/filters_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginTop="8dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="8dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/step_free_only" android:textSize="16sp" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_step_free"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="8dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/avoid_crowds" android:textSize="16sp" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_avoid_crowds"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/find_routes"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_teal_rounded"
+                app:backgroundTint="@null"
+                android:text="@string/find_routes"
+                android:textAllCaps="false"
+                app:icon="@drawable/ic_search_white"
+                app:iconGravity="textStart"
+                app:iconTint="@android:color/white"
+                app:iconPadding="8dp"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Journey loading overlay -->
+        <ProgressBar
+            android:id="@+id/journey_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Route Preview (hidden until routes are found) -->
+        <LinearLayout
+            android:id="@+id/cv_route_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/route_preview"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="12dp" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/route_preview_card_bg"
+                android:clipChildren="false">
+            <ImageView
+                android:id="@+id/iv_route_map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/route_preview" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|bottom"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FROM"
+                        android:textSize="11sp"
+                        android:textColor="?attr/ajp_muted_foreground"
+                        android:letterSpacing="0.1" />
+                    <TextView
+                        android:id="@+id/tv_route_from"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kings_cross"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/ajp_foreground"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="-10dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TO"
+                        android:textSize="11sp"
+                        android:textColor="?attr/ajp_muted_foreground"
+                        android:letterSpacing="0.1"
+                        android:layout_marginEnd="2dp" />
+                    <TextView
+                        android:id="@+id/tv_route_to"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/green_park"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/ajp_foreground" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_route_summary_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:visibility="gone"
+                    android:background="@drawable/card_teal_gradient"
+                    android:text="@string/route_preview_summary"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp" />
+            </FrameLayout>
+        </FrameLayout>
+        </LinearLayout>
+
+        <!-- Suggested Routes (hidden until routes are loaded) -->
+        <LinearLayout
+            android:id="@+id/suggested_routes_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/suggested_routes"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="8dp" />
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="12dp">
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/sort_chip_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_fastest"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sort_fastest"
+                        android:checked="true" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_fewest_transfers"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sort_fewest_transfers" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_least_walking"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sort_least_walking" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_least_crowded"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sort_least_crowded" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/routes_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:layout_marginBottom="24dp"
+                tools:listitem="@layout/item_route"
+                tools:itemCount="2" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
