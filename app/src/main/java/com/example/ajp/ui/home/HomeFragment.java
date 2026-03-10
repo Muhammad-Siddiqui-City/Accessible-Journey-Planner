@@ -47,7 +47,8 @@ import java.util.regex.Pattern;
  * ISSUES: REQUEST_LOCATION for permission; minCal for date picker min date; green symbol/compass removed per UI cleanup.
  */
 public class HomeFragment extends Fragment {
-
+    // AI Generated
+    // Lovable.dev: UI mockup reference
     private static final int REQUEST_LOCATION = 1001;
 
     private FragmentHomeBinding binding;
