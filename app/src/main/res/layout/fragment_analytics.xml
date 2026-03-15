@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/ajp_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="88dp">
+
+        <!-- Primary header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/primary_header_bg"
+            android:padding="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/analytics"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_primary_foreground" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/your_journeys"
+                android:textSize="16sp"
+                android:textColor="?attr/ajp_primary_foreground"
+                android:alpha="0.9"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- 4 stat cards: identical size 2x2 grid (same width, height, and margins) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="12dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="4dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/card_lime_gradient"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@android:drawable/ic_menu_agenda"
+                        android:background="#33FFFFFF"
+                        android:padding="12dp"
+                        android:contentDescription="@null" />
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="12dp">
+                        <TextView android:id="@+id/tv_journeys_count" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="28sp" android:textStyle="bold" android:textColor="@android:color/white" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/this_week" android:textSize="12sp" android:textColor="?attr/ajp_primary_foreground" android:alpha="0.9" />
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="4dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/card_orange_gradient"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@android:drawable/ic_lock_idle_alarm"
+                        android:background="#33FFFFFF"
+                        android:padding="12dp"
+                        android:contentDescription="@null" />
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="12dp">
+                        <TextView android:id="@+id/tv_time_saved" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0m" android:textSize="28sp" android:textStyle="bold" android:textColor="@android:color/white" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/time_saved" android:textSize="12sp" android:textColor="?attr/ajp_primary_foreground" android:alpha="0.9" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:baselineAligned="false">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="4dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/card_blue_gradient"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        android:background="#33FFFFFF"
+                        android:padding="12dp"
+                        android:contentDescription="@null" />
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="12dp">
+                        <TextView android:id="@+id/tv_crowds_avoided" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="28sp" android:textStyle="bold" android:textColor="@android:color/white" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/crowds_avoided" android:textSize="12sp" android:textColor="?attr/ajp_primary_foreground" android:alpha="0.9" />
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="4dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/card_magenta_gradient"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@android:drawable/ic_menu_sort_by_size"
+                        android:background="#33FFFFFF"
+                        android:padding="12dp"
+                        android:contentDescription="@null" />
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="12dp">
+                        <TextView android:id="@+id/tv_analytics_percentage" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0%" android:textSize="20sp" android:textStyle="bold" android:textColor="@android:color/white" android:maxLines="1" app:autoSizeTextType="uniform" app:autoSizeMinTextSize="12sp" app:autoSizeMaxTextSize="24sp" app:autoSizeStepGranularity="1sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/efficiency" android:textSize="12sp" android:textColor="?attr/ajp_primary_foreground" android:alpha="0.9" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Charts container: Weekly Activity and Time Saved on soft blue background -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="?attr/ajp_card"
+            android:padding="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="16dp">
+
+        <!-- Weekly Activity with bar chart and chip -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="20dp"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/weekly_activity"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tap_bar_details"
+                android:textSize="14sp"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:layout_marginTop="4dp" />
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_weekly"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="12dp" />
+            <LinearLayout
+                android:id="@+id/weekly_chip_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:background="@drawable/card_teal_gradient"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="10dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/weekly_chip_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white" />
+                <ImageButton
+                    android:id="@+id/weekly_chip_dismiss"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:contentDescription="Dismiss" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_weekly_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 journeys this week"
+                android:textSize="14sp"
+                android:textColor="?attr/ajp_foreground"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <!-- Time Saved Trend with line chart and chip -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="20dp"
+            android:layout_marginBottom="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_saved_trend"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tap_point_details"
+                android:textSize="14sp"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:layout_marginTop="4dp" />
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart_trend"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="12dp" />
+            <LinearLayout
+                android:id="@+id/time_saved_chip_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:background="@drawable/card_teal_gradient"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="10dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/time_saved_chip_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white" />
+                <ImageButton
+                    android:id="@+id/time_saved_chip_dismiss"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:contentDescription="Dismiss" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_trend_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0m saved this week"
+                android:textSize="14sp"
+                android:textColor="?attr/ajp_foreground"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Transport Modes -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transport_modes_split"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/chart_modes"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp" />
+                <LinearLayout
+                    android:id="@+id/modes_legend_right"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:minHeight="160dp"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Frequent Routes -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/frequent_routes"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="12dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_frequent_routes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:paddingHorizontal="20dp"
+            android:layout_marginBottom="16dp"
+            tools:listitem="@layout/item_frequent_route" />
+
+        <!-- Achievement card: theme-aware so it changes with high contrast -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="24dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="24dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/great_week"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground"
+                android:layout_gravity="center" />
+            <TextView
+                android:id="@+id/achievement_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/great_week_message"
+                android:textSize="14sp"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                tools:text="You saved 53 minutes by avoiding crowds. Keep it up!" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
