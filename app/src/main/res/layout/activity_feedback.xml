@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_home_bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/primary_header_bg"
+            android:padding="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/feedback"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_primary_foreground" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/help_improve"
+                android:textSize="14sp"
+                android:textColor="#E0FFFFFF"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/form_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Rating -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_elevated"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rate_experience"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/ajp_foreground"
+                    android:layout_marginBottom="12dp" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp">
+                    <TextView android:id="@+id/star_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="★" android:textSize="40sp" android:textColor="@color/warning" android:clickable="true" android:focusable="true" android:layout_marginEnd="4dp" />
+                    <TextView android:id="@+id/star_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="★" android:textSize="40sp" android:textColor="@color/warning" android:clickable="true" android:focusable="true" android:layout_marginHorizontal="4dp" />
+                    <TextView android:id="@+id/star_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="★" android:textSize="40sp" android:textColor="@color/warning" android:clickable="true" android:focusable="true" android:layout_marginHorizontal="4dp" />
+                    <TextView android:id="@+id/star_4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="★" android:textSize="40sp" android:textColor="@color/warning" android:clickable="true" android:focusable="true" android:layout_marginHorizontal="4dp" />
+                    <TextView android:id="@+id/star_5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="★" android:textSize="40sp" android:textColor="@color/warning" android:clickable="true" android:focusable="true" android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Issue type -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_elevated"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/issue_type"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/ajp_foreground"
+                    android:layout_marginBottom="8dp" />
+                <Spinner
+                    android:id="@+id/issue_type_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/search_bar_bg"
+                    android:paddingHorizontal="16dp" />
+            </LinearLayout>
+
+            <!-- Comments -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_elevated"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comments"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/ajp_foreground"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine"
+                    android:padding="12dp"
+                    android:background="@drawable/search_bar_bg"
+                    android:hint="@string/tell_more"
+                    android:textSize="16sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0/500 characters"
+                    android:textSize="12sp"
+                    android:textColor="?attr/ajp_muted_foreground"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!-- Quick tags -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/quick_tags"
+                android:textSize="14sp"
+                android:textColor="?attr/ajp_foreground"
+                android:layout_marginBottom="8dp" />
+            <LinearLayout
+                android:id="@+id/quick_tags_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Submit -->
+            <Button
+                android:id="@+id/submit"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/submit"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/feedback_anonymous"
+                android:textSize="12sp"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:gravity="center"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <!-- Thank you (hidden by default) -->
+        <LinearLayout
+            android:id="@+id/thank_you_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:padding="24dp"
+            android:gravity="center">
+            <View
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#E0F7F4"
+                android:layout_marginBottom="16dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/thank_you"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/feedback_helps"
+                android:textSize="14sp"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:gravity="center"
+                android:layout_marginBottom="24dp" />
+            <Button
+                android:id="@+id/return_home"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/return_home"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/ajp_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="88dp">
+
+        <!-- Primary header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/primary_header_bg"
+            android:padding="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_primary_foreground" />
+        </LinearLayout>
+
+        <!-- Accessibility -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="16dp"
+            android:layout_margin="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/accessibility"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground"
+                android:layout_marginBottom="12dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dark_mode"
+                    android:textSize="14sp"
+                    android:textColor="?attr/ajp_foreground" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_dark_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="?attr/ajp_border" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/high_contrast"
+                    android:textSize="14sp"
+                    android:textColor="?attr/ajp_foreground" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_high_contrast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="?attr/ajp_border" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/large_text"
+                    android:textSize="14sp"
+                    android:textColor="?attr/ajp_foreground" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_large_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="?attr/ajp_border" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/text_to_speech"
+                    android:textSize="14sp"
+                    android:textColor="?attr/ajp_foreground" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_tts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Language -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="16dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/language"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground"
+                android:layout_marginBottom="4dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/station_names_official"
+                android:textSize="12sp"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:layout_marginBottom="12dp" />
+            <LinearLayout
+                android:id="@+id/lang_english"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🇬🇧" android:textSize="24sp" android:layout_marginEnd="12dp" />
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/english" android:textSize="14sp" android:textColor="?attr/ajp_foreground" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/united_kingdom" android:textSize="12sp" android:textColor="?attr/ajp_muted_foreground" />
+                </LinearLayout>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="?attr/ajp_border" />
+            <LinearLayout
+                android:id="@+id/lang_spanish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🇪🇸" android:textSize="24sp" android:layout_marginEnd="12dp" />
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/espanol" android:textSize="14sp" android:textColor="?attr/ajp_foreground" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/espana" android:textSize="12sp" android:textColor="?attr/ajp_muted_foreground" />
+                </LinearLayout>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="?attr/ajp_border" />
+            <LinearLayout
+                android:id="@+id/lang_chinese"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🇨🇳" android:textSize="24sp" android:layout_marginEnd="12dp" />
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/chinese" android:textSize="14sp" android:textColor="?attr/ajp_foreground" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/china" android:textSize="12sp" android:textColor="?attr/ajp_muted_foreground" />
+                </LinearLayout>
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="?attr/ajp_border" />
+            <LinearLayout
+                android:id="@+id/lang_arabic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🇸🇦" android:textSize="24sp" android:layout_marginEnd="12dp" />
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/arabic" android:textSize="14sp" android:textColor="?attr/ajp_foreground" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/arab_region" android:textSize="12sp" android:textColor="?attr/ajp_muted_foreground" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Mobility Profile -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="?attr/ajp_card"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mobility_profile"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/ajp_foreground"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/walking_speed"
+                    android:layout_marginTop="16dp"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="?attr/ajp_foreground" />
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/toggle_walking_speed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_speed_slow"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/speed_slow" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_speed_avg"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/speed_average" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_speed_fast"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/speed_fast" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/max_walking_minutes"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="?attr/ajp_foreground" />
+                    <TextView
+                        android:id="@+id/tv_max_walk_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15 min"
+                        android:textColor="?attr/ajp_primary" />
+                </LinearLayout>
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/slider_max_walk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="5"
+                    android:valueTo="60"
+                    android:stepSize="5"
+                    android:value="15" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Additional Disruption Information (link to TfL) -->
+        <LinearLayout
+            android:id="@+id/link_additional_disruption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="16dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/additional_disruption_information"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_primary" />
+        </LinearLayout>
+
+        <!-- Test (route monitoring) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="16dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_route_monitoring"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/developer_test_only"
+                android:textSize="12sp"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="12dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/simulate_lift_unavailable"
+                    android:textSize="14sp"
+                    android:textColor="?attr/ajp_foreground" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_simulate_lift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/simulate_stops_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/simulate_lift_hint"
+                android:visibility="gone">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_simulate_stop_ids"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="2" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_test_route_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/test_route_change_now" />
+        </LinearLayout>
+
+        <!-- Send feedback -->
+        <LinearLayout
+            android:id="@+id/send_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/card_elevated"
+            android:padding="16dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/send_feedback"
+                android:textSize="14sp"
+                android:textColor="?attr/ajp_foreground" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="›"
+                android:textSize="18sp"
+                android:textColor="?attr/ajp_muted_foreground" />
+        </LinearLayout>
+
+        <!-- App info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textSize="14sp"
+                android:textColor="?attr/ajp_foreground" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/version"
+                android:textSize="12sp"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:layout_marginTop="4dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/made_with_love"
+                android:textSize="12sp"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
