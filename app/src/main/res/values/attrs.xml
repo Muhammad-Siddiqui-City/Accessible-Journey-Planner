@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme attributes so High Contrast can override to black/white without changing every layout. -->
+    <attr name="ajp_background" format="color" />
+    <attr name="ajp_foreground" format="color" />
+    <attr name="ajp_card" format="color" />
+    <attr name="ajp_border" format="color" />
+    <attr name="ajp_muted" format="color" />
+    <attr name="ajp_muted_foreground" format="color" />
+    <attr name="ajp_primary" format="color" />
+    <attr name="ajp_primary_foreground" format="color" />
+</resources>

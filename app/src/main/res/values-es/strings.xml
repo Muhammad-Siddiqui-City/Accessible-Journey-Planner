@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Planificador de Viajes Accesible</string>
+
+    <!-- Navigation -->
+    <string name="home">Inicio</string>
+    <string name="journeys">Viajes</string>
+    <string name="analytics">Estadísticas</string>
+    <string name="settings">Ajustes</string>
+
+    <!-- Home -->
+    <string name="where_to">¿A dónde?</string>
+    <string name="accessible_journey_planner">Planificador de Viajes Accesible</string>
+    <string name="search_placeholder">Buscar estaciones, paradas…</string>
+    <string name="voice_search">Búsqueda por voz</string>
+    <string name="speak_station_name">Di el nombre de una estación o parada</string>
+    <string name="station_search_results">Estaciones y paradas</string>
+    <string name="search_no_results">No se encontraron estaciones o paradas. Prueba otro nombre.</string>
+    <string name="distance_not_available">Toca para ver llegadas en vivo</string>
+    <string name="nearby_stations">Paradas/Estaciones cercanas</string>
+    <string name="live_arrivals">Llegadas en vivo</string>
+    <string name="popular_station">Estaciones populares</string>
+    <string name="plan_journey">Planificar viaje</string>
+    <string name="quick_actions">Acciones rápidas</string>
+    <string name="disruptions">Perturbaciones</string>
+    <string name="disruptions_active">%d activa</string>
+    <string name="distance_km_away">%1$.2f km de distancia</string>
+    <string name="view_all">Ver todo</string>
+    <string name="view_all_chevron">Ver todo &gt;</string>
+    <string name="transport_modes">Modos de transporte</string>
+    <string name="tube_rail">Metro y tren</string>
+    <string name="buses">Autobuses</string>
+    <string name="good_service">Servicio normal</string>
+    <string name="good_service_on_local_lines">Servicio normal en todas las líneas locales</string>
+    <string name="minor_delays">Retrasos menores</string>
+
+    <!-- Journey -->
+    <string name="find_your_best_route">Encuentra tu mejor ruta</string>
+    <string name="from">Desde</string>
+    <string name="to">Hasta</string>
+    <string name="destination">Destino</string>
+    <string name="current_location">Ubicación actual</string>
+    <string name="depart_now">Salir ahora</string>
+    <string name="today">Hoy</string>
+    <string name="show_filters">Mostrar filtros</string>
+    <string name="hide_filters">Ocultar filtros</string>
+    <string name="step_free_only">Solo sin escaleras</string>
+    <string name="avoid_crowds">Evitar aglomeraciones</string>
+    <string name="offline_mode">Modo sin conexión</string>
+    <string name="find_routes">Buscar rutas</string>
+    <string name="suggested_routes">Rutas sugeridas</string>
+    <string name="transfers">transbordos</string>
+    <string name="minutes">min</string>
+    <string name="best">Mejor</string>
+    <string name="step_free">Sin escaleras</string>
+    <string name="route_preview">Vista previa de ruta</string>
+    <string name="route_preview_summary">15 min • 1 transbordo</string>
+    <string name="crowding">AFLUENCIA</string>
+    <string name="depart">Salir</string>
+    <string name="crowding_low">Baja</string>
+    <string name="crowding_medium">Media</string>
+    <string name="crowding_high">Alta</string>
+    <string name="zero_transfers">0 transbordos</string>
+    <string name="one_transfer">1 transbordo</string>
+
+    <!-- Live Arrivals -->
+    <string name="no_upcoming_arrivals">No hay llegadas próximas</string>
+    <string name="national_rail_arrivals_unavailable">Los horarios en vivo de National Rail no están disponibles en esta app. TfL no proporciona datos en tiempo real para South Western Railway y otros servicios de National Rail. Para horarios en vivo, consulta nationalrail.co.uk o la app de tu operador.</string>
+    <string name="kings_cross_st_pancras">King\'s Cross St. Pancras</string>
+    <string name="platform">Andén</string>
+    <string name="all_lines">Todas las líneas</string>
+    <string name="refresh">Actualizar</string>
+    <string name="station_open">Estación abierta</string>
+    <string name="updated_just_now">Actualizado hace un momento</string>
+    <string name="no_step_free">No accesible sin escaleras</string>
+    <string name="next_train">Próximo tren</string>
+    <string name="accessible">Accesible</string>
+    <string name="alerts">Avisos</string>
+
+    <!-- Route Details -->
+    <string name="route_details">Detalles de la ruta</string>
+    <string name="alternatives">Alternativas</string>
+    <string name="step_by_step">Paso a paso</string>
+    <string name="walk">A pie</string>
+    <string name="towards">hacia</string>
+    <string name="step_free_route">Ruta sin escaleras</string>
+    <string name="cached_offline">Guardado sin conexión</string>
+    <string name="journey_saved_offline">Viaje guardado para usar sin conexión</string>
+    <string name="save">Guardar</string>
+    <string name="journey_in_progress">Viaje en curso</string>
+    <string name="start_navigation">Iniciar navegación</string>
+    <string name="from_label">Desde</string>
+    <string name="to_label">Hasta</string>
+    <string name="kings_cross">King\'s Cross</string>
+    <string name="green_park">Green Park</string>
+
+    <!-- Analytics -->
+    <string name="your_journeys">Tus viajes</string>
+    <string name="this_week">Esta semana</string>
+    <string name="time_saved">Tiempo ahorrado</string>
+    <string name="crowds_avoided">Aglomeraciones evitadas</string>
+    <string name="efficiency">Eficiencia</string>
+    <string name="weekly_activity">Actividad semanal</string>
+    <string name="frequent_routes">Rutas frecuentes</string>
+    <string name="time_saved_trend">Tendencia de tiempo ahorrado</string>
+    <string name="transport_modes_split">Modos de transporte</string>
+    <string name="journeys_this_week">viajes esta semana</string>
+    <string name="saved_this_week">ahorrado esta semana</string>
+    <string name="tap_bar_details">Toca una barra para ver detalles</string>
+    <string name="tap_point_details">Toca un punto para ver detalles</string>
+    <string name="great_week">¡Buena semana!</string>
+    <string name="great_week_message">Ahorraste %d minutos evitando aglomeraciones. ¡Sigue así!</string>
+    <string name="trips">viajes</string>
+
+    <!-- Feedback -->
+    <string name="feedback">Comentarios</string>
+    <string name="help_improve">Ayúdanos a mejorar tu experiencia</string>
+    <string name="rate_experience">Valora tu experiencia</string>
+    <string name="issue_type">Tipo de incidencia</string>
+    <string name="select_issue_type">Selecciona un tipo de incidencia</string>
+    <string name="comments">Comentarios</string>
+    <string name="tell_more">Cuéntanos más sobre tu experiencia…</string>
+    <string name="submit">Enviar</string>
+    <string name="thank_you">¡Gracias por tus comentarios!</string>
+    <string name="feedback_helps">Tus comentarios nos ayudan a mejorar el Planificador de Viajes Accesible para todos.</string>
+    <string name="return_home">Volver al inicio</string>
+    <string name="quick_tags">Etiquetas rápidas</string>
+    <string name="feedback_anonymous">Tus comentarios son anónimos y nos ayudan a mejorar la app para todos.</string>
+    <string name="crowding_information">Información de afluencia</string>
+    <string name="accessibility">Accesibilidad</string>
+    <string name="route_suggestions">Sugerencias de rutas</string>
+    <string name="app_issues">Problemas de la app</string>
+    <string name="other">Otro</string>
+
+    <!-- Settings - Mobility Profile -->
+    <string name="mobility_profile">Perfil de movilidad</string>
+    <string name="prioritize_step_free">Priorizar rutas sin escaleras</string>
+    <string name="walking_speed">Velocidad al caminar</string>
+    <string name="max_walking_minutes">Caminata máxima (minutos)</string>
+    <string name="speed_slow">Lento</string>
+    <string name="speed_average">Normal</string>
+    <string name="speed_fast">Rápido</string>
+
+    <!-- Settings -->
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="dark_mode_desc">Reduce la fatiga visual con poca luz</string>
+    <string name="high_contrast">Alto contraste</string>
+    <string name="high_contrast_desc">Colores conforme a WCAG 2.1 AAA</string>
+    <string name="large_text">Texto grande</string>
+    <string name="large_text_desc">Aumenta el tamaño del texto para mejor lectura</string>
+    <string name="text_to_speech">Texto a voz</string>
+    <string name="text_to_speech_desc">Anuncios por voz para indicaciones</string>
+    <string name="language">Idioma</string>
+    <string name="station_names_official">Los nombres de estaciones y líneas se muestran en su forma oficial (TfL).</string>
+    <string name="english">English</string>
+    <string name="united_kingdom">United Kingdom</string>
+    <string name="espanol">Español</string>
+    <string name="espana">España</string>
+    <string name="chinese">中文</string>
+    <string name="china">简体</string>
+    <string name="arabic">العربية</string>
+    <string name="arab_region">العربية</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="disruption_alerts">Avisos de perturbaciones</string>
+    <string name="disruption_alerts_desc">Recibe avisos sobre perturbaciones del servicio</string>
+    <string name="crowding_updates">Actualizaciones de afluencia</string>
+    <string name="crowding_updates_desc">Información de afluencia en tiempo real</string>
+    <string name="privacy">Privacidad</string>
+    <string name="data_secure">Tus datos están seguros</string>
+    <string name="data_encrypted">Tus datos están cifrados y almacenados de forma segura. No compartimos tu información personal con terceros.</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="terms_of_service">Términos de servicio</string>
+    <string name="data_export">Exportar datos</string>
+    <string name="send_feedback">Enviar comentarios</string>
+    <string name="version">Versión 1.0.0</string>
+    <string name="made_with_love">Hecho con ❤️ para Londres</string>
+</resources>
