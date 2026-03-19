@@ -13,7 +13,6 @@ public class Disruption implements Serializable {
 
     @SerializedName("description")
     private String description;
-    // AI Generated
     @SerializedName("additionalInfo")
     private String additionalInfo;
     @SerializedName("commonName")
@@ -29,7 +28,6 @@ public class Disruption implements Serializable {
         return description != null ? description : "";
     }
 
-    // AI Generated
     /** Returns best display text (description or additionalInfo). TfL may put step-free text in either. */
     public String getDisplayText() {
         if (description != null && !description.trim().isEmpty()) return description.trim();

@@ -41,7 +41,6 @@ import java.util.Locale;
  * ISSUES: Request location permission before getCurrentLocation; setSavedDestination from MainActivity when place clicked in search (Commit 14).
  */
 public class JourneyFragment extends Fragment {
-    // AI Generated
     // Lovable.dev: UI mockup reference
     private static final String TAG = "JourneyFragment";
     private static final int REQUEST_LOCATION = 1002;
@@ -106,7 +105,6 @@ public class JourneyFragment extends Fragment {
         binding.findRoutes.setOnClickListener(v -> findRoutes());
 
         networkMonitor = new NetworkMonitor(requireContext());
-        // AI Generated: defensive fallbacks for offline banner
         View btnGoToHome = binding.getRoot().findViewById(R.id.btn_go_to_home);
         if (btnGoToHome != null) {
             btnGoToHome.setOnClickListener(v -> {
@@ -177,7 +175,6 @@ public class JourneyFragment extends Fragment {
         });
     }
 
-    // AI Generated: null-safe view access
     private void updateOfflineState() {
         if (networkMonitor == null || binding == null) return;
         networkMonitor.refreshOnlineState();

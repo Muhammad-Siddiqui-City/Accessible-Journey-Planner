@@ -112,9 +112,9 @@ public class JourneyViewModel extends AndroidViewModel {
 
                 if (result.isSuccess()) {
                     List<RouteItem> items = new ArrayList<>(result.getRoutes());
-                    boolean avoidCrowded = SettingsPrefs.get(getApplication()).isAvoidCrowded();
-                    RouteOptimizer.sortRoutes(items, currentStrategy, avoidCrowded);
-                    routes.postValue(items);
+                boolean avoidCrowded = SettingsPrefs.get(getApplication()).isAvoidCrowded();
+                RouteOptimizer.sortRoutes(items, currentStrategy, avoidCrowded);
+                routes.postValue(items);
 
                     if (!items.isEmpty()) {
                         RouteItem firstRoute = items.get(0);
@@ -124,7 +124,7 @@ public class JourneyViewModel extends AndroidViewModel {
                             String rawFrom = legs.get(0).getDeparturePoint() != null
                                     ? sanitizeStationName(legs.get(0).getDeparturePoint().getCommonName()) : "";
                             String fromName = "Destination".equals(rawFrom) ? fromInput : (rawFrom.isEmpty() ? fromInput : rawFrom);
-                            Leg lastLeg = legs.get(legs.size() - 1);
+                    Leg lastLeg = legs.get(legs.size() - 1);
                             // Use user's typed destination when API returns "Destination" (walk leg) or when it's a UK postcode
                             String rawTo = lastLeg.getArrivalPoint() != null
                                     ? sanitizeStationName(lastLeg.getArrivalPoint().getCommonName()) : "";
@@ -133,16 +133,16 @@ public class JourneyViewModel extends AndroidViewModel {
                                     : (looksLikeUkPostcode(toInput) ? toInput.trim() : rawTo);
                             int transfers = firstRoute.getTransfersCount();
                             String summary = TimeFormatUtil.formatMinutesToHourMin(firstRoute.getDurationMinutesInt()) + " • "
-                                    + transfers + (transfers == 1 ? " transfer" : " transfers");
-                            routePreviewFrom.postValue(fromName);
-                            routePreviewTo.postValue(toName);
-                            routePreviewSummary.postValue(summary);
-                            JourneyPlace dep = legs.get(0).getDeparturePoint();
-                            JourneyPlace arr = lastLeg.getArrivalPoint();
-                            if (dep != null && arr != null) {
-                                routePreviewMapCoords.postValue(new MapCoords(
-                                        dep.getLat(), dep.getLon(), arr.getLat(), arr.getLon()));
-                            }
+                            + transfers + (transfers == 1 ? " transfer" : " transfers");
+                    routePreviewFrom.postValue(fromName);
+                    routePreviewTo.postValue(toName);
+                    routePreviewSummary.postValue(summary);
+                    JourneyPlace dep = legs.get(0).getDeparturePoint();
+                    JourneyPlace arr = lastLeg.getArrivalPoint();
+                    if (dep != null && arr != null) {
+                        routePreviewMapCoords.postValue(new MapCoords(
+                                dep.getLat(), dep.getLon(), arr.getLat(), arr.getLon()));
+                    }
                         }
                     }
 
