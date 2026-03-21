@@ -92,7 +92,7 @@ public class JourneyViewModel extends AndroidViewModel {
             return;
         }
         if (!ApiKeyManager.isTflKeyValid()) {
-            errorMessage.postValue("API Configuration Error: TfL Key is missing. Please add it to ApiKeyManager.java.");
+            errorMessage.postValue("API Configuration Error: TfL key is missing. Add TFL_APP_KEY in local.properties.");
             return;
         }
         isLoading.postValue(true);
