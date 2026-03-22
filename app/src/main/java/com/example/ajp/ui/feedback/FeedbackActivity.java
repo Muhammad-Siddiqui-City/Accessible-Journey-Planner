@@ -22,6 +22,7 @@ import com.example.ajp.utils.SettingsPrefs;
  * ISSUES: None.
  */
 // AI Generated
+// Built with Claude
 public class FeedbackActivity extends AppCompatActivity {
 
     private ActivityFeedbackBinding binding;

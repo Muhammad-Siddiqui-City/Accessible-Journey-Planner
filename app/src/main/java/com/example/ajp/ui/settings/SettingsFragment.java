@@ -29,6 +29,7 @@ import java.util.Set;
  * ISSUES: Max walk value displayed as "X min"; recreate after language/dark so theme and locale apply.
  */
 // AI Generated
+// Built with Claude
 public class SettingsFragment extends Fragment {
 
     private FragmentSettingsBinding binding;

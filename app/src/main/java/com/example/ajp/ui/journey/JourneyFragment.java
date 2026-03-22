@@ -42,6 +42,7 @@ import java.util.Locale;
  */
 public class JourneyFragment extends Fragment {
     // Lovable.dev: UI mockup reference
+    // Built with Claude
     private static final String TAG = "JourneyFragment";
     private static final int REQUEST_LOCATION = 1002;
 

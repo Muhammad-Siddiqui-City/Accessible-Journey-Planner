@@ -34,6 +34,7 @@ import java.util.concurrent.Executors;
  * ISSUES: TimeFormatUtil import was missing once (compile error); add explicitly.
  */
 // AI Generated
+// Built with Claude
 public class AnalyticsViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Integer> journeysCount = new MutableLiveData<>(0);

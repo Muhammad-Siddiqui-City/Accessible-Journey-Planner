@@ -20,9 +20,12 @@ import com.example.ajp.utils.PlaceSearch;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import retrofit2.Response;
 
@@ -35,9 +38,29 @@ import retrofit2.Response;
 public class StopsViewModel extends ViewModel {
 
     private static final int QUOTA_PER_MODE = 2;
-    private static final int MAX_TRAIN_TIMES = 5;
+    /** Max rows for "trains to" / "trains from" on StationTrainsFragment (TfL + National Rail). */
+    private static final int MAX_STATION_TRAIN_ROWS = 5;
 
     private static final int MAX_LINE_IDS_FOR_DISRUPTIONS = 15;
+
+    /**
+     * Elizabeth / main-line NaPTANs for hubs where Search returns HUB* or tube ids — Line/elizabeth/Arrivals
+     * and StopPoint/Arrivals need the rail stop id, not the hub aggregate.
+     */
+    private static final String[] ELIZABETH_LINE_IDS_FOR_FALLBACK = {
+            "elizabeth", "elizabeth-line"
+    };
+
+    private static final Map<String, String> ELIZABETH_RAIL_ALIASES = new HashMap<>();
+    static {
+        ELIZABETH_RAIL_ALIASES.put("HUBLST", "910GLIVST");
+        ELIZABETH_RAIL_ALIASES.put("HUBBDS", "910GBONDST");
+        ELIZABETH_RAIL_ALIASES.put("HUBTCR", "910GTOTCTRD");
+        ELIZABETH_RAIL_ALIASES.put("940GZZLULVT", "910GLIVST");
+        ELIZABETH_RAIL_ALIASES.put("940GZZLULDS", "910GLIVST");
+        ELIZABETH_RAIL_ALIASES.put("940GZZLUTCR", "910GTOTCTRD");
+        ELIZABETH_RAIL_ALIASES.put("940GZZLUBND", "910GBONDST");
+    }
 
     private final MutableLiveData<List<StopItem>> stops = new MutableLiveData<>();
     private final MutableLiveData<List<LineStatus>> disruptions = new MutableLiveData<>();
@@ -562,39 +585,33 @@ public class StopsViewModel extends ViewModel {
                 }
 
                 list = filterAndSortArrivals(list);
-                tflArrivalsToStation.postValue(truncateToTopN(list, MAX_TRAIN_TIMES));
+                list = dropArrivalsUnderOneMinuteForStationTrains(list);
+                tflArrivalsToStation.postValue(truncateToTopN(list, MAX_STATION_TRAIN_ROWS));
             } catch (Exception e) {
                 tflArrivalsToStation.postValue(Collections.emptyList());
             }
         }).start();
     }
 
-    /** National Rail departures only, suitable for the "from this station" list. */
+    /** National Rail departures; falls back to TfL Elizabeth-line / rail mode arrivals when NR empty (common at Elizabeth hubs). */
     private void loadNationalRailDeparturesOnly(String stopId) {
         if (stopId == null || stopId.isEmpty()) {
             nationalRailDeparturesFromStation.postValue(Collections.emptyList());
             return;
         }
+        final String sid = stopId;
         new Thread(() -> {
             try {
                 if (!ApiKeyManager.isRailTokenValid()) {
-                    nationalRailDeparturesFromStation.postValue(Collections.emptyList());
+                    postTflFromStationTrainsFallback(sid);
                     return;
                 }
 
                 TflApi api = RetrofitClient.getApi();
-                String crs = CrsLookup.getCrs(stopId);
+                String crs = resolveNationalRailCrs(api, sid);
 
                 if (crs == null) {
-                    // Fallback: map from StopPoint common name when CRS isn't present in the static ID map.
-                    Response<StopPoint> spResp = api.getStopPoint(stopId).execute();
-                    if (spResp.isSuccessful() && spResp.body() != null) {
-                        crs = CrsLookup.getCrsFromName(spResp.body().getCommonName());
-                    }
-                }
-
-                if (crs == null) {
-                    nationalRailDeparturesFromStation.postValue(Collections.emptyList());
+                    postTflFromStationTrainsFallback(sid);
                     return;
                 }
 
@@ -602,22 +619,166 @@ public class StopsViewModel extends ViewModel {
                 railApi.getDepartureBoard(crs, null, new NationalRailApi.DepartureBoardCallback() {
                     @Override
                     public void onDepartures(List<Arrival> arrivals) {
-                        // National Rail parsing sometimes returns "due now" (0 seconds) and can also
-                        // include departures slightly beyond the TfL time window. Use a relaxed filter
-                        // so the UI shows results instead of staying empty.
                         List<Arrival> filtered = filterAndSortNationalRailArrivals(arrivals);
-                        nationalRailDeparturesFromStation.postValue(truncateToTopN(filtered, MAX_TRAIN_TIMES));
+                        filtered = dropArrivalsUnderOneMinuteForStationTrains(filtered);
+                        if (!filtered.isEmpty()) {
+                            nationalRailDeparturesFromStation.postValue(truncateToTopN(filtered, MAX_STATION_TRAIN_ROWS));
+                        } else if (arrivals != null && !arrivals.isEmpty()) {
+                            // All services within 60s — still show board rather than blank.
+                            nationalRailDeparturesFromStation.postValue(truncateToTopN(
+                                    filterAndSortNationalRailArrivals(arrivals), MAX_STATION_TRAIN_ROWS));
+                        } else {
+                            postTflFromStationTrainsFallback(sid);
+                        }
                     }
 
                     @Override
                     public void onError(String message) {
-                        nationalRailDeparturesFromStation.postValue(Collections.emptyList());
+                        postTflFromStationTrainsFallback(sid);
                     }
                 });
+            } catch (Exception e) {
+                postTflFromStationTrainsFallback(sid);
+            }
+        }).start();
+    }
+
+    /**
+     * When OpenLDBWS has no rows or no CRS, use TfL live data (Elizabeth line first, then rail-ish modes).
+     * WHY: Elizabeth line stations often have sparse or empty NR SOAP boards; TfL still has arrivals.
+     */
+    private void postTflFromStationTrainsFallback(String stopId) {
+        new Thread(() -> {
+            try {
+                if (!ApiKeyManager.isTflKeyValid()) {
+                    nationalRailDeparturesFromStation.postValue(Collections.emptyList());
+                    return;
+                }
+                TflApi api = RetrofitClient.getApi();
+                List<String> stopIdsToTry = new ArrayList<>();
+                addUniqueStopId(stopIdsToTry, stopId);
+                appendElizabethRailAliases(stopId, stopIdsToTry);
+                try {
+                    Response<StopPoint> spR = api.getStopPoint(stopId).execute();
+                    if (spR.isSuccessful() && spR.body() != null) {
+                        for (StopPoint ch : spR.body().getChildren()) {
+                            if (ch == null) continue;
+                            String nid = ch.getNaptanId();
+                            addUniqueStopId(stopIdsToTry, nid);
+                            appendElizabethRailAliases(nid, stopIdsToTry);
+                        }
+                    }
+                } catch (Exception ignored) {
+                    // Use primary id + aliases only
+                }
+
+                List<ArrivalPrediction> preds = new ArrayList<>();
+                outerEliz:
+                for (String tryId : stopIdsToTry) {
+                    if (tryId == null || tryId.isEmpty()) continue;
+                    for (String lineId : ELIZABETH_LINE_IDS_FOR_FALLBACK) {
+                        try {
+                            Response<List<ArrivalPrediction>> eliz = api.getLineArrivals(lineId, tryId).execute();
+                            if (eliz.isSuccessful() && eliz.body() != null && !eliz.body().isEmpty()) {
+                                preds.addAll(eliz.body());
+                                break outerEliz;
+                            }
+                        } catch (Exception ignored) {
+                            // Next line id / stop id
+                        }
+                    }
+                }
+                if (preds.isEmpty()) {
+                    for (String tryId : stopIdsToTry) {
+                        List<ArrivalPrediction> all = fetchArrivalsFromApi(api, tryId);
+                        for (ArrivalPrediction p : all) {
+                            String m = p.getModeName();
+                            if (m == null) continue;
+                            String ml = m.toLowerCase(Locale.UK);
+                            if (ml.contains("elizabeth") || ml.contains("national-rail") || ml.contains("overground")) {
+                                preds.add(p);
+                            }
+                        }
+                        if (!preds.isEmpty()) break;
+                    }
+                }
+                if (preds.isEmpty()) {
+                    for (String tryId : stopIdsToTry) {
+                        List<ArrivalPrediction> all = fetchArrivalsFromApi(api, tryId);
+                        if (!all.isEmpty()) {
+                            preds.addAll(all);
+                            break;
+                        }
+                    }
+                }
+                List<Arrival> list = new ArrayList<>();
+                for (ArrivalPrediction p : preds) {
+                    list.add(new Arrival(p.getLineName(), p.getDestinationName(), p.getPlatformName(), p.getTimeToStation(), p.getModeName()));
+                }
+                list = filterAndSortArrivals(list);
+                list = dropArrivalsUnderOneMinuteForStationTrains(list);
+                if (list.isEmpty() && !preds.isEmpty()) {
+                    list = new ArrayList<>();
+                    for (ArrivalPrediction p : preds) {
+                        list.add(new Arrival(p.getLineName(), p.getDestinationName(), p.getPlatformName(), p.getTimeToStation(), p.getModeName()));
+                    }
+                    list = filterAndSortNationalRailArrivals(list);
+                    list = truncateToTopN(list, MAX_STATION_TRAIN_ROWS);
+                } else {
+                    list = truncateToTopN(list, MAX_STATION_TRAIN_ROWS);
+                }
+                nationalRailDeparturesFromStation.postValue(list);
             } catch (Exception e) {
                 nationalRailDeparturesFromStation.postValue(Collections.emptyList());
             }
         }).start();
+    }
+
+    private static void addUniqueStopId(List<String> list, String id) {
+        if (list == null || id == null || id.isEmpty()) return;
+        if (!list.contains(id)) list.add(id);
+    }
+
+    /** Map HUB* / tube NaPTAN to Elizabeth rail StopPoint id so Line/elizabeth/Arrivals returns data. */
+    private static void appendElizabethRailAliases(String stopId, List<String> out) {
+        if (stopId == null || out == null) return;
+        String u = stopId.toUpperCase(Locale.UK).trim();
+        String rail = ELIZABETH_RAIL_ALIASES.get(u);
+        if (rail != null) addUniqueStopId(out, rail);
+        for (Map.Entry<String, String> e : ELIZABETH_RAIL_ALIASES.entrySet()) {
+            if (e.getKey().startsWith("940") && u.contains(e.getKey())) {
+                addUniqueStopId(out, e.getValue());
+            }
+        }
+    }
+
+    /**
+     * Map TfL stop id or StopPoint hierarchy to a 3-letter CRS for OpenLDBWS.
+     * WHY: Search returns tube NaPTAN, HUB ids, or parent stops — rail CRS may be on a nested child.
+     */
+    private static String resolveNationalRailCrs(TflApi api, String stopId) throws java.io.IOException {
+        String crs = CrsLookup.getCrs(stopId);
+        if (crs != null) return crs;
+
+        Response<StopPoint> spResp = api.getStopPoint(stopId).execute();
+        if (!spResp.isSuccessful() || spResp.body() == null) return null;
+        return findCrsInStopTree(spResp.body(), 6);
+    }
+
+    /** Depth-first: id map, optional TfL CRS property, name match, then children (hubs / platforms). */
+    private static String findCrsInStopTree(StopPoint sp, int depth) {
+        if (sp == null || depth < 0) return null;
+        String crs = CrsLookup.getCrs(sp.getNaptanId());
+        if (crs != null) return crs;
+        crs = sp.getCrsFromAdditionalProperties();
+        if (crs != null) return crs;
+        crs = CrsLookup.getCrsFromName(sp.getCommonName());
+        if (crs != null) return crs;
+        for (StopPoint child : sp.getChildren()) {
+            crs = findCrsInStopTree(child, depth - 1);
+            if (crs != null) return crs;
+        }
+        return null;
     }
 
     private List<ArrivalPrediction> fetchArrivalsFromApi(TflApi api, String stopId) throws java.io.IOException {
@@ -662,15 +823,13 @@ public class StopsViewModel extends ViewModel {
     }
 
     /**
-     * Relaxed filter for National Rail departures.
-     * PURPOSE: Show results even when the API returns "due now" (0 seconds) or times outside
-     * the TfL-only 60 minute window.
+     * Relaxed filter for National Rail departures (station trains screen).
+     * PURPOSE: Dedupe and sort; "due now" / under 1 min removed later so they do not fill the top-N slots.
      */
     private static List<Arrival> filterAndSortNationalRailArrivals(List<Arrival> list) {
         if (list == null) return Collections.emptyList();
         List<Arrival> out = new ArrayList<>();
         Set<String> seen = new HashSet<>();
-        // Allow up to 4 hours for national rail, and keep due-now (0 seconds) entries.
         int maxSeconds = 4 * 60 * 60;
         for (Arrival a : list) {
             int sec = a.getTimeToStationSeconds();
@@ -683,7 +842,21 @@ public class StopsViewModel extends ViewModel {
             if (!seen.add(key)) continue;
             out.add(a);
         }
-        Collections.sort(out, (a, b) -> Integer.compare(a.getTimeToStationSeconds(), b.getTimeToStationSeconds()));
+        Collections.sort(out, (a1, b1) -> Integer.compare(a1.getTimeToStationSeconds(), b1.getTimeToStationSeconds()));
+        return out;
+    }
+
+    /**
+     * Station trains UI shows times as minutes (Xm); skip under 60s so "0m" / due does not count toward the row limit.
+     */
+    private static List<Arrival> dropArrivalsUnderOneMinuteForStationTrains(List<Arrival> list) {
+        if (list == null) return Collections.emptyList();
+        List<Arrival> out = new ArrayList<>();
+        for (Arrival a : list) {
+            if (a == null) continue;
+            if (a.getTimeToStationSeconds() < 60) continue;
+            out.add(a);
+        }
         return out;
     }
 

@@ -2,6 +2,8 @@ package com.example.ajp.api;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Single stop point from TfL API. Add in Commit 2 (API DTOs).
@@ -113,6 +115,29 @@ public class StopPoint {
             if (m != null && m.equalsIgnoreCase("national-rail")) return true;
         }
         return false;
+    }
+
+    private static final Pattern THREE_LETTER = Pattern.compile("^[A-Za-z]{3}$");
+
+    /**
+     * When TfL includes a 3-letter CRS in additionalProperties (not all stops have this).
+     */
+    public String getCrsFromAdditionalProperties() {
+        if (additionalProperties == null) return null;
+        for (AdditionalProperty p : additionalProperties) {
+            if (p == null) continue;
+            String k = p.getKey();
+            String v = p.getValue();
+            if (v == null) continue;
+            String t = v.trim();
+            if (t.length() != 3 || !THREE_LETTER.matcher(t).matches()) continue;
+            if (k == null) continue;
+            String kl = k.toLowerCase(Locale.UK);
+            if (kl.contains("crs") || kl.contains("stationcode") || kl.contains("3letter") || kl.contains("tlc")) {
+                return t.toUpperCase(Locale.UK);
+            }
+        }
+        return null;
     }
 
     /**

@@ -1,0 +1,8 @@
+# Copy to local.properties in this folder (next to settings.gradle) and set your values.
+# Android Studio usually creates local.properties with sdk.dir automatically.
+
+sdk.dir=/path/to/Android/Sdk
+
+MAPS_API_KEY=your_google_maps_key
+TFL_APP_KEY=your_tfl_app_key
+RAIL_ACCESS_TOKEN=your_national_rail_openldbws_token

@@ -7,30 +7,29 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.ajp.R;
-import com.example.ajp.ui.nearby.StopItem;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Adapter for the "Popular Stations" list.
- * PURPOSE: Display a fixed list of stations; on tap open StationTrainsFragment.
+ * Adapter for the fixed "Popular Stations" list (labels only; TfL stop id resolved on tap).
  */
 public class PopularStationsAdapter extends RecyclerView.Adapter<PopularStationsAdapter.ViewHolder> {
 
     public interface OnPopularStationClickListener {
-        void onPopularStationClick(StopItem stop);
+        /** @param displayLabel row text as shown (e.g. from string-array). */
+        void onPopularStationClick(String displayLabel);
     }
 
-    private final List<StopItem> items = new ArrayList<>();
+    private final List<String> items = new ArrayList<>();
     private OnPopularStationClickListener listener;
 
     public void setOnPopularStationClickListener(OnPopularStationClickListener listener) {
         this.listener = listener;
     }
 
-    public void submitList(List<StopItem> stops) {
+    public void submitLabels(List<String> labels) {
         items.clear();
-        if (stops != null) items.addAll(stops);
+        if (labels != null) items.addAll(labels);
         notifyDataSetChanged();
     }
 
@@ -43,10 +42,10 @@ public class PopularStationsAdapter extends RecyclerView.Adapter<PopularStations
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        StopItem stop = items.get(position);
-        holder.tvName.setText(stop != null ? stop.getName() : "");
+        String label = items.get(position);
+        holder.tvName.setText(label != null ? label : "");
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onPopularStationClick(stop);
+            if (listener != null && label != null) listener.onPopularStationClick(label);
         });
     }
 
@@ -63,4 +62,3 @@ public class PopularStationsAdapter extends RecyclerView.Adapter<PopularStations
         }
     }
 }
-

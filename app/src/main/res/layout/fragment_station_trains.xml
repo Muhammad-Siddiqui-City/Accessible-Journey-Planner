@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- AI Generated -->
 <!-- Lovable.dev: UI mockup reference -->
+<!-- Built with Claude -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,7 +30,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:srcCompat="@android:drawable/ic_menu_revert"
-            android:contentDescription="@string/refresh" />
+            android:contentDescription="@string/back" />
 
         <TextView
             android:id="@+id/station_name"
@@ -40,98 +41,100 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:paddingStart="8dp"
-            android:visibility="gone"
+            android:maxLines="2"
+            android:ellipsize="end"
             tools:text="London Waterloo" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_arrivals_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/trains_to_station"
-        android:textStyle="bold"
-        android:textColor="?attr/ajp_foreground"
-        android:textSize="16sp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="8dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/header"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_arrivals_empty"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/no_upcoming_arrivals"
-        android:textColor="?attr/ajp_muted_foreground"
-        android:textSize="14sp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="8dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tv_arrivals_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/arrivals_list"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_station_trains"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingHorizontal="20dp"
-        android:layout_marginTop="12dp"
+        android:fillViewport="true"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_arrival"
-        tools:itemCount="4" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <TextView
-        android:id="@+id/tv_departures_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/trains_from_station"
-        android:textStyle="bold"
-        android:textColor="?attr/ajp_foreground"
-        android:textSize="16sp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="8dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
 
-    <TextView
-        android:id="@+id/tv_departures_empty"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/no_departures_available"
-        android:textColor="?attr/ajp_muted_foreground"
-        android:textSize="14sp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="12dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tv_departures_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/tv_arrivals_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trains_to_station"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground"
+                android:textSize="16sp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="8dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/departures_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingHorizontal="20dp"
-        android:clipToPadding="false"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tv_departures_title"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_arrival"
-        tools:itemCount="4" />
+            <TextView
+                android:id="@+id/tv_arrivals_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_upcoming_arrivals"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:textSize="14sp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/arrivals_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="20dp"
+                android:clipToPadding="false"
+                tools:listitem="@layout/item_arrival"
+                tools:itemCount="3" />
+
+            <TextView
+                android:id="@+id/tv_departures_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trains_from_station"
+                android:textStyle="bold"
+                android:textColor="?attr/ajp_foreground"
+                android:textSize="16sp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="16dp" />
+
+            <TextView
+                android:id="@+id/tv_departures_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_departures_available"
+                android:textColor="?attr/ajp_muted_foreground"
+                android:textSize="14sp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/departures_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="20dp"
+                android:clipToPadding="false"
+                tools:listitem="@layout/item_arrival"
+                tools:itemCount="3" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

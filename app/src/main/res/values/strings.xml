@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<!-- Built with Claude -->
 <resources>
     <string name="app_name">Accessible Journey Planner</string>
 
     <!-- Navigation -->
+    <string name="back">Back</string>
     <string name="home">Home</string>
     <string name="journeys">Journeys</string>
     <string name="analytics">Analytics</string>
@@ -20,6 +25,7 @@
     <string name="nearby_stations">Nearby Stops/Stations</string>
     <string name="live_arrivals">Live Arrivals</string>
     <string name="popular_station">Popular Stations</string>
+    <string name="popular_station_live_arrivals_a11y">Popular Stations, Live Arrivals</string>
     <string name="plan_journey">Plan Journey</string>
     <string name="quick_actions">Quick Actions</string>
     <string name="disruptions">Disruptions</string>
@@ -27,6 +33,8 @@
     <string name="distance_km_away">%1$.2f km away</string>
     <string name="view_all">View all</string>
     <string name="view_all_chevron">View all &gt;</string>
+    <string name="saved_routes">Saved routes</string>
+    <string name="no_saved_routes">No saved routes yet</string>
     <string name="transport_modes">Transport Modes</string>
     <string name="tube_rail">Tube &amp; Rail</string>
     <string name="buses">Buses</string>
@@ -67,6 +75,8 @@
     <string name="sort_fewest_transfers">Fewest transfers</string>
     <string name="sort_least_walking">Least walking</string>
     <string name="sort_least_crowded">Least crowded</string>
+    <string name="youre_offline_view_saved">You\'re offline. View saved journeys from the home screen.</string>
+    <string name="go_to_home">Go to home</string>
 
     <!-- Live Arrivals -->
     <string name="no_upcoming_arrivals">No upcoming arrivals</string>
@@ -81,6 +91,9 @@
     <string name="next_train">Next train</string>
     <string name="accessible">Accessible</string>
     <string name="alerts">Alerts</string>
+    <string name="trains_to_station">Trains to station</string>
+    <string name="trains_from_station">Trains from station</string>
+    <string name="no_departures_available">No departures available</string>
 
     <!-- Route Details -->
     <string name="route_details">Route Details</string>
@@ -101,6 +114,8 @@
     <string name="to_label">To</string>
     <string name="kings_cross">King\'s Cross</string>
     <string name="green_park">Green Park</string>
+    <string name="lift_disruption_warning">Lift disruption may affect this part of your journey. Check station information before you travel.</string>
+    <string name="crowding_warning">High crowding reported on this route. Consider an alternative if you need more space.</string>
 
     <!-- Analytics -->
     <string name="your_journeys">Your Journeys</string>
@@ -182,6 +197,14 @@
     <string name="send_feedback">Send feedback</string>
     <string name="version">Version 1.0.0</string>
     <string name="made_with_love">Made with ❤️ for London</string>
+    <string name="additional_disruption_information">Additional disruption information</string>
+    <string name="test_route_monitoring">Test route monitoring</string>
+    <string name="developer_test_only">Developer test only</string>
+    <string name="simulate_lift_unavailable">Simulate lift unavailable</string>
+    <string name="simulate_lift_hint">Triggers a test notification for step-free routing</string>
+    <string name="test_route_change_now">Test route change now</string>
+    <string name="test_route_change_scheduled">Test route change scheduled</string>
+    <string name="no_email_app">No email app found</string>
 
     <!-- NotFound -->
     <string name="not_found_title">404</string>

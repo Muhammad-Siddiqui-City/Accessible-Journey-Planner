@@ -2,6 +2,16 @@ plugins {
     id 'com.android.application'
 }
 
+// Keys from local.properties only (not in Git). Copy local.properties.example → local.properties.
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+def mapsApiKey = localProperties.getProperty('MAPS_API_KEY', '') ?: ''
+def tflAppKey = localProperties.getProperty('TFL_APP_KEY', '') ?: ''
+def railAccessToken = localProperties.getProperty('RAIL_ACCESS_TOKEN', '') ?: ''
+
 android {
     namespace 'com.example.ajp'
     compileSdk 34
@@ -11,6 +21,9 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
+        manifestPlaceholders = [ MAPS_API_KEY: mapsApiKey ]
+        buildConfigField 'String', 'TFL_APP_KEY', '"' + tflAppKey.replace('"', '\\"') + '"'
+        buildConfigField 'String', 'RAIL_ACCESS_TOKEN', '"' + railAccessToken.replace('"', '\\"') + '"'
     }
     buildTypes {
         release {
@@ -24,6 +37,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 
@@ -49,4 +63,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.github.PhilJay:MPAndroidChart:3.1.0'
+    implementation 'androidx.work:work-runtime:2.9.0'
 }

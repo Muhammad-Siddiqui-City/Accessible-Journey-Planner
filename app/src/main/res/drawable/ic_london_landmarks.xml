@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Line-art style London landmarks (clock tower + wheel) in a circle; white on teal card. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- Circular frame -->
+    <path
+        android:pathData="M50,7 A43,43 0 1,1 49.99,7"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.2"/>
+    <!-- Big Ben–style tower + spire -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,82 L20,44 L24,38 L28,44 L28,82 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,38 L24,26 L26,22 L28,26 L28,38 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M26,22 L26,16 L28,12 L30,16 L30,22 Z"/>
+    <!-- Clock -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,52 m-4.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0"/>
+    <!-- London Eye: wheel arc + capsules -->
+    <path
+        android:pathData="M54,78 A30,30 0 0,1 92,52"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M62,58 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M72,50 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M82,48 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M88,58 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"/>
+</vector>

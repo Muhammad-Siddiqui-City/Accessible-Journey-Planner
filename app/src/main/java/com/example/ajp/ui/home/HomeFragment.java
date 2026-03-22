@@ -49,6 +49,7 @@ import java.util.regex.Pattern;
 public class HomeFragment extends Fragment {
     // AI Generated
     // Lovable.dev: UI mockup reference
+    // Built with Claude
     private static final int REQUEST_LOCATION = 1001;
 
     private FragmentHomeBinding binding;
@@ -296,12 +297,10 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /** Opens Live Arrivals for London's top station (King's Cross St. Pancras). */
+    /** Opens the Popular Stations list; choosing a station opens train times for that stop. */
     private void openPopularStationArrivals() {
-        String stopId = "940GZZLUKSX";  // King's Cross St. Pancras Underground
-        String stopName = getString(R.string.kings_cross_st_pancras);
         if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).showLiveArrivalsFragment(stopId, stopName);
+            ((MainActivity) getActivity()).showPopularStationsFragment();
         }
     }
 

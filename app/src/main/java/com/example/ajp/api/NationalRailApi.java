@@ -3,9 +3,11 @@ package com.example.ajp.api;
 import android.os.Handler;
 import android.os.Looper;
 import com.example.ajp.ui.arrivals.Arrival;
+import com.example.ajp.utils.ApiKeyManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,12 +29,9 @@ import okhttp3.Response;
  */
 public class NationalRailApi {
 
-    /* --- BLOCK: SOAP endpoint and token ---
-     * PURPOSE: NRE OpenLDBWS URL and token; token also in ApiKeyManager for validation.
-     * WHY: ldb10.asmx for GetDepartureBoard; SOAPAction must match exactly.
-     * ISSUES: Duplicate token here and in ApiKeyManager; consider using ApiKeyManager.getRailToken().
+    /* --- BLOCK: SOAP endpoint ---
+     * PURPOSE: NRE OpenLDBWS URL; access token from ApiKeyManager (local.properties at build time).
      */
-    private static final String TOKEN = "5d4bfb7e-5ed4-4f6d-afc9-4d32de042094";
     private static final String SOAP_URL = "https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb10.asmx";
     private static final MediaType SOAP_XML = MediaType.parse("text/xml; charset=utf-8");
 
@@ -49,11 +48,11 @@ public class NationalRailApi {
         xml.append("xmlns:typ=\"http://thalesgroup.com/RTTI/2013-11-28/Token/types\" ");
         xml.append("xmlns:ldb=\"http://thalesgroup.com/RTTI/2017-02-02/ldb/\">");
         xml.append("<SOAP-ENV:Header>");
-        xml.append("<typ:AccessToken><typ:TokenValue>").append(TOKEN).append("</typ:TokenValue></typ:AccessToken>");
+        xml.append("<typ:AccessToken><typ:TokenValue>").append(ApiKeyManager.getRailToken()).append("</typ:TokenValue></typ:AccessToken>");
         xml.append("</SOAP-ENV:Header>");
         xml.append("<SOAP-ENV:Body>");
         xml.append("<ldb:GetDepartureBoardRequest>");
-        xml.append("<ldb:numRows>10</ldb:numRows>");
+        xml.append("<ldb:numRows>5</ldb:numRows>");
         xml.append("<ldb:crs>").append(fromCrs.toUpperCase().trim()).append("</ldb:crs>");
         if (toCrs != null && !toCrs.trim().isEmpty() && toCrs.trim().length() == 3) {
             xml.append("<ldb:filterCrs>").append(toCrs.trim().toUpperCase()).append("</ldb:filterCrs>");
@@ -139,8 +138,8 @@ public class NationalRailApi {
                         if (arrivals != null && !arrivals.isEmpty()) {
                             callback.onDepartures(arrivals);
                         } else {
-                            android.util.Log.w("DEBUG_SWR", "No departures found in response");
-                            callback.onError("No departures found");
+                            android.util.Log.w("DEBUG_SWR", "No departures parsed from response");
+                            callback.onDepartures(Collections.emptyList());
                         }
                     });
                 }
@@ -170,6 +169,16 @@ public class NationalRailApi {
      *      no <service> blocks found. computeSecondsToDeparture for timeToStationSeconds.
      * ISSUES: Response structure can vary; fallback handles alternate formats.
      */
+    private static int indexOfIgnoreCase(String haystack, String needle, int from) {
+        if (haystack == null || needle == null) return -1;
+        int nlen = needle.length();
+        if (haystack.length() - from < nlen) return -1;
+        for (int i = from; i <= haystack.length() - nlen; i++) {
+            if (haystack.regionMatches(true, i, needle, 0, nlen)) return i;
+        }
+        return -1;
+    }
+
     private static List<Arrival> parseDepartureBoard(String xml) {
         List<Arrival> list = new ArrayList<>();
         if (xml == null || xml.isEmpty()) return list;
@@ -181,20 +190,18 @@ public class NationalRailApi {
         }
         xml = cleanXml;
 
-        // Find each <service> block - structure varies; look for service tags
+        // Find each <service> block (case-insensitive opening tag — NRE responses vary)
         int idx = 0;
         while (true) {
-            int serviceStart = xml.indexOf("<service>", idx);
-            if (serviceStart < 0) serviceStart = xml.indexOf("<ns2:service>", idx);
-            if (serviceStart < 0) serviceStart = xml.indexOf("<ns1:service>", idx);
+            int serviceStart = indexOfIgnoreCase(xml, "<service", idx);
             if (serviceStart < 0) break;
+            int openEnd = xml.indexOf('>', serviceStart);
+            if (openEnd < 0) break;
 
-            int serviceEnd = xml.indexOf("</service>", serviceStart);
-            if (serviceEnd < 0) serviceEnd = xml.indexOf("</ns2:service>", serviceStart);
-            if (serviceEnd < 0) serviceEnd = xml.indexOf("</ns1:service>", serviceStart);
+            int serviceEnd = indexOfIgnoreCase(xml, "</service>", openEnd);
             if (serviceEnd < 0) break;
 
-            String block = xml.substring(serviceStart, serviceEnd);
+            String block = xml.substring(openEnd + 1, serviceEnd);
             Arrival a = parseServiceBlock(block);
             if (a != null) list.add(a);
 

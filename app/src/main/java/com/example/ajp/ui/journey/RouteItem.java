@@ -29,6 +29,7 @@ public class RouteItem implements Serializable {
     private final List<Leg> legs;
     private final boolean hasLiftDisruption;
     // AI Generated
+    // Built with Claude
     private final String liftDisruptionDescription;
 
     public RouteItem(String durationMinutes, String departureTime, String arrivalTime, int crowdingLevel,
@@ -70,6 +71,7 @@ public class RouteItem implements Serializable {
     public List<Leg> getLegs() { return legs; }
     public boolean hasLiftDisruption() { return hasLiftDisruption; }
     // AI Generated
+    // Built with Claude
     /** Actual TfL disruption text (e.g. "No step-free access to/from the eastbound platform"). Null if none. */
     public String getLiftDisruptionDescription() { return liftDisruptionDescription; }
 

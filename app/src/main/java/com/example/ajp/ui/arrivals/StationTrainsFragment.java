@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * Detail screen shown from Popular Stations.
- * PURPOSE: Show trains that are "to this station" (TfL arrivals) and "from this station" (National Rail departures).
+ * PURPOSE: Show up to 5 trains arriving towards this station (TfL) and up to 5 departures (National Rail when CRS + token available).
  */
 public class StationTrainsFragment extends Fragment {
 
@@ -52,14 +52,7 @@ public class StationTrainsFragment extends Fragment {
         String stopId = getArguments() != null ? getArguments().getString(ARG_STOP_ID, "") : "";
         String stopName = getArguments() != null ? getArguments().getString(ARG_STOP_NAME, "") : "";
 
-        // UI: show only train times (max 5) - hide "to/from" labels and departures list.
-        binding.stationName.setVisibility(View.GONE);
-        binding.tvArrivalsTitle.setVisibility(View.GONE);
-        binding.tvArrivalsEmpty.setVisibility(View.GONE);
-        binding.tvDeparturesTitle.setVisibility(View.GONE);
-        binding.tvDeparturesEmpty.setVisibility(View.GONE);
-        binding.arrivalsList.setVisibility(View.VISIBLE);
-        binding.departuresList.setVisibility(View.GONE);
+        binding.stationName.setText(stopName);
 
         RecyclerView.LayoutManager lm = new LinearLayoutManager(requireContext());
         arrivalsAdapter = new ArrivalsAdapter();
@@ -76,7 +69,6 @@ public class StationTrainsFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(StopsViewModel.class);
 
-        // Trigger both API loaders: "to" from TfL, "from" from National Rail.
         viewModel.loadTrainsToAndFrom(stopId);
 
         viewModel.getTflArrivalsToStation().observe(getViewLifecycleOwner(), this::onArrivalsToStation);
@@ -86,12 +78,17 @@ public class StationTrainsFragment extends Fragment {
     private void onArrivalsToStation(List<Arrival> arrivals) {
         List<Arrival> list = arrivals != null ? arrivals : Collections.emptyList();
         arrivalsAdapter.submitList(list);
+        boolean empty = list.isEmpty();
+        binding.tvArrivalsEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+        binding.arrivalsList.setVisibility(empty ? View.GONE : View.VISIBLE);
     }
 
     private void onDeparturesFromStation(List<Arrival> departures) {
         List<Arrival> list = departures != null ? departures : Collections.emptyList();
-        // Departures list is hidden in this prototype; keep adapter cleared so no work is wasted.
-        departuresAdapter.submitList(Collections.emptyList());
+        departuresAdapter.submitList(list);
+        boolean empty = list.isEmpty();
+        binding.tvDeparturesEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+        binding.departuresList.setVisibility(empty ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -100,4 +97,3 @@ public class StationTrainsFragment extends Fragment {
         binding = null;
     }
 }
-

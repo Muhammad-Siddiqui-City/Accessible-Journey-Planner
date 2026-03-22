@@ -43,6 +43,7 @@ import java.util.concurrent.Executors;
 public class RouteDetailsActivity extends AppCompatActivity {
     // AI Generated
     // Lovable.dev: UI mockup reference
+    // Built with Claude
     public static final String EXTRA_ROUTE_ID = "route_id";
     public static final String EXTRA_ROUTE = "selected_route";
     public static final String EXTRA_FROM_OFFLINE = "from_offline";
@@ -130,6 +131,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         String phrase = "Route from " + from + " to " + to + ", duration " + durationStr + ", " + transfersStr;
         ttsHelper.speak(phrase);
         // AI Generated: speak actual disruption text
+        // Built with Claude
         if (route.hasLiftDisruption()) {
             String msg = route.getLiftDisruptionDescription() != null
                     ? route.getLiftDisruptionDescription()
@@ -332,6 +334,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
             binding.tvTransfers.setText(route.getTransfersText());
             binding.tvCrowdingWarning.setVisibility(route.getCrowdingLevel() == RouteItem.CROWDING_HIGH ? View.VISIBLE : View.GONE);
             // AI Generated: display actual TfL disruption text
+            // Built with Claude
             if (route.hasLiftDisruption()) {
                 binding.tvLiftDisruptionWarning.setVisibility(View.VISIBLE);
                 String desc = route.getLiftDisruptionDescription();

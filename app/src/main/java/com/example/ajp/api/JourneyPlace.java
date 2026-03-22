@@ -17,8 +17,12 @@ public class JourneyPlace implements Serializable {
     private double lat;
     @SerializedName("lon")
     private double lon;
+    /** NaPTAN / stop id when present — used for lift disruption checks. */
+    @SerializedName("naptanId")
+    private String naptanId;
 
     public String getCommonName() { return commonName != null ? commonName : ""; }
     public double getLat() { return lat; }
     public double getLon() { return lon; }
+    public String getNaptanId() { return naptanId != null ? naptanId : ""; }
 }

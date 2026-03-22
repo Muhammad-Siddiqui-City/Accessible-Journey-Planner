@@ -11,7 +11,9 @@ import com.example.ajp.R;
 import com.example.ajp.databinding.ActivityMainBinding;
 import com.example.ajp.ui.analytics.AnalyticsFragment;
 import com.example.ajp.ui.arrivals.LiveArrivalsFragment;
+import com.example.ajp.ui.arrivals.StationTrainsFragment;
 import com.example.ajp.ui.home.HomeFragment;
+import com.example.ajp.ui.home.PopularStationsFragment;
 import com.example.ajp.ui.journey.JourneyFragment;
 import com.example.ajp.ui.journey.JourneyViewModel;
 import com.example.ajp.ui.nearby.NearbyStationsFragment;
@@ -113,6 +115,24 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
+    /** Called from Home (Popular Stations card); fixed list of stations, then user picks one for train times. */
+    public void showPopularStationsFragment() {
+        Fragment fragment = new PopularStationsFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_container, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    /** Called from Popular Stations list after TfL resolves stop id; shows to/from trains (max 5 each). */
+    public void showStationTrainsFragment(String stopId, String stopName) {
+        Fragment fragment = StationTrainsFragment.newInstance(stopId, stopName);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_container, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
     /** Called by HomeFragment to switch to Journeys tab (e.g. from search bar). */
     public void switchToJourneysTab() {
         selectedItemId = R.id.navigation_journeys;
@@ -136,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
         selectedItemId = R.id.navigation_journeys;
         binding.bottomNavigation.setSelectedItemId(selectedItemId);
         showFragment(new JourneyFragment());
+    }
+
+    /** Called after a background route re-check (e.g. from Settings) when options may have changed. */
+    public void checkAndHandleRouteChange() {
+        // Optional: show in-app banner or deep-link to Journey; placeholder for viva simplicity.
     }
 
 }

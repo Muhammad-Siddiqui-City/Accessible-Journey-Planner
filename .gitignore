@@ -1,0 +1,16 @@
+# Machine-local SDK path and API keys — never commit
+local.properties
+
+.env
+.env.*
+
+build/
+**/build/
+.gradle/
+*.iml
+
+# IDE / tooling (local)
+.idea/
+
+# Separate repo in workspace — not part of this Android project
+aurora-scaffolding-1/

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fixed list shown on Popular Stations screen; stop IDs resolved via TfL search on tap. -->
+<resources>
+    <string-array name="popular_station_labels">
+        <item>London Liverpool Street Station</item>
+        <item>London Waterloo Station</item>
+        <item>London Paddington Station</item>
+        <item>Tottenham Court Road Station</item>
+        <item>London Bridge Station</item>
+        <item>Stratford Station</item>
+        <item>London Victoria Station</item>
+        <item>Farringdon Station</item>
+        <item>Bond Street Station</item>
+        <item>London Euston Station</item>
+        <item>St Pancras International</item>
+        <item>Whitechapel Station</item>
+        <item>King\'s Cross Station</item>
+        <item>Clapham Junction Station</item>
+        <item>East Croydon Station</item>
+    </string-array>
+</resources>
