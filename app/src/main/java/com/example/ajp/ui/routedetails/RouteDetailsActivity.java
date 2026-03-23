@@ -22,6 +22,7 @@ import com.example.ajp.data.local.JourneyLog;
 import com.example.ajp.data.local.SavedRouteEntity;
 import com.example.ajp.databinding.ActivityRouteDetailsBinding;
 import com.example.ajp.ui.journey.RouteItem;
+import com.example.ajp.utils.AccessibilityPreferences;
 import com.example.ajp.utils.LocaleHelper;
 import com.example.ajp.utils.SettingsPrefs;
 import com.example.ajp.utils.TimeFormatUtil;
@@ -122,8 +123,8 @@ public class RouteDetailsActivity extends AppCompatActivity {
 
     private void announceRouteSummaryIfTtsOn(RouteItem route) {
         if (route == null || ttsHelper == null || !ttsHelper.isTtsEnabled()) return;
-        String from = route.getFromStation();
-        String to = route.getToStation();
+        String from = resolveFromDisplay(route);
+        String to = resolveToDisplay(route);
         int min = parseDuration(route.getDurationMinutes());
         String durationStr = min < 60 ? min + " minutes" : (min / 60) + " hour" + (min % 60 > 0 ? " " + (min % 60) + " minutes" : "");
         int transfers = route.getTransfersCount();
@@ -240,10 +241,26 @@ public class RouteDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private static boolean looksLikeUkPostcode(String s) {
-        if (s == null || s.length() < 5) return false;
-        String t = s.trim().toUpperCase().replaceAll("\\s+", " ");
-        return t.matches("[A-Z]{1,2}[0-9][0-9A-Z]?\\s*[0-9][A-Z]{2}");
+    /** Prefer intent extras (exact journey field text); else labels stored on {@link RouteItem}. */
+    private String resolveFromDisplay(RouteItem route) {
+        String userFrom = getIntent().getStringExtra(EXTRA_USER_FROM_INPUT);
+        if (userFrom != null && !userFrom.trim().isEmpty()) return userFrom.trim();
+        String from = route.getFromStation() != null ? route.getFromStation().trim() : "";
+        if (from.isEmpty()) return getString(R.string.from_label);
+        return from;
+    }
+
+    private String resolveToDisplay(RouteItem route) {
+        String userTo = getIntent().getStringExtra(EXTRA_USER_TO_INPUT);
+        if (userTo != null && !userTo.trim().isEmpty()) return userTo.trim();
+        String to = route.getToStation() != null ? route.getToStation().trim() : "";
+        if (to.isEmpty()) return getString(R.string.to_label);
+        return to;
+    }
+
+    /** One line for Home "saved routes" list (same labels as on-screen from/to). */
+    private String buildSavedRouteSummary(RouteItem route) {
+        return resolveFromDisplay(route) + " → " + resolveToDisplay(route);
     }
 
     private static int parseDuration(String s) {
@@ -298,12 +315,14 @@ public class RouteDetailsActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.save, Toast.LENGTH_SHORT).show();
             return;
         }
+        // Build summary on UI thread (uses intent extras for typed A→B).
+        final String summary = buildSavedRouteSummary(currentRoute);
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 SavedRouteEntity entity = new SavedRouteEntity(
                         currentRoute,
                         System.currentTimeMillis(),
-                        currentRoute.getRouteSummary()
+                        summary
                 );
                 AppDatabase.getInstance(this).savedRouteDao().insert(entity);
                 runOnUiThread(() -> Toast.makeText(this, R.string.journey_saved_offline, Toast.LENGTH_SHORT).show());
@@ -315,17 +334,8 @@ public class RouteDetailsActivity extends AppCompatActivity {
 
     private void displayRoute(RouteItem route) {
         if (route != null) {
-            String fromDisplay = route.getFromStation().isEmpty() ? getString(R.string.from_label) : route.getFromStation();
-            String toDisplay = route.getToStation().isEmpty() ? getString(R.string.to_label) : route.getToStation();
-            // Use user's entered origin when route shows "Destination" (e.g. saved route or walk leg)
-            String userFrom = getIntent().getStringExtra(EXTRA_USER_FROM_INPUT);
-            if (userFrom != null && !userFrom.trim().isEmpty() && "Destination".equals(fromDisplay)) {
-                fromDisplay = userFrom.trim();
-            }
-            String userTo = getIntent().getStringExtra(EXTRA_USER_TO_INPUT);
-            if (userTo != null && !userTo.trim().isEmpty() && ("Destination".equals(toDisplay) || looksLikeUkPostcode(userTo))) {
-                toDisplay = userTo.trim();
-            }
+            String fromDisplay = resolveFromDisplay(route);
+            String toDisplay = resolveToDisplay(route);
             binding.tvFrom.setText(fromDisplay);
             binding.tvTo.setText(toDisplay);
             binding.tvDuration.setText(route.getDurationMinutes());
@@ -335,7 +345,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
             binding.tvCrowdingWarning.setVisibility(route.getCrowdingLevel() == RouteItem.CROWDING_HIGH ? View.VISIBLE : View.GONE);
             // AI Generated: display actual TfL disruption text
             // Built with Claude
-            if (route.hasLiftDisruption()) {
+            if (AccessibilityPreferences.get(this).isStepFree() && route.hasLiftDisruption()) {
                 binding.tvLiftDisruptionWarning.setVisibility(View.VISIBLE);
                 String desc = route.getLiftDisruptionDescription();
                 binding.tvLiftDisruptionWarning.setText(desc != null ? desc : getString(R.string.lift_disruption_warning));
@@ -365,8 +375,8 @@ public class RouteDetailsActivity extends AppCompatActivity {
     private void shareJourney() {
         if (currentRoute == null) return;
         StringBuilder shareBody = new StringBuilder();
-        String from = currentRoute.getFromStation() != null ? currentRoute.getFromStation() : "";
-        String to = currentRoute.getToStation() != null ? currentRoute.getToStation() : "";
+        String from = resolveFromDisplay(currentRoute);
+        String to = resolveToDisplay(currentRoute);
         String duration = currentRoute.getDurationMinutes() != null ? currentRoute.getDurationMinutes() : "";
 
         shareBody.append("Journey: ").append(from).append(" \u2192 ").append(to);

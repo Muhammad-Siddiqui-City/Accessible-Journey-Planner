@@ -1,6 +1,7 @@
 package com.example.ajp.ui.home;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +32,7 @@ import com.example.ajp.data.local.SavedRouteEntity;
 import com.example.ajp.api.StatusDetail;
 import com.example.ajp.ui.nearby.StopItem;
 import com.example.ajp.ui.routedetails.RouteDetailsActivity;
+import java.util.concurrent.Executors;
 import com.example.ajp.ui.nearby.StopsViewModel;
 import com.example.ajp.utils.LocationManager;
 import com.example.ajp.utils.PermissionManager;
@@ -235,6 +237,11 @@ public class HomeFragment extends Fragment {
                 startActivity(i);
             }
         });
+        // Delete on background thread; LiveData observer refreshes the list.
+        final Context appCtx = requireContext().getApplicationContext();
+        savedRouteAdapter.setOnSavedRouteDeleteListener(entity ->
+                Executors.newSingleThreadExecutor().execute(() ->
+                        AppDatabase.getInstance(appCtx).savedRouteDao().delete(entity)));
         binding.savedRoutesList.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.savedRoutesList.setAdapter(savedRouteAdapter);
         binding.savedRoutesList.setNestedScrollingEnabled(false);

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.ajp.R;
+import com.example.ajp.utils.AccessibilityPreferences;
 import com.example.ajp.utils.TimeFormatUtil;
 import java.util.List;
 
@@ -79,19 +80,17 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         holder.progressBarCrowding.setProgressTintList(ColorStateList.valueOf(progressColor));
         holder.tvCrowdingLabel.setVisibility(View.VISIBLE);
         holder.tvCrowdingWarning.setVisibility(item.getCrowdingLevel() == RouteItem.CROWDING_HIGH ? View.VISIBLE : View.GONE);
-        
-        // Show lift disruption warning if route has lift issues
-        boolean hasLiftDisruption = item.hasLiftDisruption();
-        android.util.Log.d("UI_Check", "RouteAdapter - Route " + item.getRouteId() + " hasLiftDisruption=" + hasLiftDisruption + ", description=" + item.getLiftDisruptionDescription());
-        String liftDisruptionText = hasLiftDisruption ? 
-            (item.getLiftDisruptionDescription() != null ? item.getLiftDisruptionDescription() : 
-             holder.itemView.getContext().getString(R.string.lift_disruption_warning)) : null;
-        holder.tvLiftDisruptionWarning.setVisibility(hasLiftDisruption ? View.VISIBLE : View.GONE);
-        if (hasLiftDisruption && liftDisruptionText != null) {
+
+        // Red lift text only when "Step-free only" is on (same as Journey API lift checks).
+        boolean stepFree = AccessibilityPreferences.get(holder.itemView.getContext()).isStepFree();
+        boolean showLift = stepFree && item.hasLiftDisruption();
+        String liftDisruptionText = showLift
+                ? (item.getLiftDisruptionDescription() != null ? item.getLiftDisruptionDescription()
+                : holder.itemView.getContext().getString(R.string.lift_disruption_warning))
+                : null;
+        holder.tvLiftDisruptionWarning.setVisibility(showLift ? View.VISIBLE : View.GONE);
+        if (showLift && liftDisruptionText != null) {
             holder.tvLiftDisruptionWarning.setText(liftDisruptionText);
-            android.util.Log.d("UI_Check", "RouteAdapter - Setting warning text: " + liftDisruptionText);
-        } else {
-            android.util.Log.d("UI_Check", "RouteAdapter - No warning to display");
         }
 
         // Line badges: first and second badge

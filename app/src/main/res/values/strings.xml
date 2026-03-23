@@ -35,6 +35,8 @@
     <string name="view_all_chevron">View all &gt;</string>
     <string name="saved_routes">Saved routes</string>
     <string name="no_saved_routes">No saved routes yet</string>
+    <string name="delete_saved_route">Remove saved route</string>
+    <string name="open_saved_route">Open saved route</string>
     <string name="transport_modes">Transport Modes</string>
     <string name="tube_rail">Tube &amp; Rail</string>
     <string name="buses">Buses</string>

@@ -3,6 +3,6 @@
 
 sdk.dir=/path/to/Android/Sdk
 
-MAPS_API_KEY=your_google_maps_key
+# Route preview map uses OpenStreetMap embed in-app (no map API key).
 TFL_APP_KEY=your_tfl_app_key
 RAIL_ACCESS_TOKEN=your_national_rail_openldbws_token

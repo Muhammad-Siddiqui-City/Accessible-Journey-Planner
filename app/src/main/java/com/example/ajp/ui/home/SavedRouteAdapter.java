@@ -3,6 +3,8 @@ package com.example.ajp.ui.home;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,19 +15,28 @@ import java.util.List;
 
 /**
  * Adapter for the Saved Routes list on Home.
- * PURPOSE: Display saved routes (summary, relative time); on tap opens RouteDetailsActivity with EXTRA_FROM_OFFLINE.
+ * PURPOSE: Display saved routes (summary, relative time); tap row opens details; delete removes from Room.
  */
 public class SavedRouteAdapter extends RecyclerView.Adapter<SavedRouteAdapter.ViewHolder> {
 
     private List<SavedRouteEntity> items = List.of();
     private OnSavedRouteClickListener listener;
+    private OnSavedRouteDeleteListener deleteListener;
 
     public interface OnSavedRouteClickListener {
         void onSavedRouteClick(SavedRouteEntity entity);
     }
 
+    public interface OnSavedRouteDeleteListener {
+        void onSavedRouteDelete(SavedRouteEntity entity);
+    }
+
     public void setOnSavedRouteClickListener(OnSavedRouteClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setOnSavedRouteDeleteListener(OnSavedRouteDeleteListener listener) {
+        this.deleteListener = listener;
     }
 
     public void submitList(List<SavedRouteEntity> list) {
@@ -46,9 +57,18 @@ public class SavedRouteAdapter extends RecyclerView.Adapter<SavedRouteAdapter.Vi
         String summary = entity.summary != null ? entity.summary : "";
         holder.tvSummary.setText(summary.isEmpty() ? "—" : summary);
         holder.tvTime.setText(TimeFormatUtil.formatRelativeTime(entity.timestamp));
-        holder.itemView.setOnClickListener(v -> {
+
+        View.OnClickListener openDetails = v -> {
             if (listener != null && entity.routeItem != null) {
                 listener.onSavedRouteClick(entity);
+            }
+        };
+        holder.textBlock.setOnClickListener(openDetails);
+        holder.chevron.setOnClickListener(openDetails);
+
+        holder.btnDelete.setOnClickListener(v -> {
+            if (deleteListener != null) {
+                deleteListener.onSavedRouteDelete(entity);
             }
         });
     }
@@ -59,12 +79,18 @@ public class SavedRouteAdapter extends RecyclerView.Adapter<SavedRouteAdapter.Vi
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvSummary, tvTime;
+        final View textBlock;
+        final TextView tvSummary, tvTime;
+        final ImageButton btnDelete;
+        final ImageView chevron;
 
         ViewHolder(View itemView) {
             super(itemView);
+            textBlock = itemView.findViewById(R.id.saved_route_text_block);
             tvSummary = itemView.findViewById(R.id.tv_saved_route_summary);
             tvTime = itemView.findViewById(R.id.tv_saved_route_time);
+            btnDelete = itemView.findViewById(R.id.btn_delete_saved_route);
+            chevron = itemView.findViewById(R.id.iv_saved_route_chevron);
         }
     }
 }

@@ -10,14 +10,17 @@
     android:gravity="center_vertical"
     android:background="@drawable/card_elevated"
     android:padding="16dp"
-    android:layout_marginBottom="8dp"
-    android:clickable="true"
-    android:focusable="true">
+    android:layout_marginBottom="8dp">
+    <!-- Tap here (or chevron) opens route; root stays non-clickable so delete gets touches reliably. -->
     <LinearLayout
+        android:id="@+id/saved_route_text_block"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true">
         <TextView
             android:id="@+id/tv_saved_route_summary"
             android:layout_width="wrap_content"
@@ -34,10 +37,29 @@
             android:textSize="12sp"
             android:textColor="?attr/ajp_muted_foreground" />
     </LinearLayout>
+    <!-- Remove from saved routes (does not open route details). -->
+    <ImageButton
+        android:id="@+id/btn_delete_saved_route"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/delete_saved_route"
+        android:padding="8dp"
+        android:src="@android:drawable/ic_menu_delete"
+        app:tint="?attr/ajp_muted_foreground" />
+
     <ImageView
+        android:id="@+id/iv_saved_route_chevron"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/open_saved_route"
+        android:padding="4dp"
         android:src="@android:drawable/ic_media_next"
-        android:contentDescription="@null"
         app:tint="?attr/ajp_muted_foreground" />
 </LinearLayout>

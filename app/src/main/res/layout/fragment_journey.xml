@@ -239,12 +239,13 @@
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/route_preview_card_bg"
                 android:clipChildren="false">
-            <ImageView
-                android:id="@+id/iv_route_map"
+            <!-- Leaflet + OSM tiles in WebView; line between points — see JourneyFragment.loadRouteMap -->
+            <WebView
+                android:id="@+id/wv_route_map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/route_preview" />
+                android:contentDescription="@string/route_preview"
+                android:nestedScrollingEnabled="true" />
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

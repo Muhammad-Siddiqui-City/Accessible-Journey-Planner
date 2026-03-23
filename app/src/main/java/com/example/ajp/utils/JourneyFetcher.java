@@ -82,11 +82,15 @@ public final class JourneyFetcher {
                 return FetchResult.fail("No routes found");
             }
 
-            LiftDisruptionChecker liftChecker = new LiftDisruptionChecker(appContext);
+            // Lift/station disruption checks only matter when user asked for step-free routing.
+            boolean stepFree = acc.isStepFree();
+            LiftDisruptionChecker liftChecker = stepFree ? new LiftDisruptionChecker(appContext) : null;
+            String userFrom = fromInput != null ? fromInput.trim() : "";
+            String userTo = toInput != null ? toInput.trim() : "";
             List<RouteItem> items = new ArrayList<>();
             int idx = 0;
             for (Journey j : body.getJourneys()) {
-                RouteItem item = mapJourneyToRouteItem(j, idx++, liftChecker, api);
+                RouteItem item = mapJourneyToRouteItem(j, idx++, liftChecker, api, userFrom, userTo);
                 if (item != null) {
                     items.add(item);
                 }
@@ -118,7 +122,8 @@ public final class JourneyFetcher {
         return m.getLat() + "," + m.getLon();
     }
 
-    private RouteItem mapJourneyToRouteItem(Journey journey, int index, LiftDisruptionChecker liftChecker, TflApi api) {
+    private RouteItem mapJourneyToRouteItem(Journey journey, int index, LiftDisruptionChecker liftChecker, TflApi api,
+                                            String userFrom, String userTo) {
         List<Leg> legs = journey.getLegs();
         if (legs == null || legs.isEmpty()) return null;
 
@@ -160,8 +165,11 @@ public final class JourneyFetcher {
 
         JourneyPlace firstDep = legs.get(0).getDeparturePoint();
         JourneyPlace lastArr = legs.get(legs.size() - 1).getArrivalPoint();
-        String fromName = firstDep != null ? firstDep.getCommonName() : "";
-        String toName = lastArr != null ? lastArr.getCommonName() : "";
+        // Stored labels = exactly what the user typed (saved routes, route details, list summary).
+        String fromName = firstDep != null && firstDep.getCommonName() != null ? firstDep.getCommonName().trim() : "";
+        String toName = lastArr != null && lastArr.getCommonName() != null ? lastArr.getCommonName().trim() : "";
+        if (!userFrom.isEmpty()) fromName = userFrom.trim();
+        if (!userTo.isEmpty()) toName = userTo.trim();
         String routeSummary = (fromName.isEmpty() && toName.isEmpty())
                 ? ""
                 : fromName + " → " + toName;
@@ -170,21 +178,23 @@ public final class JourneyFetcher {
 
         boolean liftIssue = false;
         String liftDetail = null;
-        for (Leg leg : legs) {
-            JourneyPlace dep = leg.getDeparturePoint();
-            if (dep != null && dep.getNaptanId() != null && !dep.getNaptanId().isEmpty()) {
-                if (liftChecker.hasLiftIssues(dep.getNaptanId(), api)) {
-                    liftIssue = true;
-                    liftDetail = appContext.getString(com.example.ajp.R.string.lift_disruption_warning);
-                    break;
+        if (liftChecker != null) {
+            for (Leg leg : legs) {
+                JourneyPlace dep = leg.getDeparturePoint();
+                if (dep != null && dep.getNaptanId() != null && !dep.getNaptanId().isEmpty()) {
+                    if (liftChecker.hasLiftIssues(dep.getNaptanId(), api)) {
+                        liftIssue = true;
+                        liftDetail = appContext.getString(com.example.ajp.R.string.lift_disruption_warning);
+                        break;
+                    }
                 }
-            }
-            JourneyPlace arr = leg.getArrivalPoint();
-            if (arr != null && arr.getNaptanId() != null && !arr.getNaptanId().isEmpty()) {
-                if (liftChecker.hasLiftIssues(arr.getNaptanId(), api)) {
-                    liftIssue = true;
-                    liftDetail = appContext.getString(com.example.ajp.R.string.lift_disruption_warning);
-                    break;
+                JourneyPlace arr = leg.getArrivalPoint();
+                if (arr != null && arr.getNaptanId() != null && !arr.getNaptanId().isEmpty()) {
+                    if (liftChecker.hasLiftIssues(arr.getNaptanId(), api)) {
+                        liftIssue = true;
+                        liftDetail = appContext.getString(com.example.ajp.R.string.lift_disruption_warning);
+                        break;
+                    }
                 }
             }
         }

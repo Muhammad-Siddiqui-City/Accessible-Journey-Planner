@@ -13,7 +13,10 @@ import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -189,96 +192,44 @@ public class JourneyFragment extends Fragment {
         }
     }
 
-    private String getGoogleMapsApiKey() {
-        try {
-            android.content.pm.ApplicationInfo app = requireContext().getPackageManager()
-                    .getApplicationInfo(requireContext().getPackageName(), android.content.pm.PackageManager.GET_META_DATA);
-            android.os.Bundle bundle = app.metaData;
-            String key = bundle != null ? bundle.getString("com.google.android.geo.API_KEY", "") : "";
-            Log.d(TAG, "MAP: API key present=" + (key != null && !key.isEmpty()));
-            return key;
-        } catch (Exception e) {
-            Log.e(TAG, "MAP: Failed to read API key", e);
-            return "";
-        }
+    /**
+     * Leaflet + OSM tiles inside the WebView: polyline between from/to + markers.
+     * WHY: OSM’s /export/embed.html has no “path” parameter; Leaflet draws the line we need without Google Maps.
+     * Circle markers avoid default pin image URLs breaking under loadDataWithBaseURL.
+     */
+    private static String buildRoutePreviewMapHtml(double sLat, double sLon, double eLat, double eLon) {
+        String a = String.format(Locale.US, "[%f,%f]", sLat, sLon);
+        String b = String.format(Locale.US, "[%f,%f]", eLat, eLon);
+        return "<!DOCTYPE html><html><head><meta charset=\"utf-8\"/>"
+                + "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/>"
+                + "<link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css\" crossorigin=\"\"/>"
+                + "<script src=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js\" crossorigin=\"\"></script>"
+                + "<style>html,body,#map{height:100%;margin:0;padding:0}</style></head><body>"
+                + "<div id=\"map\"></div><script>"
+                + "var a=" + a + ",b=" + b + ";"
+                + "var map=L.map('map',{zoomControl:false});"
+                + "L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,"
+                + "attribution:'&copy; OpenStreetMap'}).addTo(map);"
+                + "L.polyline([a,b],{color:'#00BFFF',weight:4,opacity:0.95}).addTo(map);"
+                + "L.circleMarker(a,{radius:7,fillColor:'#22c55e',color:'#fff',weight:2,fillOpacity:1}).addTo(map);"
+                + "L.circleMarker(b,{radius:7,fillColor:'#ef4444',color:'#fff',weight:2,fillOpacity:1}).addTo(map);"
+                + "if(a[0]===b[0]&&a[1]===b[1]){map.setView(a,15);}else{map.fitBounds(L.latLngBounds(a,b),{padding:[28,28],maxZoom:16});}"
+                + "</script></body></html>";
     }
 
     private void loadRouteMap(JourneyViewModel.MapCoords coords) {
         if (binding == null) return;
-        Log.d(TAG, "MAP: loadRouteMap coords=" + coords.startLat + "," + coords.startLon + " -> " + coords.endLat + "," + coords.endLon);
+        Log.d(TAG, "MAP: loadRouteMap leaflet coords=" + coords.startLat + "," + coords.startLon + " -> " + coords.endLat + "," + coords.endLon);
         binding.cvRoutePreview.setVisibility(View.VISIBLE);
-        String apiKey = getGoogleMapsApiKey();
-        if (apiKey == null || apiKey.isEmpty()) {
-            Log.w(TAG, "MAP: No API key, skipping map load");
-            return;
-        }
-        new Thread(() -> {
-            String pathParam;
-            String encodedPolyline = fetchDirectionsPolyline(apiKey, coords.startLat, coords.startLon, coords.endLat, coords.endLon);
-            if (encodedPolyline != null && !encodedPolyline.isEmpty()) {
-                pathParam = "path=weight:5|color:0x00BFFF|enc:" + encodedPolyline;
-                Log.d(TAG, "MAP: Using Directions polyline (real roads)");
-            } else {
-                pathParam = "path=weight:5|color:0x00BFFF|" + coords.startLat + "," + coords.startLon + "|" + coords.endLat + "," + coords.endLon;
-                Log.d(TAG, "MAP: Using straight line (Directions API failed)");
-            }
-            String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?size=600x300"
-                    + "&markers=color:green|label:A|" + coords.startLat + "," + coords.startLon
-                    + "&markers=color:red|label:B|" + coords.endLat + "," + coords.endLon
-                    + "&" + pathParam
-                    + "&key=" + apiKey;
-            Log.d(TAG, "MAP: Loading static map URL (truncated)...");
-            loadMapImage(mapUrl, binding.ivRouteMap);
-        }).start();
-    }
-
-    /** Fetches encoded polyline from Directions API for real road path; returns null on failure. */
-    private String fetchDirectionsPolyline(String apiKey, double startLat, double startLon, double endLat, double endLon) {
-        try {
-            String url = "https://maps.googleapis.com/maps/api/directions/json"
-                    + "?origin=" + startLat + "," + startLon
-                    + "&destination=" + endLat + "," + endLon
-                    + "&mode=driving"
-                    + "&key=" + apiKey;
-            Log.d(TAG, "MAP: Fetching Directions API...");
-            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-            conn.connect();
-            int status = conn.getResponseCode();
-            Log.d(TAG, "MAP: Directions API HTTP status=" + status);
-            java.io.InputStream is = status >= 200 && status < 300 ? conn.getInputStream() : conn.getErrorStream();
-            if (is == null) {
-                Log.e(TAG, "MAP: No response body");
-                return null;
-            }
-            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(is));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) sb.append(line);
-            reader.close();
-            conn.disconnect();
-            org.json.JSONObject json = new org.json.JSONObject(sb.toString());
-            String statusStr = json.optString("status", "");
-            Log.d(TAG, "MAP: Directions status=" + statusStr);
-            if (!"OK".equals(statusStr)) {
-                Log.w(TAG, "MAP: Directions API error: " + json.optString("error_message", statusStr));
-                return null;
-            }
-            org.json.JSONArray routes = json.optJSONArray("routes");
-            if (routes != null && routes.length() > 0) {
-                org.json.JSONObject polyline = routes.getJSONObject(0).optJSONObject("overview_polyline");
-                if (polyline != null) {
-                    String points = polyline.optString("points", "");
-                    Log.d(TAG, "MAP: Got polyline, length=" + points.length());
-                    return points;
-                }
-            }
-            Log.w(TAG, "MAP: No routes or polyline in response");
-        } catch (Exception e) {
-            Log.e(TAG, "MAP: Directions fetch failed", e);
-        }
-        return null;
+        WebView wv = binding.wvRouteMap;
+        WebSettings s = wv.getSettings();
+        s.setJavaScriptEnabled(true);
+        s.setDomStorageEnabled(true);
+        // OSM tile policy: identify the app when requesting tiles.
+        s.setUserAgentString("AccessibleJourneyPlanner/1.0 (Android; route preview)");
+        wv.setWebViewClient(new WebViewClient());
+        String html = buildRoutePreviewMapHtml(coords.startLat, coords.startLon, coords.endLat, coords.endLon);
+        wv.loadDataWithBaseURL("https://unpkg.com/", html, "text/html", "UTF-8", null);
     }
 
     private void updateDateTimeButtons() {
@@ -449,27 +400,6 @@ public class JourneyFragment extends Fragment {
         }
     }
 
-    private void loadMapImage(String url, ImageView imageView) {
-        new Thread(() -> {
-            try {
-                java.io.InputStream in = new java.net.URL(url).openStream();
-                final android.graphics.Bitmap bitmap = android.graphics.BitmapFactory.decodeStream(in);
-                in.close();
-                if (bitmap != null) {
-                    Log.d(TAG, "MAP: Bitmap loaded " + bitmap.getWidth() + "x" + bitmap.getHeight());
-                    imageView.post(() -> {
-                        imageView.setImageBitmap(bitmap);
-                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    });
-                } else {
-                    Log.e(TAG, "MAP: Bitmap decode returned null - check URL or API key");
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "MAP: loadMapImage failed", e);
-            }
-        }).start();
-    }
-
     /** Updates the displayed time every minute when the selected time is today and not in the future. */
     private void startMinuteTick() {
         if (minuteTickHandler == null) minuteTickHandler = new Handler(Looper.getMainLooper());
@@ -503,6 +433,14 @@ public class JourneyFragment extends Fragment {
         if (binding != null) {
             binding.origin.removeTextChangedListener(saveOriginWatcher);
             binding.destination.removeTextChangedListener(saveDestinationWatcher);
+            WebView wv = binding.wvRouteMap;
+            if (wv != null) {
+                wv.stopLoading();
+                wv.loadUrl("about:blank");
+                ViewGroup parent = (ViewGroup) wv.getParent();
+                if (parent != null) parent.removeView(wv);
+                wv.destroy();
+            }
         }
         super.onDestroyView();
         binding = null;

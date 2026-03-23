@@ -120,29 +120,20 @@ public class JourneyViewModel extends AndroidViewModel {
                         RouteItem firstRoute = items.get(0);
                         List<Leg> legs = firstRoute.getLegs();
                         if (legs != null && !legs.isEmpty()) {
-                            // Prefer user's typed origin when API returns "Destination" (e.g. walk leg)
-                            String rawFrom = legs.get(0).getDeparturePoint() != null
-                                    ? sanitizeStationName(legs.get(0).getDeparturePoint().getCommonName()) : "";
-                            String fromName = "Destination".equals(rawFrom) ? fromInput : (rawFrom.isEmpty() ? fromInput : rawFrom);
-                    Leg lastLeg = legs.get(legs.size() - 1);
-                            // Use user's typed destination when API returns "Destination" (walk leg) or when it's a UK postcode
-                            String rawTo = lastLeg.getArrivalPoint() != null
-                                    ? sanitizeStationName(lastLeg.getArrivalPoint().getCommonName()) : "";
-                            String toName = "Destination".equals(rawTo) || rawTo.isEmpty()
-                                    ? toInput.trim()
-                                    : (looksLikeUkPostcode(toInput) ? toInput.trim() : rawTo);
+                            Leg lastLeg = legs.get(legs.size() - 1);
                             int transfers = firstRoute.getTransfersCount();
                             String summary = TimeFormatUtil.formatMinutesToHourMin(firstRoute.getDurationMinutesInt()) + " • "
-                            + transfers + (transfers == 1 ? " transfer" : " transfers");
-                    routePreviewFrom.postValue(fromName);
-                    routePreviewTo.postValue(toName);
-                    routePreviewSummary.postValue(summary);
-                    JourneyPlace dep = legs.get(0).getDeparturePoint();
-                    JourneyPlace arr = lastLeg.getArrivalPoint();
-                    if (dep != null && arr != null) {
-                        routePreviewMapCoords.postValue(new MapCoords(
-                                dep.getLat(), dep.getLon(), arr.getLat(), arr.getLon()));
-                    }
+                                    + transfers + (transfers == 1 ? " transfer" : " transfers");
+                            // Map overlay: always show exactly what the user typed in From/To fields.
+                            routePreviewFrom.postValue(fromInput);
+                            routePreviewTo.postValue(toInput);
+                            routePreviewSummary.postValue(summary);
+                            JourneyPlace dep = legs.get(0).getDeparturePoint();
+                            JourneyPlace arr = lastLeg.getArrivalPoint();
+                            if (dep != null && arr != null) {
+                                routePreviewMapCoords.postValue(new MapCoords(
+                                        dep.getLat(), dep.getLon(), arr.getLat(), arr.getLon()));
+                            }
                         }
                     }
 
@@ -161,21 +152,4 @@ public class JourneyViewModel extends AndroidViewModel {
         }).start();
     }
 
-    /** True if the string looks like a UK postcode (e.g. sw15 5le, SW15 5LE). */
-    private static boolean looksLikeUkPostcode(String s) {
-        if (s == null || s.length() < 5) return false;
-        String t = s.trim().toUpperCase().replaceAll("\\s+", " ");
-        return t.matches("[A-Z]{1,2}[0-9][0-9A-Z]?\\s*[0-9][A-Z]{2}");
-    }
-
-    /**
-     * Sanitizes station/place names returned by TfL API.
-     * Replaces debug text like "walk inside building" with user-friendly names.
-     */
-    private static String sanitizeStationName(String rawName) {
-        if (rawName == null || rawName.trim().isEmpty()) return "";
-        String cleaned = rawName.trim();
-        if (cleaned.toLowerCase().contains("walk inside building")) return "Destination";
-        return cleaned;
-    }
 }

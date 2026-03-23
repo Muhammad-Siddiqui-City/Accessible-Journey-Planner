@@ -8,7 +8,6 @@ def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
     localPropertiesFile.withInputStream { localProperties.load(it) }
 }
-def mapsApiKey = localProperties.getProperty('MAPS_API_KEY', '') ?: ''
 def tflAppKey = localProperties.getProperty('TFL_APP_KEY', '') ?: ''
 def railAccessToken = localProperties.getProperty('RAIL_ACCESS_TOKEN', '') ?: ''
 
@@ -21,7 +20,6 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
-        manifestPlaceholders = [ MAPS_API_KEY: mapsApiKey ]
         buildConfigField 'String', 'TFL_APP_KEY', '"' + tflAppKey.replace('"', '\\"') + '"'
         buildConfigField 'String', 'RAIL_ACCESS_TOKEN', '"' + railAccessToken.replace('"', '\\"') + '"'
     }
