@@ -3,11 +3,14 @@ package com.example.ajp.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+
+
+
+
+
+
 /**
- * SharedPreferences for app settings. Add in Commit 5.
- * PURPOSE: Dark mode, high contrast, large text, TTS, language, disruption/crowding toggles.
- * WHY: Single prefs file; used by AjpApplication (dark), LocaleHelper (language, large text), SettingsFragment.
- * ISSUES: setLanguage uses commit() so value is written before Activity.recreate(); apply() would be async.
+ * Utility class for SettingsPrefs.
  */
 public class SettingsPrefs {
 
@@ -48,7 +51,7 @@ public class SettingsPrefs {
     public boolean isTtsEnabled() { return prefs.getBoolean(KEY_TTS, false); }
     public void setTtsEnabled(boolean on) { prefs.edit().putBoolean(KEY_TTS, on).apply(); }
 
-    /** Default false so notifications are off until the user opts in. */
+
     public boolean isDisruptionAlerts() { return prefs.getBoolean(KEY_DISRUPTION_ALERTS, false); }
     public void setDisruptionAlerts(boolean on) { prefs.edit().putBoolean(KEY_DISRUPTION_ALERTS, on).apply(); }
 
@@ -62,8 +65,9 @@ public class SettingsPrefs {
         String v = prefs.getString(KEY_LANGUAGE, LANG_EN_GB);
         return v != null ? v.trim() : LANG_EN_GB;
     }
-    /** Uses commit() so the value is written before activity recreate(); apply() is async and would be too late. */
+
     public void setLanguage(String lang) {
         prefs.edit().putString(KEY_LANGUAGE, lang != null ? lang.trim() : LANG_EN_GB).commit();
     }
 }
+

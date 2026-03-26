@@ -22,11 +22,14 @@ import com.example.ajp.ui.settings.SettingsFragment;
 import com.example.ajp.utils.LocaleHelper;
 import com.example.ajp.utils.SettingsPrefs;
 
+
+
+
+
+
+
 /**
- * Main Activity; bottom nav (Home, Journeys, Analytics, Settings). Add in Commit 7.
- * PURPOSE: Host fragments; apply locale in attachBaseContext; handle nav item IDs (navigation_home etc.).
- * WHY: Single Activity; getFragmentForItem must use same IDs as menu or wrong fragment loads (e.g. Analytics opened Settings).
- * ISSUES: Menu IDs were nav_home etc.; changed to navigation_home to match and fix wrong-tab bug.
+ * Activity that hosts the Main flow.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -88,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    /** Called by HomeFragment after getting location; shows Nearby Stations with lat/lon. */
+
     public void showNearbyStationsFragment(double lat, double lon) {
         Fragment fragment = NearbyStationsFragment.newInstance(lat, lon);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    /** Called from Home (voice/text search); shows station search results for the query. */
+
     public void showStationSearchFragment(String query) {
         Fragment fragment = StationSearchFragment.newInstance(query != null ? query.trim() : "");
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    /** Called when a stop is clicked in Nearby Stations; shows Live Arrivals for that stop. */
+
     public void showLiveArrivalsFragment(String stopId, String stopName) {
         Fragment fragment = LiveArrivalsFragment.newInstance(stopId, stopName);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    /** Called from Home (Popular Stations card); fixed list of stations, then user picks one for train times. */
+
     public void showPopularStationsFragment() {
         Fragment fragment = new PopularStationsFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -124,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    /** Called from Popular Stations list after TfL resolves stop id; shows to/from trains (max 5 each). */
+
     public void showStationTrainsFragment(String stopId, String stopName) {
         Fragment fragment = StationTrainsFragment.newInstance(stopId, stopName);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -133,21 +136,21 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    /** Called by HomeFragment to switch to Journeys tab (e.g. from search bar). */
+
     public void switchToJourneysTab() {
         selectedItemId = R.id.navigation_journeys;
         binding.bottomNavigation.setSelectedItemId(selectedItemId);
         showFragment(new JourneyFragment());
     }
 
-    /** Called by JourneyFragment to switch to Home tab (e.g. from offline banner). */
+
     public void switchToHomeTab() {
         selectedItemId = R.id.navigation_home;
         binding.bottomNavigation.setSelectedItemId(selectedItemId);
         showFragment(new HomeFragment());
     }
 
-    /** Called when user selects a Place from search (id is "lat,lon"). Switches to Journeys and sets destination. */
+
     public void switchToJourneysWithDestination(String coords, String displayName) {
         JourneyViewModel jvm = new ViewModelProvider(this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())).get(JourneyViewModel.class);
@@ -158,9 +161,10 @@ public class MainActivity extends AppCompatActivity {
         showFragment(new JourneyFragment());
     }
 
-    /** Called after a background route re-check (e.g. from Settings) when options may have changed. */
+
     public void checkAndHandleRouteChange() {
-        // Optional: show in-app banner or deep-link to Journey; placeholder for viva simplicity.
+
     }
 
 }
+

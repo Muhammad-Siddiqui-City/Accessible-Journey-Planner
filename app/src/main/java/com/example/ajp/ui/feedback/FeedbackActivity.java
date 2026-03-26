@@ -15,14 +15,17 @@ import com.example.ajp.ui.main.MainActivity;
 import com.example.ajp.utils.LocaleHelper;
 import com.example.ajp.utils.SettingsPrefs;
 
+
+
+
+
+
+
+
+
 /**
- * Feedback screen (rating, comment). Add in Commit 16.
- * PURPOSE: Placeholder feedback form; apply locale and high-contrast theme; back to MainActivity.
- * WHY: Linked from Settings; no backend – local only per project rules.
- * ISSUES: None.
+ * Activity that hosts the Feedback flow.
  */
-// AI Generated
-// Built with Claude
 public class FeedbackActivity extends AppCompatActivity {
 
     private ActivityFeedbackBinding binding;
@@ -100,7 +103,7 @@ public class FeedbackActivity extends AppCompatActivity {
         binding.star5.setAlpha(r >= 5 ? 1f : 0.3f);
     }
 
-    /** Opens email chooser with feedback pre-filled to muhammad.siddiqui.2@city.ac.uk */
+
     private void sendFeedbackEmail() {
         String issueType = "";
         Object selected = binding.issueTypeSpinner.getSelectedItem();
@@ -128,3 +131,4 @@ public class FeedbackActivity extends AppCompatActivity {
         binding = null;
     }
 }
+

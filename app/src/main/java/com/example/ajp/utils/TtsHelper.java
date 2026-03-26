@@ -5,11 +5,14 @@ import android.speech.tts.TextToSpeech;
 import androidx.annotation.NonNull;
 import java.util.Locale;
 
+
+
+
+
+
+
 /**
- * Reusable Text-to-Speech helper for spoken alerts.
- * PURPOSE: Centralises TTS logic; respects SettingsPrefs.isTtsEnabled(); used by LiveArrivals, RouteDetails, Home (disruptions).
- * WHY: Avoid duplicate TTS init/shutdown code; consistent locale and queue behaviour across screens.
- * ISSUES: Caller must call shutdown() when done (e.g. in onDestroyView) to release TTS engine.
+ * Utility class for TtsHelper.
  */
 public class TtsHelper {
 
@@ -25,19 +28,19 @@ public class TtsHelper {
         this.context = context.getApplicationContext();
     }
 
-    /**
-     * Speak a phrase if TTS is enabled. Uses QUEUE_FLUSH by default (interrupts previous).
-     */
+
+
+
     public void speak(@NonNull String phrase) {
         speak(phrase, QUEUE_FLUSH);
     }
 
-    /**
-     * Speak a phrase if TTS is enabled.
-     *
-     * @param phrase Text to speak.
-     * @param mode   QUEUE_FLUSH to interrupt, QUEUE_ADD to append.
-     */
+
+
+
+
+
+
     public void speak(@NonNull String phrase, int mode) {
         if (phrase.trim().isEmpty()) return;
         if (!SettingsPrefs.get(context).isTtsEnabled()) return;
@@ -60,9 +63,9 @@ public class TtsHelper {
         }
     }
 
-    /**
-     * Stop any current or queued speech.
-     */
+
+
+
     public void stop() {
         if (tts != null) {
             tts.stop();
@@ -70,9 +73,9 @@ public class TtsHelper {
         pendingPhrase = null;
     }
 
-    /**
-     * Shutdown the TTS engine. Call from onDestroyView or onDestroy.
-     */
+
+
+
     public void shutdown() {
         if (tts != null) {
             tts.stop();
@@ -82,10 +85,11 @@ public class TtsHelper {
         pendingPhrase = null;
     }
 
-    /**
-     * Returns whether TTS is enabled in settings.
-     */
+
+
+
     public boolean isTtsEnabled() {
         return SettingsPrefs.get(context).isTtsEnabled();
     }
 }
+

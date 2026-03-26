@@ -1,10 +1,13 @@
 package com.example.ajp.ui.arrivals;
 
+
+
+
+
+
+
 /**
- * UI model for one arrival. Add in Commit 10.
- * PURPOSE: lineName, destinationName, platformName, timeToStationSeconds, modeName; from TfL or NationalRailApi.
- * WHY: ArrivalsAdapter displays these; timeToStationSeconds shown with TimeFormatUtil when >= 60 (minutes).
- * ISSUES: None.
+ * UI model/helper used by the Arrival feature.
  */
 public class Arrival {
 
@@ -28,3 +31,4 @@ public class Arrival {
     public int getTimeToStationSeconds() { return timeToStationSeconds; }
     public String getModeName() { return modeName; }
 }
+

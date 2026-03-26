@@ -15,11 +15,14 @@ import com.example.ajp.databinding.FragmentStationSearchBinding;
 import com.example.ajp.ui.main.MainActivity;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Search results for station/place name. Add in Commit 8; place handling in Commit 14.
- * PURPOSE: searchStopsByName (TfL + PlaceSearch); show results; station click → Live Arrivals; place click → MainActivity.switchToJourneysWithDestination(stopId, name).
- * WHY: StopsViewModel.searchStopsByName(context, query) merges stations and places; stopId "lat,lon" identifies place for journey destination.
- * ISSUES: Pass requireContext() to searchStopsByName; place click does not open arrivals (no TfL/NR for places).
+ * UI fragment for the StationSearch screen.
  */
 public class StationSearchFragment extends Fragment {
 
@@ -48,14 +51,9 @@ public class StationSearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(StopsViewModel.class);
-        adapter = new NearbyStationsAdapter((stopId, stopName) -> {
+        adapter = new NearbyStationsAdapter((stopId, stopName, stopLetter) -> {
             if (getActivity() instanceof MainActivity) {
-                MainActivity ma = (MainActivity) getActivity();
-                if (stopId != null && stopId.contains(",")) {
-                    ma.switchToJourneysWithDestination(stopId, stopName);
-                } else {
-                    ma.showLiveArrivalsFragment(stopId, stopName);
-                }
+                ((MainActivity) getActivity()).showLiveArrivalsFragment(stopId, formatNameWithStopLetter(stopName, stopLetter));
             }
         });
 
@@ -96,4 +94,12 @@ public class StationSearchFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+    private static String formatNameWithStopLetter(String stopName, String stopLetter) {
+        String name = stopName != null ? stopName.trim() : "";
+        String letter = stopLetter != null ? stopLetter.replace("->", "").trim() : "";
+        if (name.isEmpty() || letter.isEmpty()) return name;
+        return name + " (Stop " + letter + ")";
+    }
 }
+

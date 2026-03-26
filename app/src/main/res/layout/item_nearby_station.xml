@@ -97,4 +97,5 @@
             android:textStyle="bold"
             android:visibility="gone" />
     </LinearLayout>
+
 </LinearLayout>

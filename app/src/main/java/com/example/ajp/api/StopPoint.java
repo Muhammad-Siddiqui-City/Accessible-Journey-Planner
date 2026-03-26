@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+
+
+
+
+
+
+
 /**
- * Single stop point from TfL API. Add in Commit 2 (API DTOs).
- * PURPOSE: Nearby stop with id, name, distance, lines, stopType; children for NR platforms.
- * WHY: getNearbyBuses/getNearbyTrains return StopPointResponse of these; hasNationalRailMode
- *      used to decide National Rail fallback (Commit 9).
- * ISSUES: getNaptanId() falls back to id if naptanId null; children may be platform-level.
+ * DTO used to parse API payloads for StopPoint.
  */
 public class StopPoint {
 
@@ -49,18 +52,18 @@ public class StopPoint {
     public boolean isRailStation() { return STOP_TYPE_RAIL.equals(stopType); }
     public List<StopPoint> getChildren() { return children != null ? children : java.util.Collections.emptyList(); }
     public List<AdditionalProperty> getAdditionalProperties() { return additionalProperties != null ? additionalProperties : java.util.Collections.emptyList(); }
-    
-    /**
-     * Gets the number of lifts at this station from additionalProperties.
-     * Returns -1 if lift information is not available (should not mark as problematic).
-     * Returns 0 if explicitly set to 0 (no lifts - problematic).
-     * Returns positive number if lifts are available.
-     * Uses live data from TfL API.
-     */
+
+
+
+
+
+
+
+
     public int getLiftCount() {
         if (additionalProperties == null) {
             android.util.Log.d("StopPoint", "getLiftCount: additionalProperties is null for station " + getCommonName() + " - returning -1 (no info)");
-            return -1; // No information available - don't mark as problematic
+            return -1;
         }
         android.util.Log.d("StopPoint", "getLiftCount: Checking " + additionalProperties.size() + " additional properties for station " + getCommonName());
         for (AdditionalProperty prop : additionalProperties) {
@@ -72,29 +75,29 @@ public class StopPoint {
                         if (value != null && !value.trim().isEmpty()) {
                             int count = Integer.parseInt(value.trim());
                             android.util.Log.d("StopPoint", "getLiftCount: Found lift count=" + count + " for station " + getCommonName());
-                            return count; // Explicit value (0 = no lifts, >0 = has lifts)
+                            return count;
                         }
                     } catch (NumberFormatException e) {
                         android.util.Log.w("StopPoint", "getLiftCount: Failed to parse lift value: " + prop.getValue() + " - returning -1 (no info)");
-                        return -1; // Can't parse - assume no info
+                        return -1;
                     }
                 }
             }
         }
         android.util.Log.d("StopPoint", "getLiftCount: No lift property found for station " + getCommonName() + " - returning -1 (no info)");
-        return -1; // Property doesn't exist - no information available, don't mark as problematic
+        return -1;
     }
-    
-    /**
-     * Checks if this station explicitly has no lifts (lift count is 0) or AccessViaLift=No.
-     * Returns false if lift information is not available.
-     */
+
+
+
+
+
     public boolean hasNoLifts() {
-        // Check for explicit lift count of 0
+
         int count = getLiftCount();
         if (count == 0) return true;
-        
-        // Also check for AccessViaLift=No property (indicates no lift access)
+
+
         if (additionalProperties != null) {
             for (AdditionalProperty prop : additionalProperties) {
                 if (prop != null && "Accessibility".equals(prop.getCategory()) && "AccessViaLift".equals(prop.getKey())) {
@@ -105,10 +108,10 @@ public class StopPoint {
                 }
             }
         }
-        
-        return false; // No info or has lifts
+
+        return false;
     }
-    
+
     public boolean hasNationalRailMode() {
         if (modes == null) return false;
         for (String m : modes) {
@@ -119,9 +122,9 @@ public class StopPoint {
 
     private static final Pattern THREE_LETTER = Pattern.compile("^[A-Za-z]{3}$");
 
-    /**
-     * When TfL includes a 3-letter CRS in additionalProperties (not all stops have this).
-     */
+
+
+
     public String getCrsFromAdditionalProperties() {
         if (additionalProperties == null) return null;
         for (AdditionalProperty p : additionalProperties) {
@@ -140,10 +143,10 @@ public class StopPoint {
         return null;
     }
 
-    /**
-     * Additional property from TfL API (e.g., Facility information like lift count).
-     * Used to parse additionalProperties array from StopPoint responses.
-     */
+
+
+
+
     public static class AdditionalProperty {
         @SerializedName("category")
         private String category;
@@ -157,3 +160,4 @@ public class StopPoint {
         public String getValue() { return value != null ? value : ""; }
     }
 }
+

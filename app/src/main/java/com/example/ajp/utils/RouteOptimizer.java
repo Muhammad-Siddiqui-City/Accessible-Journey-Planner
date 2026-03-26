@@ -4,11 +4,14 @@ import com.example.ajp.ui.journey.RouteItem;
 import java.util.Collections;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Sorts journey options by strategy. Add in Commit 11.
- * PURPOSE: Rank TfL journey results by FASTEST, FEWEST_TRANSFERS, LEAST_WALKING, LEAST_CROWDED; lower score = better.
- * WHY: Does not recalculate paths; only reorders; first item gets "BEST" badge in RouteAdapter.
- * ISSUES: None.
+ * Utility class for RouteOptimizer.
  */
 public class RouteOptimizer {
 
@@ -19,11 +22,11 @@ public class RouteOptimizer {
         LEAST_CROWDED
     }
 
-    /**
-     * Calculates a "Pain Score" for a route (lower is better).
-     * Base score is journey time; strategy adds weighted penalties.
-     * When avoidCrowded is true, crowded routes get a large penalty so they sort to the bottom.
-     */
+
+
+
+
+
     private static double calculateScore(RouteItem route, Strategy strategy, boolean avoidCrowded) {
         double score = route.getDurationMinutesInt();
 
@@ -58,17 +61,17 @@ public class RouteOptimizer {
         return score;
     }
 
-    /**
-     * Sorts routes in place by the given strategy. First item becomes "best".
-     * When avoidCrowded is true, crowded routes are placed at the bottom of the list.
-     */
+
+
+
+
     public static void sortRoutes(List<RouteItem> routes, Strategy strategy) {
         sortRoutes(routes, strategy, false);
     }
 
-    /**
-     * Sorts routes in place. When avoidCrowded is true, high/medium crowding routes sort to the bottom.
-     */
+
+
+
     public static void sortRoutes(List<RouteItem> routes, Strategy strategy, boolean avoidCrowded) {
         if (routes == null || routes.isEmpty()) return;
 
@@ -79,3 +82,4 @@ public class RouteOptimizer {
         });
     }
 }
+

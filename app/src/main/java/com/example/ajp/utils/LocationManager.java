@@ -10,14 +10,17 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.Task;
 
+
+
+
+
+
+
+
+
 /**
- * Current location with timeout and fallback. Add in Commit 8 (nearby) or when first needed.
- * PURPOSE: getCurrentLocation(callback) with 5s timeout; fallback to London if denied/timeout.
- * WHY: Nearby stops need lat/lon; FusedLocationProviderClient; PermissionManager for checks.
- * ISSUES: Run on background; post result on main thread for UI.
+ * Utility class for LocationManager.
  */
-// AI Generated
-// Built with Claude
 public class LocationManager {
 
     private static final double FALLBACK_LAT = 51.5072;
@@ -51,9 +54,9 @@ public class LocationManager {
         void onLocationFailed();
     }
 
-    /**
-     * Gets current location; on timeout or failure uses London fallback and still calls onLocationReceived.
-     */
+
+
+
     public void getCurrentLocation(LocationCallback callback) {
         if (!permissionManager.checkLocationPermission(appContext)) {
             callback.onLocationFailed();
@@ -85,3 +88,4 @@ public class LocationManager {
         });
     }
 }
+

@@ -8,23 +8,26 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+
+
+
+
+
+
 /**
- * TfL NaPTAN ID → National Rail CRS mapping. Add in Commit 9 with NationalRailApi.
- * PURPOSE: Map stop IDs (e.g. 910GBARNES) to 3-letter CRS (BNS) for GetDepartureBoard.
- * WHY: OpenLDBWS requires CRS; TfL uses NaPTAN; static map + name fallback for unknown IDs.
- * ISSUES: Add entries for major London hubs; name matching uses longest substring first to avoid wrong hub.
+ * Utility class for CrsLookup.
  */
 public class CrsLookup {
 
     private static final Map<String, String> tflToCrs = new HashMap<>();
     private static final Map<String, String> nameToCrs = new HashMap<>();
-    /** TfL HUB* stop ids from search → National Rail CRS. */
+
     private static final Map<String, String> hubToCrs = new HashMap<>();
 
     static {
         tflToCrs.put("910GWATERLOO", "WAT");
         tflToCrs.put("910GCLJ", "CLJ");
-        // Clapham Junction: TfL uses platform-style ids (not only 910GCLJ).
+
         tflToCrs.put("910GCLPHMJ1", "CLJ");
         tflToCrs.put("910GCLPHMJ2", "CLJ");
         tflToCrs.put("910GCLPHM", "CLJ");
@@ -40,7 +43,7 @@ public class CrsLookup {
         tflToCrs.put("910GKNGX", "KGX");
         tflToCrs.put("910GWIMBLEDON", "WIM");
 
-        // Major London terminals / interchanges (TfL rail NaPTAN — see tfl.gov.uk stop URLs)
+
         tflToCrs.put("910GLIVST", "LST");
         tflToCrs.put("910GPADTON", "PAD");
         tflToCrs.put("910GVICT", "VIC");
@@ -61,13 +64,13 @@ public class CrsLookup {
         tflToCrs.put("910GBONDST", "BDS");
         tflToCrs.put("910GTOTCTRD", "TCR");
         tflToCrs.put("910GWHCHPL", "WHC");
-        // Farringdon: National Rail CRS is ZFD (not FDC). Elizabeth + Thameslink use same CRS.
+
         tflToCrs.put("910GFRNDXR", "ZFD");
         tflToCrs.put("910GFRNDNLT", "ZFD");
         tflToCrs.put("910GFARIND", "ZFD");
         tflToCrs.put("910GFARRING", "ZFD");
 
-        // Tube / interchange NaPTAN (940GZZ…) → nearest National Rail CRS for departure boards
+
         tflToCrs.put("940GZZLUWLO", "WAT");
         tflToCrs.put("940GZZLUVIC", "VIC");
         tflToCrs.put("940GZZLULVT", "LST");
@@ -80,14 +83,14 @@ public class CrsLookup {
         tflToCrs.put("940GZZLUCST", "CST");
         tflToCrs.put("940GZZLUCHX", "CHX");
         tflToCrs.put("940GZZLUSTR", "SRA");
-        // Bond Street tube is 940GZZLUBND (not LUBDS).
+
         tflToCrs.put("940GZZLUBND", "BDS");
         tflToCrs.put("940GZZLUTCR", "TCR");
         tflToCrs.put("940GZZLUWHT", "WHC");
         tflToCrs.put("940GZZLUCRD", "ECR");
         tflToCrs.put("940GZZLUFCN", "ZFD");
 
-        // TfL hub ids (search often returns these) → CRS for NR boards
+
         hubToCrs.put("HUBKGX", "KGX");
         hubToCrs.put("HUBLST", "LST");
         hubToCrs.put("HUBPAD", "PAD");
@@ -106,7 +109,7 @@ public class CrsLookup {
         hubToCrs.put("HUBWHC", "WHC");
         hubToCrs.put("HUBZFD", "ZFD");
 
-        // nameToCrs: keys must be lowercase; longest match wins in getCrsFromName
+
         nameToCrs.put("barnes", "BNS");
         nameToCrs.put("barnes rail station", "BNS");
         nameToCrs.put("london waterloo", "WAT");
@@ -158,7 +161,7 @@ public class CrsLookup {
         nameToCrs.put("london liverpool street rail station", "LST");
     }
 
-    /** Returns CRS code for TfL NaPTAN id, or null if not found. Handles URL format and case. */
+
     public static String getCrs(String tflId) {
         if (tflId == null || tflId.trim().isEmpty()) return null;
         String id = normalizeId(tflId.trim());
@@ -174,9 +177,9 @@ public class CrsLookup {
         return tflToCrs.get(id.toLowerCase(Locale.UK));
     }
 
-    /**
-     * Normalizes TfL common names so substring CRS matching works (e.g. strips mode suffixes).
-     */
+
+
+
     public static String normalizeForCrsLookup(String commonName) {
         if (commonName == null) return "";
         String n = commonName.trim().toLowerCase(Locale.UK);
@@ -193,7 +196,7 @@ public class CrsLookup {
         return n.trim();
     }
 
-    /** CRS from station common name (e.g. "Barnes Rail Station" -> BNS). Longest key match wins. */
+
     public static String getCrsFromName(String commonName) {
         if (commonName == null || commonName.isEmpty()) return null;
         String crs = getCrsFromNameInternal(normalizeForCrsLookup(commonName));
@@ -213,7 +216,7 @@ public class CrsLookup {
         return null;
     }
 
-    /** Extract naptan id from URL or return as-is. */
+
     private static String normalizeId(String id) {
         if (id.contains("/")) {
             int last = id.lastIndexOf('/');
@@ -224,3 +227,4 @@ public class CrsLookup {
         return id;
     }
 }
+

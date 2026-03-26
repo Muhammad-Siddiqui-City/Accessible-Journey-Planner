@@ -4,11 +4,14 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Single leg of a journey (walk, bus, tube, etc). Add in Commit 2 (API DTOs).
- * PURPOSE: One segment of a journey; Serializable for passing in intents.
- * WHY: TfL returns legs array; duration here is in SECONDS (unlike Journey.duration which is minutes).
- * ISSUES: When displaying leg duration, divide by 60 for minutes then use TimeFormatUtil.
+ * DTO used to parse API payloads for Leg.
  */
 public class Leg implements Serializable {
 
@@ -36,3 +39,4 @@ public class Leg implements Serializable {
     public void setCrowding(Crowding crowding) { this.crowding = crowding; }
     public int getDuration() { return duration != null ? duration : 0; }
 }
+

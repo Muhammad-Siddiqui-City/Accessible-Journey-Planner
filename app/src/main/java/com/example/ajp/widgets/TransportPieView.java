@@ -10,8 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.ajp.R;
 
+
+
+
 /**
- * Simple pie/donut chart for Transport Modes. Mock data: Tube 65%, Bus 20%, Overground 10%, Elizabeth 5%.
+ * Custom view for rendering TransportPie content.
  */
 public class TransportPieView extends View {
 
@@ -62,7 +65,8 @@ public class TransportPieView extends View {
         paint.setColor(ContextCompat.getColor(getContext(), R.color.card));
         float cx = rect.centerX();
         float cy = rect.centerY();
-        float innerRadius = (rect.width() / 2f) * 0.5f; // 50% hole radius for donut look
+        float innerRadius = (rect.width() / 2f) * 0.5f;
         canvas.drawCircle(cx, cy, innerRadius, paint);
     }
 }
+

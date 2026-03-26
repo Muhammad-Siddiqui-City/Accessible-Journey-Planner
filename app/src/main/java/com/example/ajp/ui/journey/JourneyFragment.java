@@ -2,10 +2,12 @@ package com.example.ajp.ui.journey;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.text.Editable;
@@ -18,6 +20,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -34,18 +38,22 @@ import com.example.ajp.utils.NetworkMonitor;
 import com.example.ajp.utils.PermissionManager;
 import com.example.ajp.utils.SettingsPrefs;
 import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
+
+
+
+
+
 /**
- * Journey plan tab: from/to fields, date/time, find routes, route list. Add in Commit 11.
- * PURPOSE: Bind to JourneyViewModel; resolve from/to (location or manual); call findRoutes; open RouteDetailsActivity on route click.
- * WHY: LocationManager for current location; AccessibilityPreferences for API params; RouteAdapter with TimeFormatUtil for duration.
- * ISSUES: Request location permission before getCurrentLocation; setSavedDestination from MainActivity when place clicked in search (Commit 14).
+ * UI fragment for the Journey screen.
  */
 public class JourneyFragment extends Fragment {
-    // Lovable.dev: UI mockup reference
-    // Built with Claude
+
+
     private static final String TAG = "JourneyFragment";
     private static final int REQUEST_LOCATION = 1002;
 
@@ -58,6 +66,13 @@ public class JourneyFragment extends Fragment {
     private NetworkMonitor networkMonitor;
     private Handler minuteTickHandler;
     private Runnable minuteTickRunnable;
+    private ActivityResultLauncher<Intent> voiceResultLauncher;
+    private VoiceTarget pendingVoiceTarget = VoiceTarget.ORIGIN;
+
+    private enum VoiceTarget {
+        ORIGIN,
+        DESTINATION
+    }
 
     @Nullable
     @Override
@@ -76,6 +91,21 @@ public class JourneyFragment extends Fragment {
 
         selectedDateTime = Calendar.getInstance();
         updateDateTimeButtons();
+
+        voiceResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null || binding == null) return;
+                    ArrayList<String> results = result.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    if (results == null || results.isEmpty()) return;
+                    String spoken = results.get(0) != null ? results.get(0).trim() : "";
+                    if (spoken.isEmpty()) return;
+                    if (pendingVoiceTarget == VoiceTarget.DESTINATION) {
+                        binding.destination.setText(spoken);
+                    } else {
+                        binding.origin.setText(spoken);
+                    }
+                });
 
         String origin = viewModel.getSavedOrigin().getValue();
         if (origin != null && !origin.isEmpty()) binding.origin.setText(origin);
@@ -106,6 +136,9 @@ public class JourneyFragment extends Fragment {
             return false;
         });
 
+        binding.btnOriginVoice.setOnClickListener(v -> launchVoiceInput(VoiceTarget.ORIGIN));
+        binding.btnDestinationVoice.setOnClickListener(v -> launchVoiceInput(VoiceTarget.DESTINATION));
+
         binding.findRoutes.setOnClickListener(v -> findRoutes());
 
         networkMonitor = new NetworkMonitor(requireContext());
@@ -122,18 +155,18 @@ public class JourneyFragment extends Fragment {
         binding.btnToday.setOnClickListener(v -> openDatePicker());
         binding.btnDepartNow.setOnClickListener(v -> openTimePicker());
 
-        // Initialize step-free toggle from saved preference
+
         AccessibilityPreferences accPrefs = AccessibilityPreferences.get(requireContext());
         binding.switchStepFree.setChecked(accPrefs.isStepFree());
-        
-        // Save preference when toggle changes
+
+
         binding.switchStepFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
             accPrefs.setStepFree(isChecked);
             android.util.Log.d("JourneyFragment", "Step-free toggle changed to: " + isChecked);
             refreshRoutesIfSearchValid();
         });
 
-        // Avoid crowds: save to SettingsPrefs and re-sort so crowded routes move to the bottom
+
         SettingsPrefs prefs = SettingsPrefs.get(requireContext());
         binding.switchAvoidCrowds.setChecked(prefs.isAvoidCrowded());
         binding.switchAvoidCrowds.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -183,7 +216,7 @@ public class JourneyFragment extends Fragment {
         if (networkMonitor == null || binding == null) return;
         networkMonitor.refreshOnlineState();
         boolean offline = !networkMonitor.isOnline();
-        // Null-safe in case views are missing (e.g. stale ViewBinding)
+
         View offlineBanner = binding.getRoot().findViewById(R.id.offline_banner);
         if (offlineBanner != null) offlineBanner.setVisibility(offline ? View.VISIBLE : View.GONE);
         if (binding.findRoutes != null) {
@@ -192,11 +225,11 @@ public class JourneyFragment extends Fragment {
         }
     }
 
-    /**
-     * Leaflet + OSM tiles inside the WebView: polyline between from/to + markers.
-     * WHY: OSM’s /export/embed.html has no “path” parameter; Leaflet draws the line we need without Google Maps.
-     * Circle markers avoid default pin image URLs breaking under loadDataWithBaseURL.
-     */
+
+
+
+
+
     private static String buildRoutePreviewMapHtml(double sLat, double sLon, double eLat, double eLon) {
         String a = String.format(Locale.US, "[%f,%f]", sLat, sLon);
         String b = String.format(Locale.US, "[%f,%f]", eLat, eLon);
@@ -225,7 +258,7 @@ public class JourneyFragment extends Fragment {
         WebSettings s = wv.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
-        // OSM tile policy: identify the app when requesting tiles.
+
         s.setUserAgentString("AccessibleJourneyPlanner/1.0 (Android; route preview)");
         wv.setWebViewClient(new WebViewClient());
         String html = buildRoutePreviewMapHtml(coords.startLat, coords.startLon, coords.endLat, coords.endLon);
@@ -276,7 +309,7 @@ public class JourneyFragment extends Fragment {
         dlg.show();
     }
 
-    /** If origin and destination are filled, re-fetch routes with the current selected date/time. */
+
     private void refreshRoutesIfSearchValid() {
         if (binding == null) return;
         String from = binding.origin.getText() != null ? binding.origin.getText().toString().trim() : "";
@@ -333,6 +366,19 @@ public class JourneyFragment extends Fragment {
             });
         } else {
             permissionManager.askLocationPermission(this, REQUEST_LOCATION);
+        }
+    }
+
+    private void launchVoiceInput(VoiceTarget target) {
+        pendingVoiceTarget = target;
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speak_station_name));
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+        try {
+            voiceResultLauncher.launch(intent);
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), R.string.voice_search, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -400,14 +446,14 @@ public class JourneyFragment extends Fragment {
         }
     }
 
-    /** Updates the displayed time every minute when the selected time is today and not in the future. */
+
     private void startMinuteTick() {
         if (minuteTickHandler == null) minuteTickHandler = new Handler(Looper.getMainLooper());
         if (minuteTickRunnable != null) minuteTickHandler.removeCallbacks(minuteTickRunnable);
         minuteTickRunnable = () -> {
             if (binding == null || selectedDateTime == null) return;
             Calendar now = Calendar.getInstance();
-            // Only update display when selected is today and not in the future (so "live" time ticks)
+
             if (selectedDateTime.get(Calendar.YEAR) == now.get(Calendar.YEAR)
                     && selectedDateTime.get(Calendar.DAY_OF_YEAR) == now.get(Calendar.DAY_OF_YEAR)
                     && !selectedDateTime.after(now)) {
@@ -446,3 +492,4 @@ public class JourneyFragment extends Fragment {
         binding = null;
     }
 }
+

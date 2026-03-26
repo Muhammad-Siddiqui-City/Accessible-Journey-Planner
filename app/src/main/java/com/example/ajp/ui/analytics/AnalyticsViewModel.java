@@ -27,14 +27,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
+
+
+
+
+
+
+
+
 /**
- * ViewModel for Analytics. Add in Commit 15.
- * PURPOSE: Load weekly stats from JourneyLog (getLogsSince); journeys count, time saved, crowds avoided, efficiency; bar/line/pie and frequent routes.
- * WHY: Executors for DB work; TimeFormatUtil.formatMinutesToHourMin for frequent route detail (e.g. "~1hr 14m"); post to LiveData on main thread.
- * ISSUES: TimeFormatUtil import was missing once (compile error); add explicitly.
+ * ViewModel that owns UI state for Analytics.
  */
-// AI Generated
-// Built with Claude
 public class AnalyticsViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Integer> journeysCount = new MutableLiveData<>(0);
@@ -61,7 +64,7 @@ public class AnalyticsViewModel extends AndroidViewModel {
     public LiveData<List<FrequentRouteItem>> getFrequentRoutes() { return frequentRoutes; }
     public LiveData<List<ModeCountItem>> getModeBreakdown() { return modeBreakdown; }
 
-    /** Load stats and chart data for the last 7 days. */
+
     public void loadWeeklyStats() {
         Executors.newSingleThreadExecutor().execute(() -> {
             long weekAgo = System.currentTimeMillis() - (7L * 24 * 60 * 60 * 1000);
@@ -98,7 +101,7 @@ public class AnalyticsViewModel extends AndroidViewModel {
             journeysPerDay[dayIndex]++;
             savedPerDay[dayIndex] += log.savedMinutes;
 
-            // One journey can use multiple modes (e.g. Tube,Bus); count each mode used
+
             String modeStr = log.mode != null ? log.mode : "Mixed";
             for (String mode : modeStr.split(",")) {
                 String m = mode != null ? mode.trim() : "";
@@ -155,7 +158,7 @@ public class AnalyticsViewModel extends AndroidViewModel {
         pieDataSet.setColors(modeColors);
         pieData.postValue(new PieData(pieDataSet));
 
-        // Mode breakdown for right-side legend (mode name + count + color), sorted by count descending
+
         List<Map.Entry<String, Integer>> modeEntries = new ArrayList<>(modeCounts.entrySet());
         modeEntries.sort((a, b) -> Integer.compare(b.getValue(), a.getValue()));
         List<ModeCountItem> breakdown = new ArrayList<>();
@@ -200,3 +203,4 @@ public class AnalyticsViewModel extends AndroidViewModel {
         }
     }
 }
+

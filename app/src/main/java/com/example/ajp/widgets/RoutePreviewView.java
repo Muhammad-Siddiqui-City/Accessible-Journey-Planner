@@ -12,8 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.ajp.R;
 
+
+
+
 /**
- * Route preview: grid background, gradient path (teal → blue → purple), three circles (start, mid, end).
+ * Custom view for rendering RoutePreview content.
  */
 public class RoutePreviewView extends View {
 
@@ -83,7 +86,7 @@ public class RoutePreviewView extends View {
         path.lineTo(72 * scaleX, 45 * scaleY);
         path.cubicTo(85 * scaleX, 45 * scaleY, 85 * scaleX, 32 * scaleY, 85 * scaleX, 22 * scaleY);
 
-        // Gradient along path: teal → blue → purple
+
         Shader pathShader = new LinearGradient(0, 0, w, 0,
                 new int[]{tealColor, blueColor, purpleColor},
                 new float[]{0f, 0.5f, 1f},
@@ -116,3 +119,4 @@ public class RoutePreviewView extends View {
         canvas.drawCircle(85 * scaleX, 22 * scaleY, r1, circlePaint);
     }
 }
+

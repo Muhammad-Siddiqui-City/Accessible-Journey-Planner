@@ -3,11 +3,14 @@ package com.example.ajp.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+
+
+
+
+
+
 /**
- * Accessibility profile for journey planning. Add in Commit 5.
- * PURPOSE: Step-free, walking speed (slow/average/fast), max walking minutes; passed to TfL Journey API.
- * WHY: JourneyViewModel reads these for accessibilityPreference and maxWalkingMinutes; Settings UI edits them.
- * ISSUES: getMaxWalkingMinutes clamped 5–60 in setter; TfL expects "slow"/"average"/"fast".
+ * Utility class for AccessibilityPreferences.
  */
 public class AccessibilityPreferences {
 
@@ -16,7 +19,7 @@ public class AccessibilityPreferences {
     private static final String KEY_WALKING_SPEED = "walking_speed";
     private static final String KEY_MAX_WALKING_MINUTES = "max_walking_minutes";
 
-    /** Values for TfL API walkingSpeed parameter. */
+
     public static final String SPEED_SLOW = "slow";
     public static final String SPEED_AVERAGE = "average";
     public static final String SPEED_FAST = "fast";
@@ -41,7 +44,7 @@ public class AccessibilityPreferences {
         prefs.edit().putBoolean(KEY_STEP_FREE, enabled).apply();
     }
 
-    /** Returns "slow", "average", or "fast" for the TfL API. */
+
     public String getWalkingSpeed() {
         String v = prefs.getString(KEY_WALKING_SPEED, SPEED_AVERAGE);
         if (SPEED_SLOW.equals(v) || SPEED_FAST.equals(v)) return v;
@@ -61,3 +64,4 @@ public class AccessibilityPreferences {
         prefs.edit().putInt(KEY_MAX_WALKING_MINUTES, clamped).apply();
     }
 }
+

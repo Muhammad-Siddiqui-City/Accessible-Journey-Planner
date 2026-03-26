@@ -10,13 +10,16 @@ import com.example.ajp.R;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+
 /**
- * Adapter for the fixed "Popular Stations" list (labels only; TfL stop id resolved on tap).
+ * RecyclerView adapter for PopularStations items.
  */
 public class PopularStationsAdapter extends RecyclerView.Adapter<PopularStationsAdapter.ViewHolder> {
 
     public interface OnPopularStationClickListener {
-        /** @param displayLabel row text as shown (e.g. from string-array). */
+
         void onPopularStationClick(String displayLabel);
     }
 
@@ -62,3 +65,4 @@ public class PopularStationsAdapter extends RecyclerView.Adapter<PopularStations
         }
     }
 }
+

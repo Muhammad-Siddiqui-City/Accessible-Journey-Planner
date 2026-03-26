@@ -6,9 +6,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+
+
+
+
 /**
- * Persists last journey search and optional simulated lift disruption stop IDs (developer test).
- * WHY: Background route monitor compares a new fetch signature to {@link #getLastSignature()}.
+ * Utility class for RouteMonitorPrefs.
  */
 public final class RouteMonitorPrefs {
 
@@ -63,7 +66,7 @@ public final class RouteMonitorPrefs {
         return prefs.getString(KEY_LAST_SIGNATURE, "");
     }
 
-    /** Comma/newline-separated stop IDs or names for lift simulation (Settings). */
+
     public Set<String> getSimulatedDisruptedStopIds() {
         Set<String> raw = prefs.getStringSet(KEY_SIMULATED_STOPS, null);
         if (raw == null || raw.isEmpty()) return Collections.emptySet();
@@ -78,3 +81,4 @@ public final class RouteMonitorPrefs {
         }
     }
 }
+

@@ -9,9 +9,12 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import java.util.concurrent.TimeUnit;
 
+
+
+
+
 /**
- * Schedules periodic re-check of the last journey against TfL (WorkManager).
- * WHY: User rules prefer WorkManager for background work; manual test uses {@link #runCheckSync(Context)}.
+ * Utility class for RouteMonitorScheduler.
  */
 public final class RouteMonitorScheduler {
 
@@ -19,7 +22,7 @@ public final class RouteMonitorScheduler {
 
     private RouteMonitorScheduler() {}
 
-    /** Enqueue ~15-minute periodic work when a search completes (idempotent). */
+
     public static void schedule(Context context) {
         if (context == null) return;
         Context app = context.getApplicationContext();
@@ -38,9 +41,9 @@ public final class RouteMonitorScheduler {
                 work);
     }
 
-    /**
-     * Re-fetch routes for the last saved search; returns true if the signature changed (e.g. disruption).
-     */
+
+
+
     public static boolean runCheckSync(@NonNull Context context) {
         RouteMonitorPrefs prefs = RouteMonitorPrefs.get(context);
         String from = prefs.getLastFrom();
@@ -63,8 +66,9 @@ public final class RouteMonitorScheduler {
                 return true;
             }
         } catch (Exception ignored) {
-            // Graceful fallback: no change reported
+
         }
         return false;
     }
 }
+

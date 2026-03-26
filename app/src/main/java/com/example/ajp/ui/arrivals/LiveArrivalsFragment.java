@@ -17,11 +17,14 @@ import com.example.ajp.utils.TtsHelper;
 import java.util.List;
 import java.util.Locale;
 
+
+
+
+
+
+
 /**
- * Live Arrivals fragment (inside activity or as tab). Add in Commit 10.
- * PURPOSE: Show arrivals for stopId from args; StopsViewModel.loadArrivals(stopId); TTS for soonest arrival when enabled.
- * WHY: ARG_STOP_ID/ARG_STOP_NAME from arguments; filter by line (all/line name); speak "Next bus in X minutes" etc. via pendingTtsPhrase.
- * ISSUES: When stopId contains "," (place), StopsViewModel skips TfL/NR; show empty or no-upcoming message.
+ * UI fragment for the LiveArrivals screen.
  */
 public class LiveArrivalsFragment extends Fragment {
 
@@ -107,7 +110,7 @@ public class LiveArrivalsFragment extends Fragment {
         }
     }
 
-    /** If Text-to-speech is on, speak "Next bus in X minutes" or "Next train in X minutes" for the soonest arrival. */
+
     private void announceFirstArrivalIfTtsOn(List<Arrival> arrivals) {
         if (arrivals == null || arrivals.isEmpty() || ttsHelper == null) return;
 
@@ -123,7 +126,7 @@ public class LiveArrivalsFragment extends Fragment {
         }
     }
 
-    /** Same minute rule as the UI: under 60s = "less than a minute", else sec/60 minutes so spoken time matches the screen. */
+
     private static String formatArrivalPhrase(Arrival arrival) {
         String mode = arrival.getModeName() != null ? arrival.getModeName().toLowerCase(Locale.ROOT) : "";
         String vehicle = mode.contains("bus") ? "bus" : "train";
@@ -148,3 +151,4 @@ public class LiveArrivalsFragment extends Fragment {
         binding = null;
     }
 }
+

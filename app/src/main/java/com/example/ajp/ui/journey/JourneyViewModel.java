@@ -17,11 +17,14 @@ import com.example.ajp.utils.TimeFormatUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * ViewModel for Plan Journey. Add in Commit 11; extend in 14 (coords, PlaceSearch fallback).
- * PURPOSE: Resolve from/to (TfL search or "lat,lon" or Geocoder), call TfL Journey API, map to RouteItem, RouteOptimizer.
- * WHY: ApiKeyManager.isTflKeyValid() before findRoutes to avoid wasted call; setSavedDestination for place-click from search.
- * ISSUES: Leg duration in seconds; Journey duration in minutes; use TimeFormatUtil for display.
+ * Holds plan-journey UI state, route loading, and preview metadata.
  */
 public class JourneyViewModel extends AndroidViewModel {
 
@@ -40,7 +43,7 @@ public class JourneyViewModel extends AndroidViewModel {
         super(application);
     }
 
-    /** Start/end coordinates for map preview. */
+
     public static class MapCoords {
         public final double startLat, startLon, endLat, endLon;
         public MapCoords(double startLat, double startLon, double endLat, double endLon) {
@@ -64,16 +67,17 @@ public class JourneyViewModel extends AndroidViewModel {
     public void setSavedOrigin(String s) { savedOrigin.setValue(s != null ? s : ""); }
     public void setSavedDestination(String s) { savedDestination.setValue(s != null ? s : ""); }
 
-    /** Change sort strategy and re-sort existing routes. When "Avoid crowds" is on, crowded routes move to the bottom. */
+
     public void setOptimizationStrategy(RouteOptimizer.Strategy strategy) {
         currentStrategy = strategy;
         reSortRoutes();
     }
 
-    /** Re-sorts current routes using current strategy and "Avoid crowds" preference (e.g. after toggling that switch). */
+
     public void reSortRoutes() {
         List<RouteItem> current = routes.getValue();
         if (current != null && !current.isEmpty()) {
+            // Sort a copy so observers get a new list instance.
             List<RouteItem> copy = new ArrayList<>(current);
             boolean avoidCrowded = SettingsPrefs.get(getApplication()).isAvoidCrowded();
             RouteOptimizer.sortRoutes(copy, currentStrategy, avoidCrowded);
@@ -81,9 +85,9 @@ public class JourneyViewModel extends AndroidViewModel {
         }
     }
 
-    /**
-     * Find routes: uses JourneyFetcher then posts results, updates preview, persists last search and schedules background monitor.
-     */
+
+
+
     public void findRoutes(String from, String to, String timeHHmm, String dateyyyyMMdd) {
         String fromTrimmed = from != null ? from.trim() : "";
         String toTrimmed = to != null ? to.trim() : "";
@@ -124,7 +128,8 @@ public class JourneyViewModel extends AndroidViewModel {
                             int transfers = firstRoute.getTransfersCount();
                             String summary = TimeFormatUtil.formatMinutesToHourMin(firstRoute.getDurationMinutesInt()) + " • "
                                     + transfers + (transfers == 1 ? " transfer" : " transfers");
-                            // Map overlay: always show exactly what the user typed in From/To fields.
+
+                            // Use raw input text for preview labels to match the form fields exactly.
                             routePreviewFrom.postValue(fromInput);
                             routePreviewTo.postValue(toInput);
                             routePreviewSummary.postValue(summary);
@@ -153,3 +158,4 @@ public class JourneyViewModel extends AndroidViewModel {
     }
 
 }
+

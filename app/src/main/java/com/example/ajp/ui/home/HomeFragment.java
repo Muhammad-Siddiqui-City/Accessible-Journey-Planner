@@ -42,16 +42,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+
+
+
+
+
 /**
- * Home tab: popular stations, search, nearby link. Add in Commit 8.
- * PURPOSE: Show popular station chips; voice/text search → StationSearchFragment; "Nearby" → location then NearbyStationsFragment.
- * WHY: LocationManager.getCurrentLocation for nearby; PermissionManager for location permission; StopsViewModel for line status on home.
- * ISSUES: REQUEST_LOCATION for permission; minCal for date picker min date; green symbol/compass removed per UI cleanup.
+ * UI fragment for the Home screen.
  */
 public class HomeFragment extends Fragment {
-    // AI Generated
-    // Lovable.dev: UI mockup reference
-    // Built with Claude
+
+
+
     private static final int REQUEST_LOCATION = 1001;
 
     private FragmentHomeBinding binding;
@@ -77,7 +80,7 @@ public class HomeFragment extends Fragment {
         locationManager = LocationManager.getInstance(requireContext());
         viewModel = new ViewModelProvider(requireActivity()).get(StopsViewModel.class);
 
-        // Use cached location if available, else fetch. Avoids re-fetching when swapping tabs.
+
         if (viewModel.hasCachedLocation()) {
             viewModel.loadNearestStops(viewModel.getCachedLat(), viewModel.getCachedLon());
         } else if (permissionManager.checkLocationPermission(requireContext())) {
@@ -87,7 +90,7 @@ public class HomeFragment extends Fragment {
                     viewModel.loadNearestStops(lat, lon);
                 }
                 @Override
-                public void onLocationFailed() { /* no-op for home highlights */ }
+                public void onLocationFailed() {  }
             });
         }
 
@@ -120,7 +123,7 @@ public class HomeFragment extends Fragment {
                 binding.goodServiceCard.setVisibility(View.GONE);
                 binding.tvDisruptionCount.setText(getString(R.string.disruptions_active, disruptions.size()));
                 announceDisruptionsIfTtsOn(disruptions);
-                // Card 1
+
                 LineStatus line1 = disruptions.get(0);
                 binding.disruptionCard1.setVisibility(View.VISIBLE);
                 binding.tvDisruptionLine1.setText(getLineBadgeText(line1.getName(), line1.getId()));
@@ -140,7 +143,7 @@ public class HomeFragment extends Fragment {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=" + Uri.encode(query))));
                     }
                 });
-                // Card 2
+
                 if (disruptions.size() > 1) {
                     LineStatus line2 = disruptions.get(1);
                     binding.disruptionCard2.setVisibility(View.VISIBLE);
@@ -167,7 +170,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // Voice result: put spoken text in search box and open station search screen.
+
         voiceResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -180,7 +183,7 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
-        // Use OnTouchListener on the mic wrapper so it consumes the touch; otherwise the search bar steals the click.
+
         binding.searchMicTouch.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -193,7 +196,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(requireContext(), R.string.voice_search, Toast.LENGTH_SHORT).show();
                 }
             }
-            return true; // consume so search bar does not receive the click
+            return true;
         });
 
         binding.searchInput.setOnEditorActionListener((v, actionId, event) -> {
@@ -226,7 +229,7 @@ public class HomeFragment extends Fragment {
         binding.transportTube.setOnClickListener(v -> Toast.makeText(requireContext(), R.string.tube_rail, Toast.LENGTH_SHORT).show());
         binding.transportBus.setOnClickListener(v -> Toast.makeText(requireContext(), R.string.buses, Toast.LENGTH_SHORT).show());
 
-        // Saved Routes: observe Room and show list; on tap open RouteDetailsActivity with fromOffline=true.
+
         savedRouteAdapter = new SavedRouteAdapter();
         savedRouteAdapter.setOnSavedRouteClickListener(entity -> {
             if (entity.routeItem != null) {
@@ -237,7 +240,7 @@ public class HomeFragment extends Fragment {
                 startActivity(i);
             }
         });
-        // Delete on background thread; LiveData observer refreshes the list.
+
         final Context appCtx = requireContext().getApplicationContext();
         savedRouteAdapter.setOnSavedRouteDeleteListener(entity ->
                 Executors.newSingleThreadExecutor().execute(() ->
@@ -256,7 +259,7 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-    /** Opens the station search screen with the given query (voice or typed). Shows buses and trains for that station. */
+
     private void openStationSearch(String query) {
         if (query == null || query.trim().isEmpty()) {
             Toast.makeText(requireContext(), R.string.search_placeholder, Toast.LENGTH_SHORT).show();
@@ -292,7 +295,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /** Opens Live Arrivals for the station at the given index (same screen as nearby stations list). */
+
     private void openStationArrivals(int index) {
         if (index < 0 || index >= currentHighlights.size()) {
             openNearbyStationsWithLocation();
@@ -304,7 +307,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /** Opens the Popular Stations list; choosing a station opens train times for that stop. */
+
     private void openPopularStationArrivals() {
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).showPopularStationsFragment();
@@ -357,7 +360,7 @@ public class HomeFragment extends Fragment {
         return (int) (px * density);
     }
 
-    /** TfL line badge background (same logic as NearbyStationsAdapter). */
+
     private static int getLineColor(String lineName) {
         if (lineName == null) return Color.parseColor("#0019A8");
         String n = lineName.trim().toLowerCase();
@@ -385,7 +388,7 @@ public class HomeFragment extends Fragment {
         return Color.WHITE;
     }
 
-    /** Short badge text for disruption card (e.g. DIS, SWR, PIC). */
+
     private static String getLineBadgeText(String name, String id) {
         if (name != null && !name.isEmpty()) {
             String n = name.toUpperCase();
@@ -410,7 +413,7 @@ public class HomeFragment extends Fragment {
         return "—";
     }
 
-    /** Returns the first status detail for a line, or null if none. */
+
     private static StatusDetail getFirstStatusDetail(LineStatus line) {
         if (line.getLineStatuses() == null || line.getLineStatuses().isEmpty()) return null;
         return line.getLineStatuses().get(0);
@@ -459,3 +462,4 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 }
+

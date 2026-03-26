@@ -3,11 +3,14 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
+
+
+
+
+
+
 /**
- * Stop/place in Journey API. Add in Commit 2 (API DTOs).
- * PURPOSE: Departure/arrival point with name and coordinates; Serializable for intents.
- * WHY: Leg has departurePoint/arrivalPoint; used for map coords and display names.
- * ISSUES: None.
+ * DTO used to parse API payloads for JourneyPlace.
  */
 public class JourneyPlace implements Serializable {
 
@@ -17,7 +20,7 @@ public class JourneyPlace implements Serializable {
     private double lat;
     @SerializedName("lon")
     private double lon;
-    /** NaPTAN / stop id when present — used for lift disruption checks. */
+
     @SerializedName("naptanId")
     private String naptanId;
 
@@ -26,3 +29,4 @@ public class JourneyPlace implements Serializable {
     public double getLon() { return lon; }
     public String getNaptanId() { return naptanId != null ? naptanId : ""; }
 }
+

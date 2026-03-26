@@ -3,11 +3,14 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * TfL Journey API response. Add in Commit 2 (API DTOs).
- * PURPOSE: Root response containing list of Journey options.
- * WHY: TfL returns { "journeys": [ ... ] }; Retrofit deserialises to this.
- * ISSUES: None.
+ * DTO used to parse API payloads for JourneyResponse.
  */
 public class JourneyResponse {
 
@@ -18,3 +21,4 @@ public class JourneyResponse {
         return journeys != null ? journeys : java.util.Collections.emptyList();
     }
 }
+

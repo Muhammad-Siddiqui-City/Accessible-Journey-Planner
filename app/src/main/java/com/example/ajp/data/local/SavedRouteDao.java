@@ -7,13 +7,16 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import java.util.List;
 
-/**
- * DAO for saved routes. Add in Commit 4.
- * PURPOSE: Insert, getAll (LiveData, newest first), delete.
- * WHY: Used by route-details screen to load/save/delete saved routes.
- * ISSUES: None.
- */
+
+
+
+
+
+
 @Dao
+/**
+ * Room DAO for SavedRoute persistence operations.
+ */
 public interface SavedRouteDao {
 
     @Insert
@@ -25,3 +28,4 @@ public interface SavedRouteDao {
     @Delete
     void delete(SavedRouteEntity entity);
 }
+

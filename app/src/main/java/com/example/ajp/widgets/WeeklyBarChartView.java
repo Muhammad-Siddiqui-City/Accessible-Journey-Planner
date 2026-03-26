@@ -11,9 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.ajp.R;
 
+
+
+
+
 /**
- * Bar chart for Weekly Activity. Mock data: Mon 4, Tue 3, Wed 5, Thu 2, Fri 4, Sat 1, Sun 0.
- * Highest bar (Wed) is teal, others blue. Numbers on top of bars. Tap shows chip via listener.
+ * Custom view for rendering WeeklyBarChart content.
  */
 public class WeeklyBarChartView extends View {
 
@@ -155,3 +158,4 @@ public class WeeklyBarChartView extends View {
         return super.onTouchEvent(event);
     }
 }
+

@@ -9,8 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ajp.R;
 import java.util.List;
 
+
+
+
 /**
- * Adapter for the Frequent Routes list.
+ * RecyclerView adapter for FrequentRoute items.
  */
 public class FrequentRouteAdapter extends RecyclerView.Adapter<FrequentRouteAdapter.ViewHolder> {
 
@@ -54,3 +57,4 @@ public class FrequentRouteAdapter extends RecyclerView.Adapter<FrequentRouteAdap
         }
     }
 }
+

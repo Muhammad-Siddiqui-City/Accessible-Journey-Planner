@@ -5,8 +5,11 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+
+
+
 /**
- * Periodic job: compares latest journey options to the saved signature (TfL may change routes).
+ * Utility class for RouteMonitorWorker.
  */
 public class RouteMonitorWorker extends Worker {
 
@@ -21,3 +24,4 @@ public class RouteMonitorWorker extends Worker {
         return Result.success();
     }
 }
+

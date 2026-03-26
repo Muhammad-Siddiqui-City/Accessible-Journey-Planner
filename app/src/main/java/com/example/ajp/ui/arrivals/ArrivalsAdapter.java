@@ -14,17 +14,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Adapter for Live Arrivals list. Add in Commit 10.
- * PURPOSE: Bind Arrival to item_arrival; sort by timeToStation; format time with TimeFormatUtil (59m+ as "1hr Xm"); line badge colors.
- * WHY: submitList sorts by timeToStationSeconds; sec>=60 use formatMinutesToHourMin(sec/60); platform badge for non-bus when not single-char.
- * ISSUES: National Rail platform not from GetDepartureBoard; hide platform for bus/single-char.
+ * RecyclerView adapter for Arrivals items.
  */
 public class ArrivalsAdapter extends RecyclerView.Adapter<ArrivalsAdapter.ArrivalViewHolder> {
 
     private List<Arrival> items = Collections.emptyList();
 
-    /** Submit list and sort by time to station before displaying. */
+
     public void submitList(List<Arrival> list) {
         this.items = list != null ? new ArrayList<>(list) : new ArrayList<>();
         Collections.sort(this.items, Comparator.comparingInt(Arrival::getTimeToStationSeconds));
@@ -70,7 +73,7 @@ public class ArrivalsAdapter extends RecyclerView.Adapter<ArrivalsAdapter.Arriva
         return items.size();
     }
 
-    /** TfL line badge background color (same as NearbyStationsAdapter). */
+
     private static int getLineColor(String lineName) {
         if (lineName == null) return Color.parseColor("#0019A8");
         String n = lineName.trim().toLowerCase();
@@ -92,7 +95,7 @@ public class ArrivalsAdapter extends RecyclerView.Adapter<ArrivalsAdapter.Arriva
         return Color.parseColor("#0019A8");
     }
 
-    /** Format platform for display: "5" -> "Platform 5"; "Platform 3" -> "Platform 3"; raw value otherwise. */
+
     private static String formatPlatformForDisplay(String platform) {
         if (platform == null || platform.trim().isEmpty()) return "";
         String p = platform.trim();
@@ -124,3 +127,4 @@ public class ArrivalsAdapter extends RecyclerView.Adapter<ArrivalsAdapter.Arriva
         }
     }
 }
+

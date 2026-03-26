@@ -1,10 +1,13 @@
 package com.example.ajp.ui.analytics;
 
+
+
+
+
+
+
 /**
- * One row for Frequent Routes list. Add in Commit 15.
- * PURPOSE: routeLabel (From → To), detail (mode + ~duration from most recent JourneyLog), count (trip count).
- * WHY: Built in AnalyticsViewModel from journey logs; detail uses TimeFormatUtil for duration display.
- * ISSUES: None.
+ * UI model/helper used by the FrequentRouteItem feature.
  */
 public class FrequentRouteItem {
     private final String routeLabel;
@@ -21,3 +24,4 @@ public class FrequentRouteItem {
     public String getDetail() { return detail; }
     public int getCount() { return count; }
 }
+

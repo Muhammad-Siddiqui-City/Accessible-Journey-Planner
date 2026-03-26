@@ -16,11 +16,14 @@ import com.example.ajp.utils.SettingsPrefs;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Activity hosting Live Arrivals for a stop. Add in Commit 10.
- * PURPOSE: Receive stopId/stopName from intent; show header, line filter, arrivals list via StopsViewModel and ArrivalsAdapter.
- * WHY: EXTRA_STOP_ID/EXTRA_STOP_NAME; filter pills update allArrivals by selectedLine; empty state when no arrivals.
- * ISSUES: Applies locale in attachBaseContext; high-contrast theme when enabled.
+ * Activity that hosts the LiveArrivals flow.
  */
 public class LiveArrivalsActivity extends AppCompatActivity {
 
@@ -54,7 +57,7 @@ public class LiveArrivalsActivity extends AppCompatActivity {
             binding.stationName.setText(stopName);
         }
 
-        // Setup RecyclerView
+
         viewModel = new ViewModelProvider(this).get(StopsViewModel.class);
         adapter = new ArrivalsAdapter();
         binding.arrivalsList.setLayoutManager(new LinearLayoutManager(this));
@@ -63,7 +66,7 @@ public class LiveArrivalsActivity extends AppCompatActivity {
         binding.back.setOnClickListener(v -> finish());
         binding.refresh.setOnClickListener(v -> loadArrivals());
 
-        // Line filter pills
+
         binding.pillAll.setOnClickListener(v -> selectPill("all"));
         binding.pillVictoria.setOnClickListener(v -> selectPill("victoria"));
         binding.pillPiccadilly.setOnClickListener(v -> selectPill("piccadilly"));
@@ -71,7 +74,7 @@ public class LiveArrivalsActivity extends AppCompatActivity {
         binding.pillCentral.setOnClickListener(v -> selectPill("central"));
         binding.pillJubilee.setOnClickListener(v -> selectPill("jubilee"));
 
-        // Observe arrivals
+
         viewModel.getSelectedStopArrivals().observe(this, arrivals -> {
             binding.progressBar.setVisibility(View.GONE);
             allArrivals = arrivals != null ? arrivals : new ArrayList<>();
@@ -85,7 +88,7 @@ public class LiveArrivalsActivity extends AppCompatActivity {
             }
         });
 
-        // Load arrivals
+
         loadArrivals();
     }
 
@@ -150,3 +153,4 @@ public class LiveArrivalsActivity extends AppCompatActivity {
         binding = null;
     }
 }
+

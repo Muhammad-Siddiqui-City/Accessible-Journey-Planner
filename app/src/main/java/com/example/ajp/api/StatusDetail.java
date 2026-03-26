@@ -2,11 +2,14 @@ package com.example.ajp.api;
 
 import com.google.gson.annotations.SerializedName;
 
+
+
+
+
+
+
 /**
- * Single status entry for a line. Add in Commit 2 (API DTOs).
- * PURPOSE: statusSeverity and statusSeverityDescription for sorting/display.
- * WHY: StopsViewModel uses min severity across details to sort lines.
- * ISSUES: None.
+ * DTO used to parse API payloads for StatusDetail.
  */
 public class StatusDetail {
 
@@ -21,3 +24,4 @@ public class StatusDetail {
     public String getStatusSeverityDescription() { return statusSeverityDescription != null ? statusSeverityDescription : ""; }
     public String getReason() { return reason != null ? reason : ""; }
 }
+

@@ -14,12 +14,16 @@ import com.example.ajp.R;
 import com.example.ajp.utils.AccessibilityPreferences;
 import com.example.ajp.utils.TimeFormatUtil;
 import java.util.List;
+import java.util.Locale;
+
+
+
+
+
+
 
 /**
- * Adapter for suggested route cards. Add in Commit 11.
- * PURPOSE: Bind RouteItem to item_route; duration via TimeFormatUtil; BEST badge for first when showBestBadge; crowding progress bar (Green/Orange/Red).
- * WHY: RouteOptimizer sorts so first is "best"; getCrowdingProgress/getCrowdingColor for bar; line badges from item.getLineBadges().
- * ISSUES: None.
+ * RecyclerView adapter for Route items.
  */
 public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
 
@@ -70,10 +74,10 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         holder.tvTransfers.setText(item.getTransfersText());
         holder.tvRouteSummary.setText(item.getRouteSummary());
 
-        // BEST badge visible only for first item when showBestBadge is true
+
         holder.tvBestBadge.setVisibility(showBestBadge && position == 0 ? View.VISIBLE : View.GONE);
 
-        // Crowding progress bar: dynamic color (Green Low, Orange Medium, Red High/Busy)
+
         int progressPercent = getCrowdingProgress(item.getCrowdingLevel());
         int progressColor = getCrowdingColor(item.getCrowdingLevel(), holder.itemView);
         holder.progressBarCrowding.setProgress(progressPercent);
@@ -81,7 +85,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         holder.tvCrowdingLabel.setVisibility(View.VISIBLE);
         holder.tvCrowdingWarning.setVisibility(item.getCrowdingLevel() == RouteItem.CROWDING_HIGH ? View.VISIBLE : View.GONE);
 
-        // Red lift text only when "Step-free only" is on (same as Journey API lift checks).
+
         boolean stepFree = AccessibilityPreferences.get(holder.itemView.getContext()).isStepFree();
         boolean showLift = stepFree && item.hasLiftDisruption();
         String liftDisruptionText = showLift
@@ -93,22 +97,11 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
             holder.tvLiftDisruptionWarning.setText(liftDisruptionText);
         }
 
-        // Line badges: first and second badge
-        String[] badges = item.getLineBadges();
-        if (badges.length > 0) {
-            holder.badgeLine1.setVisibility(View.VISIBLE);
-            holder.badgeLine1.setText(badges[0]);
-            holder.badgeLine1.setBackgroundColor(getLineColor(badges[0], holder.itemView));
-        } else {
-            holder.badgeLine1.setVisibility(View.GONE);
-        }
-        if (badges.length > 1) {
-            holder.badgeLine2.setVisibility(View.VISIBLE);
-            holder.badgeLine2.setText(badges[1]);
-            holder.badgeLine2.setBackgroundColor(getLineColor(badges[1], holder.itemView));
-        } else {
-            holder.badgeLine2.setVisibility(View.GONE);
-        }
+
+        bindBadge(holder.badgeLine1, badgesAt(item, 0));
+        bindBadge(holder.badgeLine2, badgesAt(item, 1));
+        bindBadge(holder.badgeLine3, badgesAt(item, 2));
+        bindBadge(holder.badgeLine4, badgesAt(item, 3));
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onRouteClick(item);
@@ -136,21 +129,56 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
 
     private static int getCrowdingColor(int level, View context) {
         if (level == RouteItem.CROWDING_HIGH)
-            return Color.parseColor("#D32F2F"); // Red for High/Busy crowding
+            return Color.parseColor("#D32F2F");
         if (level == RouteItem.CROWDING_MEDIUM)
             return ContextCompat.getColor(context.getContext(), R.color.warning);
         return ContextCompat.getColor(context.getContext(), R.color.success);
     }
 
-    private static int getLineColor(String lineCode, View context) {
-        switch (lineCode != null ? lineCode.toUpperCase() : "") {
-            case "VIC": return ContextCompat.getColor(context.getContext(), R.color.line_victoria);
-            case "PIC": return ContextCompat.getColor(context.getContext(), R.color.line_piccadilly);
-            case "JUB": return ContextCompat.getColor(context.getContext(), R.color.line_jubilee);
-            case "NOR": return ContextCompat.getColor(context.getContext(), R.color.line_northern);
-            case "CEN": return ContextCompat.getColor(context.getContext(), R.color.line_central);
-            default: return ContextCompat.getColor(context.getContext(), R.color.line_default);
+    private static String badgesAt(RouteItem item, int index) {
+        String[] badges = item.getLineBadges();
+        if (badges == null || index < 0 || index >= badges.length) return "";
+        return badges[index];
+    }
+
+    private static void bindBadge(TextView badgeView, String code) {
+        if (badgeView == null || code == null || code.trim().isEmpty()) {
+            if (badgeView != null) badgeView.setVisibility(View.GONE);
+            return;
         }
+        String normalized = code.trim().toUpperCase(Locale.UK);
+        badgeView.setVisibility(View.VISIBLE);
+        badgeView.setText(normalized);
+        badgeView.setBackgroundColor(getLineColor(normalized));
+        badgeView.setTextColor(getLineTextColor(normalized));
+    }
+
+    private static int getLineColor(String code) {
+        switch (code) {
+            case "BUS": return Color.parseColor("#E32017");
+            case "BAK": return Color.parseColor("#B36305");
+            case "CEN": return Color.parseColor("#E32017");
+            case "CIR": return Color.parseColor("#FFD300");
+            case "DIS": return Color.parseColor("#00782A");
+            case "HAM": return Color.parseColor("#F3A9BB");
+            case "JUB": return Color.parseColor("#A0A5A9");
+            case "MET": return Color.parseColor("#9B0056");
+            case "NOR": return Color.parseColor("#000000");
+            case "PIC": return Color.parseColor("#003688");
+            case "VIC": return Color.parseColor("#0098D4");
+            case "WAT": return Color.parseColor("#95CDBA");
+            case "ELZ": return Color.parseColor("#6950A1");
+            case "DLR": return Color.parseColor("#00A4A7");
+            case "LO": return Color.parseColor("#EF7B10");
+            case "TRA": return Color.parseColor("#84B817");
+            default:
+                if (code.matches("^N?\\d+[A-Z]?$")) return Color.parseColor("#E32017");
+                return Color.parseColor("#0019A8");
+        }
+    }
+
+    private static int getLineTextColor(String code) {
+        return ("CIR".equals(code) || "WAT".equals(code)) ? Color.BLACK : Color.WHITE;
     }
 
     static class RouteViewHolder extends RecyclerView.ViewHolder {
@@ -162,6 +190,8 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         final TextView tvRouteSummary;
         final TextView badgeLine1;
         final TextView badgeLine2;
+        final TextView badgeLine3;
+        final TextView badgeLine4;
         final TextView tvCrowdingLabel;
         final TextView tvCrowdingWarning;
         final TextView tvLiftDisruptionWarning;
@@ -177,6 +207,8 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
             tvRouteSummary = itemView.findViewById(R.id.tvRouteSummary);
             badgeLine1 = itemView.findViewById(R.id.badgeLine1);
             badgeLine2 = itemView.findViewById(R.id.badgeLine2);
+            badgeLine3 = itemView.findViewById(R.id.badgeLine3);
+            badgeLine4 = itemView.findViewById(R.id.badgeLine4);
             tvCrowdingLabel = itemView.findViewById(R.id.tvCrowdingLabel);
             tvCrowdingWarning = itemView.findViewById(R.id.tvCrowdingWarning);
             tvLiftDisruptionWarning = itemView.findViewById(R.id.tvLiftDisruptionWarning);
@@ -184,3 +216,4 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         }
     }
 }
+

@@ -23,9 +23,12 @@ import java.util.Collections;
 import java.util.List;
 import retrofit2.Response;
 
+
+
+
+
 /**
- * First step for "Popular Stations" from Home: shows a fixed list of major London stations.
- * On row tap, resolves the stop via TfL Search API, then opens {@link com.example.ajp.ui.arrivals.StationTrainsFragment}.
+ * UI fragment for the PopularStations screen.
  */
 public class PopularStationsFragment extends Fragment {
 
@@ -40,7 +43,7 @@ public class PopularStationsFragment extends Fragment {
         return n;
     }
 
-    /** Strip trailing " Station" for TfL search; keep names like "St Pancras International" as-is. */
+
     private static String toSearchQuery(String label) {
         if (label == null) return "";
         String q = label.trim();
@@ -110,7 +113,7 @@ public class PopularStationsFragment extends Fragment {
                     resolved = trySearch(api, displayLabel.trim(), displayLabel);
                 }
             } catch (Exception ignored) {
-                // handled below
+
             }
 
             final MatchedStop best = resolved;
@@ -146,3 +149,4 @@ public class PopularStationsFragment extends Fragment {
         binding = null;
     }
 }
+

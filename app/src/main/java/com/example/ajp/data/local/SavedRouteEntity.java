@@ -7,14 +7,17 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 import com.example.ajp.ui.journey.RouteItem;
 
-/**
- * Room entity for saved routes. Add in Commit 4.
- * PURPOSE: Store RouteItem as JSON (via Converters), timestamp, summary for "saved routes" list.
- * WHY: Single table; RouteItem is complex so use TypeConverter not embedded fields.
- * ISSUES: RouteItem must be Gson-serialisable; Converters registered in AppDatabase.
- */
+
+
+
+
+
+
 @Entity(tableName = "saved_routes")
 @TypeConverters(Converters.class)
+/**
+ * Room entity backing the SavedRouteEntity table.
+ */
 public class SavedRouteEntity {
 
     @PrimaryKey(autoGenerate = true)
@@ -38,3 +41,4 @@ public class SavedRouteEntity {
         this.summary = summary;
     }
 }
+

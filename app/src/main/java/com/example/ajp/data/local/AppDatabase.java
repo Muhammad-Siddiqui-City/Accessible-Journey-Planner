@@ -7,19 +7,22 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-/**
- * Room database. Add in Commit 4 with entities and DAOs.
- * Holds saved routes and journey logs; singleton; TypeConverters for JSON columns.
- */
+
+
+
+
 @Database(entities = {SavedRouteEntity.class, JourneyLog.class}, version = 4, exportSchema = false)
 @TypeConverters(Converters.class)
+/**
+ * Room database holder and migration registration point.
+ */
 public abstract class AppDatabase extends androidx.room.RoomDatabase {
 
-    /* --- BLOCK: Migration 3→4 ---
-     * PURPOSE: Clear journey_logs when schema or usage changed.
-     * WHY: Avoid invalid data after a breaking change; migration runs once per upgrade.
-     * ISSUES: exportSchema = false so no schema export; for production consider exportSchema = true.
-     */
+
+
+
+
+
     private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
         @Override
         public void migrate(SupportSQLiteDatabase db) {
@@ -32,11 +35,11 @@ public abstract class AppDatabase extends androidx.room.RoomDatabase {
     public abstract SavedRouteDao savedRouteDao();
     public abstract JourneyLogDao journeyLogDao();
 
-    /* --- BLOCK: Singleton getInstance ---
-     * PURPOSE: One database instance app-wide; create on first use.
-     * WHY: Room recommends one DB instance; use applicationContext to avoid leaks.
-     * ISSUES: fallbackToDestructiveMigration() wipes DB on unknown migrations; ok for prototype.
-     */
+
+
+
+
+
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
@@ -52,3 +55,4 @@ public abstract class AppDatabase extends androidx.room.RoomDatabase {
         return INSTANCE;
     }
 }
+

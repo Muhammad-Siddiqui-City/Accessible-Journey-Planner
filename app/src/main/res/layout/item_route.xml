@@ -182,6 +182,34 @@
             android:textStyle="bold"
             android:visibility="gone"
             android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:id="@+id/badgeLine3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/line_default"
+            android:text="BUS"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:id="@+id/badgeLine4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/line_default"
+            android:text="MET"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginEnd="4dp" />
     </LinearLayout>
 
     <TextView

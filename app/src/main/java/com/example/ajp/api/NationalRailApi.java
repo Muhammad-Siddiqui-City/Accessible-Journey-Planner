@@ -19,28 +19,31 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+
+
+
+
+
+
+
+
 /**
- * National Rail OpenLDBWS SOAP client. Add in Commit 9 with CrsLookup.
- * PURPOSE: Live train departures when TfL StopPoint/Arrivals returns empty (e.g. Barnes, SWR).
- * WHY: OkHttp POST with SOAP XML; GetDepartureBoard on ldb10.asmx. Do not use GetDepBoardWithDetails
- *      (ldb11) for platform – it caused SWR times to disappear; reverted to GetDepartureBoard.
- * ISSUES: 500 if SOAPAction/namespace mismatch (use 2012-01-13 for GetDepartureBoard); "Invalid crs code"
- *      if filterCrs sent with empty or non-3-char – only add filterCrs/filterType when toCrs valid.
+ * Minimal SOAP client for OpenLDBWS departures used when TfL data is unavailable.
  */
 public class NationalRailApi {
 
-    /* --- BLOCK: SOAP endpoint ---
-     * PURPOSE: NRE OpenLDBWS URL; access token from ApiKeyManager (local.properties at build time).
-     */
+
+
+
     private static final String SOAP_URL = "https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb10.asmx";
     private static final MediaType SOAP_XML = MediaType.parse("text/xml; charset=utf-8");
 
-    /* --- BLOCK: Build SOAP GetDepartureBoard request body ---
-     * PURPOSE: XML body with numRows, crs (fromCrs), optional filterCrs/filterType, timeWindow.
-     * WHY: ldb namespace 2017-02-02 in body; only add filterCrs when toCrs is non-null and 3-char to
-     *      avoid "Invalid crs code supplied" from API.
-     * ISSUES: Wrong namespace or SOAPAction caused 500; fixed by aligning with NRE docs.
-     */
+
+
+
+
+
+
     private static String buildSoapBody(String fromCrs, String toCrs) {
         StringBuilder xml = new StringBuilder();
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -54,6 +57,7 @@ public class NationalRailApi {
         xml.append("<ldb:GetDepartureBoardRequest>");
         xml.append("<ldb:numRows>5</ldb:numRows>");
         xml.append("<ldb:crs>").append(fromCrs.toUpperCase().trim()).append("</ldb:crs>");
+        // filterCrs must be omitted when invalid; sending blank values causes SOAP faults.
         if (toCrs != null && !toCrs.trim().isEmpty() && toCrs.trim().length() == 3) {
             xml.append("<ldb:filterCrs>").append(toCrs.trim().toUpperCase()).append("</ldb:filterCrs>");
             xml.append("<ldb:filterType>to</ldb:filterType>");
@@ -65,11 +69,11 @@ public class NationalRailApi {
         return xml.toString();
     }
 
-    /* --- BLOCK: OkHttp and main-thread callback ---
-     * PURPOSE: Single client for SOAP calls; post results on main thread for UI.
-     * WHY: Callback runs on mainHandler so StopsViewModel can post to LiveData safely.
-     * ISSUES: None.
-     */
+
+
+
+
+
     private final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
             .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
@@ -82,11 +86,11 @@ public class NationalRailApi {
         void onError(String message);
     }
 
-    /* --- BLOCK: getDepartureBoard – request and enqueue ---
-     * PURPOSE: POST SOAP request with SOAPAction header; parse response and callback on main thread.
-     * WHY: SOAPAction "http://thalesgroup.com/RTTI/2012-01-13/ldb/GetDepartureBoard" required by NRE.
-     * ISSUES: Content-Type text/xml; charset=utf-8. Check response.isSuccessful() and extractSoapFault first.
-     */
+
+
+
+
+
     public void getDepartureBoard(String fromCrs, String toCrs, DepartureBoardCallback callback) {
         if (fromCrs == null || fromCrs.trim().length() != 3) {
             if (callback != null) mainHandler.post(() -> callback.onError("Invalid CRS: " + fromCrs));
@@ -147,11 +151,11 @@ public class NationalRailApi {
         });
     }
 
-    /* --- BLOCK: Extract SOAP fault message ---
-     * PURPOSE: Parse faultstring from SOAP Fault for user-facing error.
-     * WHY: API returns 200 with Fault in body for bad CRS etc.; need to detect and report.
-     * ISSUES: Handles both <faultstring> and <soap:faultstring>.
-     */
+
+
+
+
+
     private static String extractSoapFault(String xml) {
         if (xml == null || !xml.contains("Fault")) return null;
         int start = xml.indexOf("<faultstring>");
@@ -163,12 +167,12 @@ public class NationalRailApi {
         return end > start ? xml.substring(start, end).trim() : null;
     }
 
-    /* --- BLOCK: Parse GetDepartureBoardResponse to List<Arrival> ---
-     * PURPOSE: Extract each service (std, etd, destination, platform, operator) into Arrival.
-     * WHY: Strip XML namespaces (lt7:etd -> etd) so regex/indexOf work; fallback to <etd> regex if
-     *      no <service> blocks found. computeSecondsToDeparture for timeToStationSeconds.
-     * ISSUES: Response structure can vary; fallback handles alternate formats.
-     */
+
+
+
+
+
+
     private static int indexOfIgnoreCase(String haystack, String needle, int from) {
         if (haystack == null || needle == null) return -1;
         int nlen = needle.length();
@@ -183,14 +187,15 @@ public class NationalRailApi {
         List<Arrival> list = new ArrayList<>();
         if (xml == null || xml.isEmpty()) return list;
 
-        // Strip namespaces (lt7:etd -> etd, ns2:std -> std) so we can parse reliably
+
+        // Strip namespace prefixes so simple tag scanners work across provider variants.
         String cleanXml = xml.replaceAll("<\\w+:", "<").replaceAll("</\\w+:", "</");
         if (!cleanXml.equals(xml)) {
             android.util.Log.d("DEBUG_SWR", "Stripped namespaces from XML for parsing");
         }
         xml = cleanXml;
 
-        // Find each <service> block (case-insensitive opening tag — NRE responses vary)
+
         int idx = 0;
         while (true) {
             int serviceStart = indexOfIgnoreCase(xml, "<service", idx);
@@ -208,7 +213,7 @@ public class NationalRailApi {
             idx = serviceEnd + 1;
         }
 
-        // Fallback: use regex to find <etd>...</etd> (handles any namespace-stripped format)
+
         if (list.isEmpty()) {
             Pattern etdPattern = Pattern.compile("<etd>(.*?)</etd>", Pattern.DOTALL);
             Matcher etdMatcher = etdPattern.matcher(xml);
@@ -228,6 +233,7 @@ public class NationalRailApi {
                 String platform = extractTag(xml, etdStart, "platform", "");
                 String operator = extractTag(xml, etdStart, "operator", "");
 
+                // Some feeds use textual ETD values; convert them to a safe countdown.
                 int sec = computeSecondsToDeparture("On time".equalsIgnoreCase(etdVal) ? std : etdVal);
                 list.add(new Arrival(
                         operator.isEmpty() ? "National Rail" : operator,
@@ -244,11 +250,11 @@ public class NationalRailApi {
         return list;
     }
 
-    /* --- BLOCK: Parse one <service> block to Arrival ---
-     * PURPOSE: Read std, etd, destination/locationName, platform, operator; use "On time" → std.
-     * WHY: Single place to build Arrival from service XML; mode "national-rail" for UI.
-     * ISSUES: None.
-     */
+
+
+
+
+
     private static Arrival parseServiceBlock(String block) {
         String std = extractTag(block, 0, "std", "");
         String etd = extractTag(block, 0, "etd", "");
@@ -261,7 +267,7 @@ public class NationalRailApi {
 
         String timeToUse = ("On time".equalsIgnoreCase(etd) || etd.isEmpty()) ? std : etd;
         int sec = computeSecondsToDeparture(timeToUse);
-        if (sec < 0 && !timeToUse.isEmpty()) sec = 0; // Past departure, show as due
+        if (sec < 0 && !timeToUse.isEmpty()) sec = 0;
 
         return new Arrival(
                 operator.isEmpty() ? "South Western Railway" : operator,
@@ -271,11 +277,11 @@ public class NationalRailApi {
                 "national-rail");
     }
 
-    /* --- BLOCK: Extract tag value from XML (handles namespaces) ---
-     * PURPOSE: Find <parent><child>value</child></parent> or <parent>value</parent>.
-     * WHY: SOAP response uses ns1:/ns2: prefixes; search for both.
-     * ISSUES: searchEnd limits scan to 1000 chars to avoid runaway.
-     */
+
+
+
+
+
     private static String extractTag(String xml, int fromIndex, String parent, String child) {
         int start = xml.indexOf("<" + parent + ">", fromIndex);
         if (start < 0) start = xml.indexOf("<ns2:" + parent + ">", fromIndex);
@@ -305,11 +311,11 @@ public class NationalRailApi {
         return "";
     }
 
-    /* --- BLOCK: "HH:mm" to seconds from now ---
-     * PURPOSE: Convert scheduled/estimated time to timeToStationSeconds for Arrival.
-     * WHY: If past midnight (diffMin < 0) add 24*60 for next day.
-     * ISSUES: "On time"/"Delayed"/"Cancelled" treated as 0 (due).
-     */
+
+
+
+
+
     private static int computeSecondsToDeparture(String timeStr) {
         if (timeStr == null || timeStr.trim().isEmpty()) return -1;
         timeStr = timeStr.trim();
@@ -329,7 +335,9 @@ public class NationalRailApi {
         int nowMinOfDay = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
         int depMinOfDay = hour * 60 + min;
         int diffMin = depMinOfDay - nowMinOfDay;
-        if (diffMin < 0) diffMin += 24 * 60; // Next day
+        // Treat past times as next-day departures to keep countdowns non-negative.
+        if (diffMin < 0) diffMin += 24 * 60;
         return diffMin * 60;
     }
 }
+

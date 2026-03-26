@@ -11,9 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.ajp.R;
 
+
+
+
+
 /**
- * Line/area chart for Time Saved Trend. Mock data: Mon 12, Tue 8, Wed 15, Thu 5, Fri 10, Sat 3, Sun 0 (minutes).
- * Teal line and fill. Tap shows chip via listener.
+ * Custom view for rendering TimeSavedLineChart content.
  */
 public class TimeSavedLineChartView extends View {
 
@@ -176,3 +179,4 @@ public class TimeSavedLineChartView extends View {
         return super.onTouchEvent(event);
     }
 }
+

@@ -1,6 +1,7 @@
 package com.example.ajp.ui.routedetails;
 
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +16,20 @@ import com.example.ajp.api.RouteOptionRef;
 import com.example.ajp.utils.TimeFormatUtil;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Adapter for step-by-step journey legs. Add in Commit 12.
- * PURPOSE: Bind Leg to item_step; show title (mode/destination), instruction summary, duration (TimeFormatUtil); colored indicator by mode.
- * WHY: Leg.getDuration() is seconds; convert to minutes then formatMinutesToHourMin for display.
- * ISSUES: buildStepTitle distinguishes walk/bus/tube; getStepColor returns COLOR_TUBE/BUS/WALK.
+ * RecyclerView adapter for Steps items.
  */
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHolder> {
 
-    private static final int COLOR_TUBE = 0xFF2196F3;  // Blue
-    private static final int COLOR_BUS = 0xFFE53935;   // Red
-    private static final int COLOR_WALK = 0xFF9E9E9E;  // Grey
+    private static final int COLOR_TUBE = 0xFF2196F3;
+    private static final int COLOR_BUS = 0xFFE53935;
+    private static final int COLOR_WALK = 0xFF9E9E9E;
 
     private final List<Leg> legs;
 
@@ -58,7 +62,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         holder.tvDuration.setText(durationText);
         holder.tvDuration.setVisibility(durationText.isEmpty() ? View.GONE : View.VISIBLE);
 
-        int color = getStepColor(modeName);
+        int color = getStepColor(leg, modeName);
         holder.indicator.setBackgroundColor(color);
     }
 
@@ -89,13 +93,39 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         return modeName.isEmpty() ? "Step" : modeName + " leg";
     }
 
-    private int getStepColor(String modeName) {
+    private int getStepColor(Leg leg, String modeName) {
         String m = modeName.toLowerCase();
         if (m.contains("tube") || m.contains("dlr") || m.contains("overground") || m.contains("rail") || m.contains("underground") || m.contains("elizabeth")) {
-            return COLOR_TUBE;
+            return getRailStepColorByLineName(leg);
         }
         if (m.contains("bus")) return COLOR_BUS;
         return COLOR_WALK;
+    }
+
+    private int getRailStepColorByLineName(Leg leg) {
+        String lineName = "";
+        if (leg != null) {
+            List<RouteOptionRef> opts = leg.getRouteOptions();
+            if (opts != null && !opts.isEmpty() && opts.get(0) != null && opts.get(0).getName() != null) {
+                lineName = opts.get(0).getName();
+            }
+        }
+        String n = lineName.toLowerCase();
+        if (n.contains("bakerloo")) return Color.parseColor("#B36305");
+        if (n.contains("central")) return Color.parseColor("#E32017");
+        if (n.contains("circle")) return Color.parseColor("#FFD300");
+        if (n.contains("district")) return Color.parseColor("#00782A");
+        if (n.contains("hammersmith")) return Color.parseColor("#F3A9BB");
+        if (n.contains("jubilee")) return Color.parseColor("#A0A5A9");
+        if (n.contains("metropolitan")) return Color.parseColor("#9B0056");
+        if (n.contains("northern")) return Color.parseColor("#000000");
+        if (n.contains("piccadilly")) return Color.parseColor("#003688");
+        if (n.contains("victoria")) return Color.parseColor("#0098D4");
+        if (n.contains("waterloo") && n.contains("city")) return Color.parseColor("#95CDBA");
+        if (n.contains("elizabeth")) return Color.parseColor("#6950A1");
+        if (n.contains("dlr")) return Color.parseColor("#00A4A7");
+        if (n.contains("overground")) return Color.parseColor("#EF7B10");
+        return COLOR_TUBE;
     }
 
     @Override
@@ -118,3 +148,4 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         }
     }
 }
+

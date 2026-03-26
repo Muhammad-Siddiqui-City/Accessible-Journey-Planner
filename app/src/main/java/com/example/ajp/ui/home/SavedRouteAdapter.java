@@ -13,9 +13,12 @@ import com.example.ajp.data.local.SavedRouteEntity;
 import com.example.ajp.utils.TimeFormatUtil;
 import java.util.List;
 
+
+
+
+
 /**
- * Adapter for the Saved Routes list on Home.
- * PURPOSE: Display saved routes (summary, relative time); tap row opens details; delete removes from Room.
+ * RecyclerView adapter for SavedRoute items.
  */
 public class SavedRouteAdapter extends RecyclerView.Adapter<SavedRouteAdapter.ViewHolder> {
 
@@ -94,3 +97,4 @@ public class SavedRouteAdapter extends RecyclerView.Adapter<SavedRouteAdapter.Vi
         }
     }
 }
+

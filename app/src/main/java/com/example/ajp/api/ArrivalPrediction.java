@@ -2,11 +2,14 @@ package com.example.ajp.api;
 
 import com.google.gson.annotations.SerializedName;
 
+
+
+
+
+
+
 /**
- * TfL arrival prediction for a stop. Add in Commit 2 (API DTOs).
- * PURPOSE: One predicted arrival: line, destination, platform, timeToStation (seconds), modeName.
- * WHY: StopPoint/{id}/Arrivals returns list of these; mapped to ui.arrivals.Arrival for display.
- * ISSUES: timeToStation is seconds; filter out <60s and >3600s in StopsViewModel.
+ * DTO used to parse API payloads for ArrivalPrediction.
  */
 public class ArrivalPrediction {
 
@@ -27,3 +30,4 @@ public class ArrivalPrediction {
     public int getTimeToStation() { return timeToStation; }
     public String getModeName() { return modeName != null ? modeName : ""; }
 }
+

@@ -4,11 +4,14 @@ import com.example.ajp.api.Leg;
 import java.io.Serializable;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Model for a suggested route card. Add in Commit 11.
- * PURPOSE: durationMinutes (string), departure/arrival, crowding level, line badges, legs; Serializable for intent.
- * WHY: Built from Journey + Legs; getDurationMinutesInt() for RouteOptimizer; getTotalWalkingMinutes from walking legs.
- * ISSUES: durationMinutes is string (e.g. "74"); display with TimeFormatUtil.formatMinutesToHourMin(getDurationMinutesInt()).
+ * UI model/helper used by the RouteItem feature.
  */
 public class RouteItem implements Serializable {
 
@@ -19,17 +22,17 @@ public class RouteItem implements Serializable {
     private final String durationMinutes;
     private final String departureTime;
     private final String arrivalTime;
-    private final int crowdingLevel; // CROWDING_LOW, CROWDING_MEDIUM, CROWDING_HIGH
+    private final int crowdingLevel;
     private final String transfersText;
-    private final String[] lineBadges; // e.g. {"VIC"} or {"PIC", "JUB"}
+    private final String[] lineBadges;
     private final String routeSummary;
     private final String routeId;
     private final String fromStation;
     private final String toStation;
     private final List<Leg> legs;
     private final boolean hasLiftDisruption;
-    // AI Generated
-    // Built with Claude
+
+
     private final String liftDisruptionDescription;
 
     public RouteItem(String durationMinutes, String departureTime, String arrivalTime, int crowdingLevel,
@@ -70,12 +73,12 @@ public class RouteItem implements Serializable {
     public String getToStation() { return toStation; }
     public List<Leg> getLegs() { return legs; }
     public boolean hasLiftDisruption() { return hasLiftDisruption; }
-    // AI Generated
-    // Built with Claude
-    /** Actual TfL disruption text (e.g. "No step-free access to/from the eastbound platform"). Null if none. */
+
+
+
     public String getLiftDisruptionDescription() { return liftDisruptionDescription; }
 
-    /** Parsed duration in minutes for scoring (e.g. 15 from "15"). */
+
     public int getDurationMinutesInt() {
         if (durationMinutes == null || durationMinutes.isEmpty()) return 0;
         try {
@@ -85,7 +88,7 @@ public class RouteItem implements Serializable {
         }
     }
 
-    /** Transfer count parsed from transfersText (e.g. "2 transfers" -> 2). */
+
     public int getTransfersCount() {
         if (transfersText == null || transfersText.isEmpty()) return 0;
         try {
@@ -96,7 +99,7 @@ public class RouteItem implements Serializable {
         }
     }
 
-    /** Total walking time in minutes from walking legs. */
+
     public int getTotalWalkingMinutes() {
         if (legs == null || legs.isEmpty()) return 0;
         int seconds = 0;
@@ -121,3 +124,4 @@ public class RouteItem implements Serializable {
         return routeId != null ? routeId.hashCode() : 0;
     }
 }
+

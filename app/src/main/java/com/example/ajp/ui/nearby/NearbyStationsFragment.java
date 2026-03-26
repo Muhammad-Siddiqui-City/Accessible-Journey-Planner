@@ -13,11 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.ajp.databinding.FragmentNearbyStationsBinding;
 import com.example.ajp.ui.main.MainActivity;
 
+
+
+
+
+
+
 /**
- * Nearby stops list for given lat/lon. Add in Commit 8.
- * PURPOSE: newInstance(lat, lon); load stops via StopsViewModel.loadNearbyStops(lat, lon); click → Live Arrivals (stopId, stopName).
- * WHY: Home passes location from LocationManager; NearbyStationsAdapter binds StopItem; line status and distance shown.
- * ISSUES: None.
+ * UI fragment for the NearbyStations screen.
  */
 public class NearbyStationsFragment extends Fragment {
 
@@ -28,7 +31,7 @@ public class NearbyStationsFragment extends Fragment {
     private StopsViewModel viewModel;
     private NearbyStationsAdapter adapter;
 
-    /** Create fragment with lat/lon for loading nearest stops. */
+
     public static NearbyStationsFragment newInstance(double lat, double lon) {
         NearbyStationsFragment f = new NearbyStationsFragment();
         Bundle args = new Bundle();
@@ -49,9 +52,9 @@ public class NearbyStationsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(StopsViewModel.class);
-        adapter = new NearbyStationsAdapter((stopId, stopName) -> {
+        adapter = new NearbyStationsAdapter((stopId, stopName, stopLetter) -> {
             if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).showLiveArrivalsFragment(stopId, stopName);
+                ((MainActivity) getActivity()).showLiveArrivalsFragment(stopId, formatNameWithStopLetter(stopName, stopLetter));
             }
         });
 
@@ -93,4 +96,12 @@ public class NearbyStationsFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+    private static String formatNameWithStopLetter(String stopName, String stopLetter) {
+        String name = stopName != null ? stopName.trim() : "";
+        String letter = stopLetter != null ? stopLetter.replace("->", "").trim() : "";
+        if (name.isEmpty() || letter.isEmpty()) return name;
+        return name + " (Stop " + letter + ")";
+    }
 }
+

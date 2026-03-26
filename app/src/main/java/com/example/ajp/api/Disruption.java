@@ -3,11 +3,14 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
+
+
+
+
+
+
 /**
- * TfL StopPoint disruption DTO.
- * PURPOSE: Deserialise StopPoint/{id}/disruption response; description may contain lift/escalator outage text.
- * WHY: LiftDisruptionChecker parses description for keywords like "lift", "escalator" to detect step-free issues.
- * ISSUES: TfL uses atcoCode/stationAtcoCode; Journey legs use NaPTAN IDs - both refer to the same station.
+ * DTO used to parse API payloads for Disruption.
  */
 public class Disruption implements Serializable {
 
@@ -28,7 +31,7 @@ public class Disruption implements Serializable {
         return description != null ? description : "";
     }
 
-    /** Returns best display text (description or additionalInfo). TfL may put step-free text in either. */
+
     public String getDisplayText() {
         if (description != null && !description.trim().isEmpty()) return description.trim();
         if (additionalInfo != null && !additionalInfo.trim().isEmpty()) return additionalInfo.trim();
@@ -79,3 +82,4 @@ public class Disruption implements Serializable {
         this.appearance = appearance;
     }
 }
+

@@ -2,11 +2,14 @@ package com.example.ajp.api;
 
 import com.google.gson.annotations.SerializedName;
 
+
+
+
+
+
+
 /**
- * Line reference in TfL API. Add in Commit 2 (API DTOs).
- * PURPOSE: Line id/name for badges (e.g. "District", "Piccadilly").
- * WHY: StopPoint has List<LineIdentifier>; used in nearby list and route badges.
- * ISSUES: None.
+ * DTO used to parse API payloads for LineIdentifier.
  */
 public class LineIdentifier {
 
@@ -15,3 +18,4 @@ public class LineIdentifier {
 
     public String getName() { return name != null ? name : ""; }
 }
+

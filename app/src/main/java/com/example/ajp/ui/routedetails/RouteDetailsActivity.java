@@ -35,23 +35,26 @@ import com.google.android.gms.location.LocationServices;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+
+
+
+
+
+
 /**
- * Route details screen. Add in Commit 12; GPS progress in 13.
- * PURPOSE: Show route summary, steps (StepsAdapter), share (formatted duration), save; Start Navigation → GPS progress.
- * WHY: FusedLocationProviderClient for distance-to-destination progress; removeLocationUpdates in onDestroy.
- * ISSUES: parseDuration for share; duration display uses TimeFormatUtil; bookmark/print button removed per UI cleanup.
+ * Shows route details, supports save/share, and tracks coarse navigation progress.
  */
 public class RouteDetailsActivity extends AppCompatActivity {
-    // AI Generated
-    // Lovable.dev: UI mockup reference
-    // Built with Claude
+
+
+
     public static final String EXTRA_ROUTE_ID = "route_id";
     public static final String EXTRA_ROUTE = "selected_route";
     public static final String EXTRA_FROM_OFFLINE = "from_offline";
     public static final String EXTRA_ALTERNATIVES = "alternatives";
-    /** User's typed origin text (e.g. "wembley central"); used for display when postcode-like. */
+
     public static final String EXTRA_USER_FROM_INPUT = "user_from_input";
-    /** User's typed destination text (e.g. "sw15 5le"); shown instead of geocoded address when postcode-like. */
+
     public static final String EXTRA_USER_TO_INPUT = "user_to_input";
 
     private static final int REQUEST_LOCATION = 1001;
@@ -69,6 +72,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
+        // Apply locale before view inflation so translated resources are used immediately.
         super.attachBaseContext(LocaleHelper.applyFull(newBase));
     }
 
@@ -106,7 +110,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         announceRouteSummaryIfTtsOn(currentRoute);
     }
 
-    /** Build destination Location from last leg's arrival point (for GPS progress). */
+
     private Location buildDestinationLocation(RouteItem route) {
         if (route == null) return null;
         List<Leg> legs = route.getLegs();
@@ -131,8 +135,8 @@ public class RouteDetailsActivity extends AppCompatActivity {
         String transfersStr = transfers == 0 ? "no transfers" : transfers == 1 ? "1 transfer" : transfers + " transfers";
         String phrase = "Route from " + from + " to " + to + ", duration " + durationStr + ", " + transfersStr;
         ttsHelper.speak(phrase);
-        // AI Generated: speak actual disruption text
-        // Built with Claude
+
+
         if (route.hasLiftDisruption()) {
             String msg = route.getLiftDisruptionDescription() != null
                     ? route.getLiftDisruptionDescription()
@@ -165,6 +169,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
                 }
             }
         }
+        // Fall back to a small synthetic gain when alternatives are missing.
         int savedMinutes = (worstCase > currentDuration) ? (worstCase - currentDuration) : (int) (currentDuration * 0.1);
         String mode = deriveMode(currentRoute);
         boolean isCrowdLow = (currentRoute.getCrowdingLevel() == RouteItem.CROWDING_LOW);
@@ -219,9 +224,11 @@ public class RouteDetailsActivity extends AppCompatActivity {
     private void updateProgressBar(Location loc) {
         if (destLocation == null || binding == null) return;
         float currentDist = loc.distanceTo(destLocation);
+        // Capture the first distance reading as baseline for percentage progress.
         if (initialDistanceToDest < 0f) initialDistanceToDest = currentDist;
         if (initialDistanceToDest <= 0f) return;
         float remaining = currentDist;
+        // GPS jitter can temporarily increase distance; clamp to avoid negative progress.
         if (currentDist > initialDistanceToDest) remaining = initialDistanceToDest;
         int progress = (int) ((initialDistanceToDest - remaining) / initialDistanceToDest * 100f);
         if (progress < 0) progress = 0;
@@ -241,7 +248,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         }
     }
 
-    /** Prefer intent extras (exact journey field text); else labels stored on {@link RouteItem}. */
+
     private String resolveFromDisplay(RouteItem route) {
         String userFrom = getIntent().getStringExtra(EXTRA_USER_FROM_INPUT);
         if (userFrom != null && !userFrom.trim().isEmpty()) return userFrom.trim();
@@ -258,7 +265,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         return to;
     }
 
-    /** One line for Home "saved routes" list (same labels as on-screen from/to). */
+
     private String buildSavedRouteSummary(RouteItem route) {
         return resolveFromDisplay(route) + " → " + resolveToDisplay(route);
     }
@@ -266,13 +273,14 @@ public class RouteDetailsActivity extends AppCompatActivity {
     private static int parseDuration(String s) {
         if (s == null || s.isEmpty()) return 0;
         try {
+            // Input can contain units; keep only digits before parsing.
             return Integer.parseInt(s.replaceAll("[^0-9]", ""));
         } catch (Exception e) {
             return 0;
         }
     }
 
-    /** Returns comma-separated list of all transport modes used (Tube, Bus, etc). Skips walk. */
+
     private static String deriveMode(RouteItem route) {
         java.util.List<Leg> legs = route.getLegs();
         if (legs == null || legs.isEmpty()) return "Mixed";
@@ -315,7 +323,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.save, Toast.LENGTH_SHORT).show();
             return;
         }
-        // Build summary on UI thread (uses intent extras for typed A→B).
+
         final String summary = buildSavedRouteSummary(currentRoute);
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -343,8 +351,8 @@ public class RouteDetailsActivity extends AppCompatActivity {
             binding.tvArrivalTime.setText("→ " + route.getArrivalTime());
             binding.tvTransfers.setText(route.getTransfersText());
             binding.tvCrowdingWarning.setVisibility(route.getCrowdingLevel() == RouteItem.CROWDING_HIGH ? View.VISIBLE : View.GONE);
-            // AI Generated: display actual TfL disruption text
-            // Built with Claude
+
+
             if (AccessibilityPreferences.get(this).isStepFree() && route.hasLiftDisruption()) {
                 binding.tvLiftDisruptionWarning.setVisibility(View.VISIBLE);
                 String desc = route.getLiftDisruptionDescription();
@@ -404,7 +412,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_journey)));
     }
 
-    /** Build a one-line summary for a leg: instruction summary, or "Mode to ArrivalPoint". */
+
     private static String getLegSummary(Leg leg) {
         if (leg.getInstruction() != null) {
             String s = leg.getInstruction().getSummary();
@@ -432,3 +440,4 @@ public class RouteDetailsActivity extends AppCompatActivity {
         binding = null;
     }
 }
+

@@ -3,11 +3,14 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Single journey from TfL Journey API. Add in Commit 2 (API DTOs).
- * PURPOSE: Deserialise journey plan response; duration in MINUTES (TfL), legs in order.
- * WHY: Gson @SerializedName matches TfL JSON; getDuration() used for route summary (use TimeFormatUtil for display).
- * ISSUES: Leg.getDuration() is in SECONDS; Journey.getDuration() in minutes – document to avoid bugs.
+ * DTO used to parse API payloads for Journey.
  */
 public class Journey {
 
@@ -25,3 +28,4 @@ public class Journey {
     public String getArrivalDateTime() { return arrivalDateTime != null ? arrivalDateTime : ""; }
     public List<Leg> getLegs() { return legs != null ? legs : java.util.Collections.emptyList(); }
 }
+

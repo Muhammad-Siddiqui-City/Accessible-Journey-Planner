@@ -3,11 +3,14 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
+
+
+
+
+
+
 /**
- * TfL Journey API crowding. Add in Commit 2 (API DTOs).
- * PURPOSE: crowdingLevel 1–5 (Very Quiet to Very Busy); used for route card and analytics.
- * WHY: Present on Tube/Rail legs when sensor data available; often absent for bus.
- * ISSUES: RouteItem/RouteAdapter map level to progress bar and color.
+ * DTO used to parse API payloads for Crowding.
  */
 public class Crowding implements Serializable {
 
@@ -22,3 +25,4 @@ public class Crowding implements Serializable {
         this.crowdingLevel = crowdingLevel;
     }
 }
+

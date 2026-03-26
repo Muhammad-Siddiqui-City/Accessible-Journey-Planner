@@ -15,9 +15,12 @@ import com.example.ajp.ui.nearby.StopsViewModel;
 import java.util.Collections;
 import java.util.List;
 
+
+
+
+
 /**
- * Detail screen shown from Popular Stations.
- * PURPOSE: Show up to 5 trains arriving towards this station (TfL) and up to 5 departures (National Rail when CRS + token available).
+ * UI fragment for the StationTrains screen.
  */
 public class StationTrainsFragment extends Fragment {
 
@@ -97,3 +100,4 @@ public class StationTrainsFragment extends Fragment {
         binding = null;
     }
 }
+

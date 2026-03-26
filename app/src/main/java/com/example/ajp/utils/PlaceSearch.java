@@ -9,15 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
+
+
+
+
+
 /**
- * Geocoder-based place search. Add in Commit 14.
- * PURPOSE: Search by place name (e.g. "McDonalds") within London bbox; return as StopItem with id "lat,lon".
- * WHY: TfL only has stations; Geocoder gives addresses/POIs; "lat,lon" used as journey from/to in JourneyViewModel.
- * ISSUES: Geocoder can be slow or absent on device; StopsViewModel skips TfL/NR when stopId contains ",".
+ * Utility class for PlaceSearch.
  */
 public final class PlaceSearch {
 
-    /** London bounding box: south-west (51.2, -0.5) to north-east (51.7, 0.3). */
+
     private static final double BBOX_SOUTH = 51.2;
     private static final double BBOX_WEST = -0.5;
     private static final double BBOX_NORTH = 51.7;
@@ -28,10 +31,10 @@ public final class PlaceSearch {
 
     private PlaceSearch() { }
 
-    /**
-     * Search for places by name (e.g. "McDonalds", "gym"). Returns up to 5 results as StopItem
-     * with id = "lat,lon" so they can be used as journey from/to coordinates.
-     */
+
+
+
+
     public static List<StopItem> searchPlaces(Context context, String query) {
         if (context == null || query == null || query.trim().isEmpty()) {
             return new ArrayList<>();
@@ -77,3 +80,4 @@ public final class PlaceSearch {
         return addr.getLatitude() + ", " + addr.getLongitude();
     }
 }
+

@@ -6,25 +6,28 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import androidx.appcompat.widget.AppCompatTextView;
 
+
+
+
+
 /**
- * Reusable line badge: shows line abbr (e.g. VIC) with TfL line color.
- * No logic; appearance only. Colors from LineBadge.tsx.
+ * Custom view for rendering LineBadge content.
  */
 public class LineBadgeView extends AppCompatTextView {
 
     private static final int[][] LINE_COLORS = {
-            { 0xFF0098D4, 0xFFFFFFFF }, // victoria
-            { 0xFFE32017, 0xFFFFFFFF }, // central
-            { 0xFF000000, 0xFFFFFFFF }, // northern
-            { 0xFF003688, 0xFFFFFFFF }, // piccadilly
-            { 0xFFA0A5A9, 0xFF000000 }, // jubilee
-            { 0xFFB36305, 0xFFFFFFFF }, // bakerloo
-            { 0xFFFFD300, 0xFF000000 }, // circle
-            { 0xFF00782A, 0xFFFFFFFF }, // district
-            { 0xFF6950A1, 0xFFFFFFFF }, // elizabeth
-            { 0xFFEE7C0E, 0xFF000000 }, // overground
-            { 0xFF00A4A7, 0xFFFFFFFF }, // dlr
-            { 0xFFE32017, 0xFFFFFFFF }, // bus
+            { 0xFF0098D4, 0xFFFFFFFF },
+            { 0xFFE32017, 0xFFFFFFFF },
+            { 0xFF000000, 0xFFFFFFFF },
+            { 0xFF003688, 0xFFFFFFFF },
+            { 0xFFA0A5A9, 0xFF000000 },
+            { 0xFFB36305, 0xFFFFFFFF },
+            { 0xFFFFD300, 0xFF000000 },
+            { 0xFF00782A, 0xFFFFFFFF },
+            { 0xFF6950A1, 0xFFFFFFFF },
+            { 0xFFEE7C0E, 0xFF000000 },
+            { 0xFF00A4A7, 0xFFFFFFFF },
+            { 0xFFE32017, 0xFFFFFFFF },
     };
 
     private static final String[] LINE_IDS = {
@@ -60,7 +63,7 @@ public class LineBadgeView extends AppCompatTextView {
         setPadding(padH, padV, padH, padV);
     }
 
-    /** Set line by id (e.g. "victoria"); sets background and text color, and abbr text. */
+
     public void setLine(String lineId) {
         if (lineId == null) lineId = "";
         lineId = lineId.toLowerCase();
@@ -80,3 +83,4 @@ public class LineBadgeView extends AppCompatTextView {
         setText(abbr);
     }
 }
+

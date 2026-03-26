@@ -3,11 +3,14 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
+
+
+
+
+
+
 /**
- * Leg instruction from TfL. Add in Commit 2 (API DTOs).
- * PURPOSE: Human-readable step summary (e.g. "District line to Wimbledon").
- * WHY: instruction.summary used in route details and share text.
- * ISSUES: None.
+ * DTO used to parse API payloads for InstructionRef.
  */
 public class InstructionRef implements Serializable {
 
@@ -16,3 +19,4 @@ public class InstructionRef implements Serializable {
 
     public String getSummary() { return summary != null ? summary : ""; }
 }
+

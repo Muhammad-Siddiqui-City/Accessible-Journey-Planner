@@ -8,11 +8,14 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import androidx.annotation.NonNull;
 
+
+
+
+
+
+
 /**
- * Utility for detecting online/offline connectivity.
- * PURPOSE: Used by JourneyFragment and HomeFragment to show offline messaging and disable Find Routes when offline.
- * WHY: ConnectivityManager with NetworkCapabilities provides reliable detection; callback-based for real-time updates.
- * ISSUES: Requires NETWORK_STATE permission; uses registerDefaultNetworkCallback for API 24+.
+ * Utility class for NetworkMonitor.
  */
 public class NetworkMonitor {
 
@@ -25,16 +28,16 @@ public class NetworkMonitor {
         refreshOnlineState();
     }
 
-    /**
-     * Returns whether the device has network connectivity (Wi-Fi or cellular).
-     */
+
+
+
     public boolean isOnline() {
         return isOnline;
     }
 
-    /**
-     * Synchronously refresh online state. Call when you need current value without callback.
-     */
+
+
+
     public void refreshOnlineState() {
         if (connectivityManager == null) {
             isOnline = false;
@@ -58,9 +61,9 @@ public class NetworkMonitor {
         }
     }
 
-    /**
-     * Register a callback for connectivity changes. Call unregister when done.
-     */
+
+
+
     public void registerCallback(@NonNull OnConnectivityChangedListener listener) {
         if (connectivityManager == null) return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -84,3 +87,4 @@ public class NetworkMonitor {
         void onConnectivityChanged(boolean isOnline);
     }
 }
+

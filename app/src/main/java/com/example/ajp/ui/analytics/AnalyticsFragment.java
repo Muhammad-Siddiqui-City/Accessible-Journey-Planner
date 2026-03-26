@@ -26,11 +26,14 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Analytics tab: weekly stats, time saved, charts, frequent routes. Add in Commit 15.
- * PURPOSE: Observe AnalyticsViewModel LiveData; show journeys count, time saved (TimeFormatUtil), efficiency; bar/line/pie charts; frequent routes list.
- * WHY: getTimeSavedMinutes → formatMinutesToHourMin for tvTimeSaved and tvTrendSummary; great_week_message keeps %d for translations.
- * ISSUES: setupLineChart/setupChart/setupPieChart disable description, set value formatters; TimeFormatUtil import required.
+ * UI fragment for the Analytics screen.
  */
 public class AnalyticsFragment extends Fragment {
 
@@ -203,3 +206,4 @@ public class AnalyticsFragment extends Fragment {
         binding = null;
     }
 }
+

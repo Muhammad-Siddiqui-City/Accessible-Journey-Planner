@@ -14,14 +14,19 @@ import com.example.ajp.ui.journey.RouteItem;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Pattern;
 import retrofit2.Response;
 
+
+
+
+
 /**
- * Resolves origin/destination text to TfL Journey API coordinates/IDs, fetches journeys, maps to {@link RouteItem}.
- * WHY: Keeps network + mapping out of {@link com.example.ajp.ui.journey.JourneyViewModel} for clarity and testing.
+ * Resolves free-text endpoints and maps TfL journey responses into RouteItem models.
  */
 public final class JourneyFetcher {
 
@@ -34,20 +39,21 @@ public final class JourneyFetcher {
         this.appContext = context != null ? context.getApplicationContext() : null;
     }
 
-    /** Stable fingerprint of the suggested routes list (for background “route changed” checks). */
+
     public static String buildSignature(List<RouteItem> routes) {
         if (routes == null || routes.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < routes.size(); i++) {
             RouteItem r = routes.get(i);
+            // Keep this stable for background change detection between polling runs.
             sb.append(i).append(':').append(r.getRouteId()).append(':').append(r.getDurationMinutes()).append(';');
         }
         return sb.toString();
     }
 
-    /**
-     * Plan journey: resolve from/to (coords or TfL search), call Journey API with accessibility prefs.
-     */
+
+
+
     public FetchResult fetch(String fromInput, String toInput, String timeHHmm, String dateyyyyMMdd) {
         if (appContext == null) {
             return FetchResult.fail("No context");
@@ -59,6 +65,7 @@ public final class JourneyFetcher {
             AccessibilityPreferences acc = AccessibilityPreferences.get(appContext);
             String walkingSpeed = acc.getWalkingSpeed();
             int maxWalk = acc.getMaxWalkingMinutes();
+            // TfL expects null when no accessibility filter is requested.
             String accessibility = acc.isStepFree() ? "noSolidStairs" : null;
 
             Response<JourneyResponse> response = api.getJourneyResults(
@@ -82,7 +89,8 @@ public final class JourneyFetcher {
                 return FetchResult.fail("No routes found");
             }
 
-            // Lift/station disruption checks only matter when user asked for step-free routing.
+
+            // Lift checks are expensive; only run them when step-free mode is enabled.
             boolean stepFree = acc.isStepFree();
             LiftDisruptionChecker liftChecker = stepFree ? new LiftDisruptionChecker(appContext) : null;
             String userFrom = fromInput != null ? fromInput.trim() : "";
@@ -112,6 +120,7 @@ public final class JourneyFetcher {
             throw new IOException("Empty place");
         }
         if (COORDS_PATTERN.matcher(t).matches()) {
+            // Strip spaces so "lat, lon" still works with TfL endpoint format.
             return t.replaceAll("\\s+", "");
         }
         Response<TflSearchResponse> resp = api.searchStops(t).execute();
@@ -127,6 +136,7 @@ public final class JourneyFetcher {
         List<Leg> legs = journey.getLegs();
         if (legs == null || legs.isEmpty()) return null;
 
+        // Journey duration is already minutes; leg durations elsewhere are seconds.
         int durationMin = Math.max(0, journey.getDuration());
         String depTime = extractTime(journey.getStartDateTime());
         String arrTime = extractTime(journey.getArrivalDateTime());
@@ -151,23 +161,33 @@ public final class JourneyFetcher {
         int transfers = Math.max(0, nonWalk - 1);
         String transfersText = transfers + (transfers == 1 ? " transfer" : " transfers");
 
-        List<String> badgeList = new ArrayList<>();
+        Set<String> badgeSet = new LinkedHashSet<>();
         for (Leg leg : legs) {
             if (leg.getMode() != null && "walking".equalsIgnoreCase(leg.getMode().getName())) continue;
+            String modeName = leg.getMode() != null ? leg.getMode().getName() : "";
+            if (modeName != null && modeName.toLowerCase(Locale.UK).contains("bus")) {
+                badgeSet.add("BUS");
+                continue;
+            }
             List<RouteOptionRef> opts = leg.getRouteOptions();
             if (opts != null && !opts.isEmpty()) {
                 String name = opts.get(0).getName();
-                badgeList.add(lineNameToBadge(name));
-                if (badgeList.size() >= 2) break;
+                String badge = lineNameToBadge(name);
+                if (!badge.isEmpty()) badgeSet.add(badge);
             }
+        }
+        List<String> badgeList = new ArrayList<>(badgeSet);
+        if (badgeList.size() > 4) {
+            badgeList = badgeList.subList(0, 4);
         }
         String[] badges = badgeList.toArray(new String[0]);
 
         JourneyPlace firstDep = legs.get(0).getDeparturePoint();
         JourneyPlace lastArr = legs.get(legs.size() - 1).getArrivalPoint();
-        // Stored labels = exactly what the user typed (saved routes, route details, list summary).
+
         String fromName = firstDep != null && firstDep.getCommonName() != null ? firstDep.getCommonName().trim() : "";
         String toName = lastArr != null && lastArr.getCommonName() != null ? lastArr.getCommonName().trim() : "";
+        // Preserve what the user typed so UI labels stay consistent across screens.
         if (!userFrom.isEmpty()) fromName = userFrom.trim();
         if (!userTo.isEmpty()) toName = userTo.trim();
         String routeSummary = (fromName.isEmpty() && toName.isEmpty())
@@ -226,6 +246,7 @@ public final class JourneyFetcher {
     private static String lineNameToBadge(String name) {
         if (name == null) return "";
         String lower = name.toLowerCase(Locale.UK);
+        if (lower.contains("bus")) return "BUS";
         if (lower.contains("victoria")) return "VIC";
         if (lower.contains("piccadilly")) return "PIC";
         if (lower.contains("jubilee")) return "JUB";
@@ -245,7 +266,7 @@ public final class JourneyFetcher {
         return trimmed.substring(0, 3).toUpperCase(Locale.UK);
     }
 
-    /** Result of {@link #fetch(String, String, String, String)}. */
+
     public static final class FetchResult {
         private final boolean success;
         private final List<RouteItem> routes;
@@ -278,3 +299,4 @@ public final class JourneyFetcher {
         }
     }
 }
+

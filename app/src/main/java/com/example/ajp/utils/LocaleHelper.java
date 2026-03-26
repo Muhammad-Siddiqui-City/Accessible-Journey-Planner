@@ -7,23 +7,26 @@ import android.os.Build;
 import android.os.LocaleList;
 import java.util.Locale;
 
+
+
+
+
+
+
+
+
 /**
- * Applies saved language and font scale. Add in Commit 5.
- * PURPOSE: Wrap context with locale and (optionally) large-text scale; use in Application.attachBaseContext and Activity.
- * WHY: SettingsPrefs holds language; applyFull() applies locale + font scale so all screens respect it.
- * ISSUES: Must call in attachBaseContext before super; setLanguage uses commit() not apply() so value is written before recreate.
+ * Utility class for LocaleHelper.
  */
-// AI Generated
-// Built with Claude
 public final class LocaleHelper {
 
-    /** Font scale when Large text is on; system default when off. */
+
     private static final float LARGE_TEXT_SCALE = 1.25f;
 
-    /**
-     * Wraps the context with locale and (optionally) large-text scale. Use this in attachBaseContext so the whole activity uses these settings.
-     */
-    /** Same method for every language: lang code -> BCP 47 tag -> Locale.forLanguageTag. */
+
+
+
+
     private static Locale localeFromLang(String lang) {
         if (lang == null) lang = SettingsPrefs.LANG_EN_GB;
         lang = lang.trim();
@@ -73,3 +76,4 @@ public final class LocaleHelper {
         return context;
     }
 }
+

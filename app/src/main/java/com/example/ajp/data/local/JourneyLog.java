@@ -4,13 +4,16 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-/**
- * Room entity for journey logs (analytics). Add in Commit 4.
- * PURPOSE: One row per journey: timestamp, durationMinutes, savedMinutes, mode, isCrowdLow, from/to.
- * WHY: AnalyticsViewModel reads getLogsSince(weekStart) for weekly stats and charts.
- * ISSUES: Migration 3→4 cleared table; durationMinutes displayed with TimeFormatUtil in UI.
- */
+
+
+
+
+
+
 @Entity(tableName = "journey_logs")
+/**
+ * Room entity backing the JourneyLog table.
+ */
 public class JourneyLog {
 
     @PrimaryKey(autoGenerate = true)
@@ -37,3 +40,4 @@ public class JourneyLog {
         this.toStation = toStation != null ? toStation : "";
     }
 }
+

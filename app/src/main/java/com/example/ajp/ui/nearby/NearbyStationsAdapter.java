@@ -10,16 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ajp.R;
 import java.util.List;
 
+
+
+
+
+
+
 /**
- * Adapter for nearby stops list. Add in Commit 8.
- * PURPOSE: Bind StopItem to item_nearby_station; click opens Live Arrivals (stopId, stopName); line badges; distance.
- * WHY: iconStepFree set to GONE (accessibility icon hidden per UI cleanup); getLineColor/getLineTextColor for TfL colours.
- * ISSUES: None.
+ * RecyclerView adapter for NearbyStations items.
  */
 public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAdapter.StopViewHolder> {
 
     public interface OnStopClickListener {
-        void onStopClick(String stopId, String stopName);
+        void onStopClick(String stopId, String stopName, String stopLetter);
     }
 
     private List<StopItem> items = java.util.Collections.emptyList();
@@ -34,7 +37,7 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         notifyDataSetChanged();
     }
 
-    /** Alias so fragment can call adapter.setStops(stops). */
+
     public void setStops(List<StopItem> stops) {
         submitList(stops);
     }
@@ -51,7 +54,7 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         StopItem item = items.get(position);
         String displayName = formatStationName(item.getName(), item.getStopLetter());
         holder.tvStationName.setText(displayName);
-        // Show distance when we have it (nearby list); for search results distance is 0 so show actionable text
+
         if (item.getDistance() > 0) {
             double km = item.getDistance() / 1000.0;
             holder.tvWalkTime.setText(holder.itemView.getContext().getString(R.string.distance_km_away, km));
@@ -60,7 +63,7 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         }
         holder.iconStepFree.setVisibility(View.GONE);
 
-        // Line badges: use stop line names (from getLineCodes) and apply TfL branding
+
         TextView[] badges = { holder.badge1, holder.badge2, holder.badge3, holder.badge4 };
         String[] lineNames = item.getLineCodes();
         for (int i = 0; i < badges.length; i++) {
@@ -80,7 +83,7 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
                 int pos = holder.getAdapterPosition();
                 if (pos != RecyclerView.NO_POSITION && pos < items.size()) {
                     StopItem stop = items.get(pos);
-                    clickListener.onStopClick(stop.getStopId(), stop.getName());
+                    clickListener.onStopClick(stop.getStopId(), stop.getName(), stop.getStopLetter());
                 }
             }
         });
@@ -91,9 +94,9 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         return items.size();
     }
 
-    /**
-     * Format station name: use commonName; if stop letter exists append " (Stop X)" with no arrows/symbols.
-     */
+
+
+
     private static String formatStationName(String commonName, String stopLetter) {
         if (commonName == null) commonName = "";
         if (stopLetter == null) stopLetter = "";
@@ -102,36 +105,40 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         return commonName + " (Stop " + letter + ")";
     }
 
-    /**
-     * TfL line branding: badge background by line name.
-     * South Western Railway: Black. Tube lines: standard TfL colors. Buses: Red. Default: TfL Blue.
-     */
+
+
+
+
     private static int getLineColor(String lineName) {
         if (lineName == null) return Color.parseColor("#0019A8");
         String n = lineName.trim().toLowerCase();
-        // South Western Railway: Black
+
+        // Bus route codes (e.g. 35, P4, N5) should always use TfL bus red.
+        if (n.matches("^[a-z]?\\d+[a-z]?$")) return Color.parseColor("#E32017");
+        if (n.equals("bus")) return Color.parseColor("#E32017");
+
         if (n.contains("south western")) return Color.parseColor("#000000");
-        // Tube lines (standard TfL colors)
-        if (n.contains("district")) return Color.parseColor("#00782A");       // Green
-        if (n.contains("bakerloo")) return Color.parseColor("#B36305");       // Brown
-        if (n.contains("central")) return Color.parseColor("#E32017");      // Red
-        if (n.contains("circle")) return Color.parseColor("#FFD300");        // Yellow (use black text)
-        if (n.contains("hammersmith")) return Color.parseColor("#F3A9BB");  // Hammersmith & City: Pink
-        if (n.contains("jubilee")) return Color.parseColor("#A0A5A9");       // Grey
-        if (n.contains("metropolitan")) return Color.parseColor("#9B0056");  // Magenta
-        if (n.contains("northern")) return Color.parseColor("#000000");      // Black
-        if (n.contains("piccadilly")) return Color.parseColor("#003688");   // Dark Blue
-        if (n.contains("victoria")) return Color.parseColor("#0098D4");      // Light Blue
-        if (n.contains("waterloo") && n.contains("city")) return Color.parseColor("#95CDBA"); // Teal
-        if (n.contains("elizabeth")) return Color.parseColor("#6950a1");    // Purple
-        if (n.contains("overground")) return Color.parseColor("#EF7B10");   // Orange
-        // Buses (numeric line numbers): Red
+
+        if (n.contains("district")) return Color.parseColor("#00782A");
+        if (n.contains("bakerloo")) return Color.parseColor("#B36305");
+        if (n.contains("central")) return Color.parseColor("#E32017");
+        if (n.contains("circle")) return Color.parseColor("#FFD300");
+        if (n.contains("hammersmith")) return Color.parseColor("#F3A9BB");
+        if (n.contains("jubilee")) return Color.parseColor("#A0A5A9");
+        if (n.contains("metropolitan")) return Color.parseColor("#9B0056");
+        if (n.contains("northern")) return Color.parseColor("#000000");
+        if (n.contains("piccadilly")) return Color.parseColor("#003688");
+        if (n.contains("victoria")) return Color.parseColor("#0098D4");
+        if (n.contains("waterloo") && n.contains("city")) return Color.parseColor("#95CDBA");
+        if (n.contains("elizabeth")) return Color.parseColor("#6950a1");
+        if (n.contains("overground")) return Color.parseColor("#EF7B10");
+
         if (n.isEmpty() || n.matches("^n?\\d+$")) return Color.parseColor("#E32017");
-        // Default TfL Blue
+
         return Color.parseColor("#0019A8");
     }
 
-    /** White text on badges; black text for Circle (yellow background) for readability. */
+
     private static int getLineTextColor(String lineName) {
         if (lineName == null) return Color.WHITE;
         if (lineName.trim().toLowerCase().contains("circle")) return Color.BLACK;
@@ -156,3 +163,4 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         }
     }
 }
+
