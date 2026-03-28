@@ -18,7 +18,7 @@
     <string name="accessible_journey_planner">Accessible Journey Planner</string>
     <string name="search_placeholder">Search stations, stops…</string>
     <string name="voice_search">Voice search</string>
-    <string name="speak_station_name">Speak a station or stop name</string>
+    <string name="speak_station_name">Speak a station, stop, or place name</string>
     <string name="station_search_results">Stations and stops</string>
     <string name="search_no_results">No stations or stops found. Try another name.</string>
     <string name="distance_not_available">Tap for live arrivals</string>
@@ -78,6 +78,10 @@
     <string name="sort_least_walking">Least walking</string>
     <string name="sort_least_crowded">Least crowded</string>
     <string name="youre_offline_view_saved">You\'re offline. View saved journeys from the home screen.</string>
+    <string name="could_not_find_place">Could not find that place: %1$s</string>
+    <string name="poi_verify_warning">We cannot verify if %1$s exists here.</string>
+    <string name="no_transit_near_place">No bus or rail stop found near: %1$s</string>
+    <string name="walk_estimated_minutes">About %1$d min (estimated)</string>
     <string name="go_to_home">Go to home</string>
 
     <!-- Live Arrivals -->

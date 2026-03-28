@@ -18,5 +18,11 @@ public class ModeRef implements Serializable {
     private String name;
 
     public String getName() { return name != null ? name : ""; }
+
+    public static ModeRef named(String modeName) {
+        ModeRef m = new ModeRef();
+        m.name = modeName != null ? modeName : "";
+        return m;
+    }
 }
 

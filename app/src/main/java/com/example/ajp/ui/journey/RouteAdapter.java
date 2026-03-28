@@ -171,9 +171,13 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
             case "DLR": return Color.parseColor("#00A4A7");
             case "LO": return Color.parseColor("#EF7B10");
             case "TRA": return Color.parseColor("#84B817");
+            case "WALK": return RouteLineColors.WALKING;
+            case "SOU":
+            case "SWR": return RouteLineColors.SOUTH_WESTERN_RAILWAY;
             default:
                 if (code.matches("^N?\\d+[A-Z]?$")) return Color.parseColor("#E32017");
-                return Color.parseColor("#0019A8");
+                // Same as StepsAdapter national rail (THA, …) — not walking indigo.
+                return RouteLineColors.NATIONAL_RAIL;
         }
     }
 

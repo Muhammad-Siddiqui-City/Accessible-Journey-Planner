@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -114,6 +115,15 @@ public class JourneyFragment extends Fragment {
 
         binding.origin.addTextChangedListener(saveOriginWatcher);
         binding.destination.addTextChangedListener(saveDestinationWatcher);
+
+        // Some devices draw a "ghost" caret in unfocused EditTexts; tie visibility to focus only.
+        View.OnFocusChangeListener syncCursorWithFocus = (v, hasFocus) -> {
+            if (v instanceof EditText) ((EditText) v).setCursorVisible(hasFocus);
+        };
+        binding.origin.setOnFocusChangeListener(syncCursorWithFocus);
+        binding.destination.setOnFocusChangeListener(syncCursorWithFocus);
+        binding.origin.setCursorVisible(binding.origin.hasFocus());
+        binding.destination.setCursorVisible(binding.destination.hasFocus());
 
         binding.showFilters.setOnClickListener(v -> {
             boolean visible = binding.filtersSection.getVisibility() == View.VISIBLE;

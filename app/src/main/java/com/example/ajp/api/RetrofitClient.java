@@ -1,6 +1,7 @@
 package com.example.ajp.api;
 
 import com.example.ajp.utils.ApiKeyManager;
+import java.util.concurrent.TimeUnit;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -38,6 +39,10 @@ public class RetrofitClient {
             synchronized (RetrofitClient.class) {
                 if (api == null) {
                     OkHttpClient client = new OkHttpClient.Builder()
+                            // Defaults (~10s read) are tight for cold TLS + slow TfL; journey JSON can be large.
+                            .connectTimeout(20, TimeUnit.SECONDS)
+                            .readTimeout(45, TimeUnit.SECONDS)
+                            .writeTimeout(20, TimeUnit.SECONDS)
                             .addInterceptor(chain -> {
                                 Request original = chain.request();
                                 HttpUrl url = original.url().newBuilder()

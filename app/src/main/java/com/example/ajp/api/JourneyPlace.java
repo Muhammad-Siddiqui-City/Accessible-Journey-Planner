@@ -28,5 +28,15 @@ public class JourneyPlace implements Serializable {
     public double getLat() { return lat; }
     public double getLon() { return lon; }
     public String getNaptanId() { return naptanId != null ? naptanId : ""; }
+
+    /** Synthetic point for walking legs (not from Gson). */
+    public static JourneyPlace at(String commonName, double lat, double lon) {
+        JourneyPlace p = new JourneyPlace();
+        p.commonName = commonName != null ? commonName : "";
+        p.lat = lat;
+        p.lon = lon;
+        p.naptanId = "";
+        return p;
+    }
 }
 

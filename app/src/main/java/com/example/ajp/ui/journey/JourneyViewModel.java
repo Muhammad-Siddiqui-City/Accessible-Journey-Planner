@@ -129,9 +129,11 @@ public class JourneyViewModel extends AndroidViewModel {
                             String summary = TimeFormatUtil.formatMinutesToHourMin(firstRoute.getDurationMinutesInt()) + " • "
                                     + transfers + (transfers == 1 ? " transfer" : " transfers");
 
-                            // Use raw input text for preview labels to match the form fields exactly.
-                            routePreviewFrom.postValue(fromInput);
-                            routePreviewTo.postValue(toInput);
+                            // Prefer resolved route labels (e.g. geocoder) so preview matches actual pins.
+                            String pf = firstRoute.getFromStation();
+                            String pt = firstRoute.getToStation();
+                            routePreviewFrom.postValue(pf != null && !pf.trim().isEmpty() ? pf.trim() : fromInput);
+                            routePreviewTo.postValue(pt != null && !pt.trim().isEmpty() ? pt.trim() : toInput);
                             routePreviewSummary.postValue(summary);
                             JourneyPlace dep = legs.get(0).getDeparturePoint();
                             JourneyPlace arr = lastLeg.getArrivalPoint();

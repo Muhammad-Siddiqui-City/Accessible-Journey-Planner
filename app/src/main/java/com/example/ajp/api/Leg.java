@@ -38,5 +38,19 @@ public class Leg implements Serializable {
     public Crowding getCrowding() { return crowding; }
     public void setCrowding(Crowding crowding) { this.crowding = crowding; }
     public int getDuration() { return duration != null ? duration : 0; }
+
+    /**
+     * Walking leg not returned by TfL (e.g. between a geocoded place and the nearest stop).
+     */
+    public static Leg createWalkingLeg(JourneyPlace departure, JourneyPlace arrival, int durationSeconds,
+                                       InstructionRef instruction) {
+        Leg leg = new Leg();
+        leg.departurePoint = departure;
+        leg.arrivalPoint = arrival;
+        leg.mode = ModeRef.named("walking");
+        leg.duration = durationSeconds;
+        leg.instruction = instruction; // null for app-added legs (no subtitle / no time line in UI)
+        return leg;
+    }
 }
 

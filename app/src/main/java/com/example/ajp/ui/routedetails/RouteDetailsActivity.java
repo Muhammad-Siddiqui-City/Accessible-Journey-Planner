@@ -146,6 +146,10 @@ public class RouteDetailsActivity extends AppCompatActivity {
         if (route.getCrowdingLevel() == RouteItem.CROWDING_HIGH) {
             ttsHelper.speak(getString(R.string.crowding_warning), TtsHelper.QUEUE_ADD);
         }
+        String poi = route.getPoiVerificationWarning();
+        if (poi != null && !poi.trim().isEmpty()) {
+            ttsHelper.speak(poi.trim(), TtsHelper.QUEUE_ADD);
+        }
     }
 
     private void announceFirstStepIfTtsOn() {
@@ -250,19 +254,27 @@ public class RouteDetailsActivity extends AppCompatActivity {
 
 
     private String resolveFromDisplay(RouteItem route) {
-        String userFrom = getIntent().getStringExtra(EXTRA_USER_FROM_INPUT);
-        if (userFrom != null && !userFrom.trim().isEmpty()) return userFrom.trim();
         String from = route.getFromStation() != null ? route.getFromStation().trim() : "";
-        if (from.isEmpty()) return getString(R.string.from_label);
-        return from;
+        if (!from.isEmpty()) {
+            return from;
+        }
+        String userFrom = getIntent().getStringExtra(EXTRA_USER_FROM_INPUT);
+        if (userFrom != null && !userFrom.trim().isEmpty()) {
+            return userFrom.trim();
+        }
+        return getString(R.string.from_label);
     }
 
     private String resolveToDisplay(RouteItem route) {
-        String userTo = getIntent().getStringExtra(EXTRA_USER_TO_INPUT);
-        if (userTo != null && !userTo.trim().isEmpty()) return userTo.trim();
         String to = route.getToStation() != null ? route.getToStation().trim() : "";
-        if (to.isEmpty()) return getString(R.string.to_label);
-        return to;
+        if (!to.isEmpty()) {
+            return to;
+        }
+        String userTo = getIntent().getStringExtra(EXTRA_USER_TO_INPUT);
+        if (userTo != null && !userTo.trim().isEmpty()) {
+            return userTo.trim();
+        }
+        return getString(R.string.to_label);
     }
 
 
@@ -361,6 +373,14 @@ public class RouteDetailsActivity extends AppCompatActivity {
                 binding.tvLiftDisruptionWarning.setVisibility(View.GONE);
             }
 
+            String poiWarn = route.getPoiVerificationWarning();
+            if (poiWarn != null && !poiWarn.trim().isEmpty()) {
+                binding.tvPoiVerificationWarning.setText(poiWarn.trim());
+                binding.tvPoiVerificationWarning.setVisibility(View.VISIBLE);
+            } else {
+                binding.tvPoiVerificationWarning.setVisibility(View.GONE);
+            }
+
             List<Leg> legs = route.getLegs();
             if (legs != null && !legs.isEmpty()) {
                 binding.stepsList.setVisibility(View.VISIBLE);
@@ -376,6 +396,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
             binding.tvDepartTime.setText("14:32");
             binding.tvArrivalTime.setText("14:47");
             binding.tvTransfers.setText("0 transfers");
+            binding.tvPoiVerificationWarning.setVisibility(View.GONE);
             binding.stepsList.setVisibility(View.GONE);
         }
     }

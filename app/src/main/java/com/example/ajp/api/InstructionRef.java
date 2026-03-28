@@ -18,5 +18,11 @@ public class InstructionRef implements Serializable {
     private String summary;
 
     public String getSummary() { return summary != null ? summary : ""; }
+
+    public static InstructionRef withSummary(String text) {
+        InstructionRef r = new InstructionRef();
+        r.summary = text != null ? text : "";
+        return r;
+    }
 }
 

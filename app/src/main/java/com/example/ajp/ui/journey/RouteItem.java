@@ -5,11 +5,6 @@ import java.io.Serializable;
 import java.util.List;
 
 
-
-
-
-
-
 /**
  * UI model/helper used by the RouteItem feature.
  */
@@ -32,20 +27,31 @@ public class RouteItem implements Serializable {
     private final List<Leg> legs;
     private final boolean hasLiftDisruption;
 
-
     private final String liftDisruptionDescription;
+
+    /** Full sentence when user typed brand + location (e.g. cannot verify shop exists). */
+    private final String poiVerificationWarning;
 
     public RouteItem(String durationMinutes, String departureTime, String arrivalTime, int crowdingLevel,
                      String transfersText, String[] lineBadges, String routeSummary, String routeId,
                      String fromStation, String toStation, List<Leg> legs) {
         this(durationMinutes, departureTime, arrivalTime, crowdingLevel, transfersText, lineBadges,
-                routeSummary, routeId, fromStation, toStation, legs, false, null);
+                routeSummary, routeId, fromStation, toStation, legs, false, null, null);
     }
 
     public RouteItem(String durationMinutes, String departureTime, String arrivalTime, int crowdingLevel,
                      String transfersText, String[] lineBadges, String routeSummary, String routeId,
                      String fromStation, String toStation, List<Leg> legs, boolean hasLiftDisruption,
                      String liftDisruptionDescription) {
+        this(durationMinutes, departureTime, arrivalTime, crowdingLevel, transfersText, lineBadges,
+                routeSummary, routeId, fromStation, toStation, legs, hasLiftDisruption,
+                liftDisruptionDescription, null);
+    }
+
+    public RouteItem(String durationMinutes, String departureTime, String arrivalTime, int crowdingLevel,
+                     String transfersText, String[] lineBadges, String routeSummary, String routeId,
+                     String fromStation, String toStation, List<Leg> legs, boolean hasLiftDisruption,
+                     String liftDisruptionDescription, String poiVerificationWarning) {
         this.durationMinutes = durationMinutes;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime != null ? arrivalTime : "";
@@ -59,6 +65,7 @@ public class RouteItem implements Serializable {
         this.legs = legs != null ? legs : java.util.Collections.emptyList();
         this.hasLiftDisruption = hasLiftDisruption;
         this.liftDisruptionDescription = liftDisruptionDescription;
+        this.poiVerificationWarning = poiVerificationWarning;
     }
 
     public String getDurationMinutes() { return durationMinutes; }
@@ -74,10 +81,9 @@ public class RouteItem implements Serializable {
     public List<Leg> getLegs() { return legs; }
     public boolean hasLiftDisruption() { return hasLiftDisruption; }
 
-
-
     public String getLiftDisruptionDescription() { return liftDisruptionDescription; }
 
+    public String getPoiVerificationWarning() { return poiVerificationWarning; }
 
     public int getDurationMinutesInt() {
         if (durationMinutes == null || durationMinutes.isEmpty()) return 0;
@@ -88,7 +94,6 @@ public class RouteItem implements Serializable {
         }
     }
 
-
     public int getTransfersCount() {
         if (transfersText == null || transfersText.isEmpty()) return 0;
         try {
@@ -98,7 +103,6 @@ public class RouteItem implements Serializable {
             return 0;
         }
     }
-
 
     public int getTotalWalkingMinutes() {
         if (legs == null || legs.isEmpty()) return 0;
@@ -124,4 +128,3 @@ public class RouteItem implements Serializable {
         return routeId != null ? routeId.hashCode() : 0;
     }
 }
-

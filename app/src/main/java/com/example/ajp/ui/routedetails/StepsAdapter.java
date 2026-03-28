@@ -13,8 +13,11 @@ import com.example.ajp.R;
 import com.example.ajp.api.Leg;
 import com.example.ajp.api.ModeRef;
 import com.example.ajp.api.RouteOptionRef;
+import com.example.ajp.ui.journey.RouteLineColors;
 import com.example.ajp.utils.TimeFormatUtil;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 
 
@@ -29,7 +32,11 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
 
     private static final int COLOR_TUBE = 0xFF2196F3;
     private static final int COLOR_BUS = 0xFFE53935;
-    private static final int COLOR_WALK = 0xFF9E9E9E;
+
+    /** TfL summaries often match our title with tiny differences (punctuation, "towards" vs "to"). */
+    private static final Pattern WALK_PREFIX = Pattern.compile(
+            "^\\s*walk(ing)?\\s+(to|towards|along|via)\\s+",
+            Pattern.CASE_INSENSITIVE);
 
     private final List<Leg> legs;
 
@@ -51,10 +58,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         String instruction = leg.getInstruction() != null ? leg.getInstruction().getSummary() : "";
 
         String title = buildStepTitle(leg, modeName);
-        String detail = instruction;
+        String detail = filterRedundantDetail(modeName, title, instruction);
+        boolean isWalk = modeName.toLowerCase(Locale.UK).contains("walk");
         int durationSec = leg.getDuration();
         int durationMin = durationSec / 60;
-        String durationText = durationMin > 0 ? TimeFormatUtil.formatMinutesToHourMin(durationMin) : "";
+        String durationText = (!isWalk && durationMin > 0)
+                ? TimeFormatUtil.formatMinutesToHourMin(durationMin) : "";
 
         holder.tvTitle.setText(title);
         holder.tvDetail.setText(detail);
@@ -64,6 +73,56 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
 
         int color = getStepColor(leg, modeName);
         holder.indicator.setBackgroundColor(color);
+    }
+
+    /**
+     * Hides subtitle when it only repeats the bold line (TfL often sends the same wording with minor variants).
+     */
+    private static String filterRedundantDetail(String modeName, String title, String instruction) {
+        if (instruction == null) return "";
+        String detail = instruction.trim();
+        if (detail.isEmpty()) return "";
+
+        String t = title != null ? title.trim() : "";
+        if (collapseForDedupe(detail).equals(collapseForDedupe(t))) {
+            return "";
+        }
+        // Walking: subtitle is almost always a duplicate of "Walk to …" unless it's extra info (e.g. time estimate).
+        if (modeName != null && modeName.toLowerCase(Locale.UK).contains("walk")) {
+            if (isWalkInstructionRedundant(t, detail)) {
+                return "";
+            }
+        }
+        return detail;
+    }
+
+    private static String collapseForDedupe(String s) {
+        if (s == null) return "";
+        String out = s.trim().toLowerCase(Locale.UK)
+                .replace('\u2019', '\'')
+                .replace('\u2018', '\'')
+                .replaceAll("\\s+", " ");
+        while (out.endsWith(".") || out.endsWith(",") || out.endsWith(";") || out.endsWith(":")) {
+            out = out.substring(0, out.length() - 1).trim();
+        }
+        return out;
+    }
+
+    private static String walkDestinationCore(String line) {
+        if (line == null) return "";
+        String core = WALK_PREFIX.matcher(line.trim()).replaceFirst("").trim();
+        return collapseForDedupe(core);
+    }
+
+    private static boolean isWalkInstructionRedundant(String title, String instruction) {
+        String ins = collapseForDedupe(instruction);
+        if (!ins.startsWith("walk ") && !ins.startsWith("walking ") && !ins.startsWith("continue ")) {
+            // Likely an estimate or note, not a duplicate heading.
+            return false;
+        }
+        String titleDest = walkDestinationCore(title);
+        String insDest = walkDestinationCore(instruction);
+        return !titleDest.isEmpty() && titleDest.equals(insDest);
     }
 
     private String buildStepTitle(Leg leg, String modeName) {
@@ -99,7 +158,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
             return getRailStepColorByLineName(leg);
         }
         if (m.contains("bus")) return COLOR_BUS;
-        return COLOR_WALK;
+        return RouteLineColors.WALKING;
     }
 
     private int getRailStepColorByLineName(Leg leg) {
@@ -111,6 +170,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
             }
         }
         String n = lineName.toLowerCase();
+        if (n.contains("south western")) return RouteLineColors.SOUTH_WESTERN_RAILWAY;
+        if (isNationalRailLineName(n)) return RouteLineColors.NATIONAL_RAIL;
         if (n.contains("bakerloo")) return Color.parseColor("#B36305");
         if (n.contains("central")) return Color.parseColor("#E32017");
         if (n.contains("circle")) return Color.parseColor("#FFD300");
@@ -126,6 +187,18 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         if (n.contains("dlr")) return Color.parseColor("#00A4A7");
         if (n.contains("overground")) return Color.parseColor("#EF7B10");
         return COLOR_TUBE;
+    }
+
+    private static boolean isNationalRailLineName(String n) {
+        if (n.contains("southeastern") || n.contains("thameslink")
+                || n.contains("great western") || n.contains("greater anglia") || n.contains("c2c")
+                || n.contains("crosscountry") || n.contains("chiltern") || n.contains("grand central")
+                || n.contains("lumo") || n.contains("east midlands") || n.contains("avanti")
+                || n.contains("transport for wales") || n.contains("scotrail")
+                || n.contains("southern") && n.contains("railway")) {
+            return true;
+        }
+        return n.contains("national rail");
     }
 
     @Override

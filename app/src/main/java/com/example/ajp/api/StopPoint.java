@@ -22,6 +22,10 @@ public class StopPoint {
 
     @SerializedName("naptanId")
     private String naptanId;
+    @SerializedName("lat")
+    private double lat;
+    @SerializedName("lon")
+    private double lon;
     @SerializedName("id")
     private String id;
     @SerializedName("commonName")
@@ -42,6 +46,10 @@ public class StopPoint {
     private List<AdditionalProperty> additionalProperties;
 
     public String getNaptanId() { return naptanId != null ? naptanId : id; }
+    /** WGS84 latitude when TfL returns coordinates (nearby search, detail). */
+    public double getLat() { return lat; }
+    /** WGS84 longitude when TfL returns coordinates (nearby search, detail). */
+    public double getLon() { return lon; }
     public String getCommonName() { return commonName != null ? commonName : ""; }
     public double getDistance() { return distance; }
     public List<LineIdentifier> getLines() { return lines; }
