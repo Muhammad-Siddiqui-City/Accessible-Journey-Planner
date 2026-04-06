@@ -13,13 +13,12 @@ import com.example.ajp.data.local.SavedRouteEntity;
 import com.example.ajp.utils.TimeFormatUtil;
 import java.util.List;
 
-
-
-
-
 /**
- * RecyclerView adapter for SavedRoute items.
+ * RecyclerView adapter for SavedRoute item rendering.
+ * Maps domain/UI models into row views and keeps list-specific formatting in one place.
+ * This avoids repeating display logic in fragments and keeps row behavior consistent across updates.
  */
+
 public class SavedRouteAdapter extends RecyclerView.Adapter<SavedRouteAdapter.ViewHolder> {
 
     private List<SavedRouteEntity> items = List.of();
@@ -42,6 +41,7 @@ public class SavedRouteAdapter extends RecyclerView.Adapter<SavedRouteAdapter.Vi
         this.deleteListener = listener;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void submitList(List<SavedRouteEntity> list) {
         this.items = list != null ? list : List.of();
         notifyDataSetChanged();
@@ -49,12 +49,14 @@ public class SavedRouteAdapter extends RecyclerView.Adapter<SavedRouteAdapter.Vi
 
     @NonNull
     @Override
+    // Initializes screen state, wiring, and startup behavior for this lifecycle stage.
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_saved_route, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SavedRouteEntity entity = items.get(position);
         String summary = entity.summary != null ? entity.summary : "";
@@ -97,4 +99,5 @@ public class SavedRouteAdapter extends RecyclerView.Adapter<SavedRouteAdapter.Vi
         }
     }
 }
+
 

@@ -3,8 +3,11 @@ package com.example.ajp.ui.journey;
 import android.graphics.Color;
 
 /**
- * Shared colours for line badges (journey cards) and step indicators so the same mode looks the same everywhere.
+ * UI-side model/helper used by RouteLineColors.
+ * Encapsulates presentation-oriented behavior needed by screens in this feature package.
+ * Keeping this separate helps avoid leaking API/database concerns into view code.
  */
+
 public final class RouteLineColors {
 
     /** Walking legs — distinct from all tube lines and national rail brown. */
@@ -18,3 +21,5 @@ public final class RouteLineColors {
 
     private RouteLineColors() { }
 }
+
+

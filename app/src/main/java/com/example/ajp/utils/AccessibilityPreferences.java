@@ -3,22 +3,18 @@ package com.example.ajp.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-
-
-
-
-
-
 /**
- * Utility class for AccessibilityPreferences.
+ * Shared utility class for AccessibilityPreferences.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
+
 public class AccessibilityPreferences {
 
     private static final String PREFS_NAME = "ajp_accessibility";
     private static final String KEY_STEP_FREE = "step_free";
     private static final String KEY_WALKING_SPEED = "walking_speed";
     private static final String KEY_MAX_WALKING_MINUTES = "max_walking_minutes";
-
 
     public static final String SPEED_SLOW = "slow";
     public static final String SPEED_AVERAGE = "average";
@@ -32,6 +28,7 @@ public class AccessibilityPreferences {
         this.prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
+    // Returns data from local state or derives a value needed by callers.
     public static AccessibilityPreferences get(Context context) {
         return new AccessibilityPreferences(context);
     }
@@ -43,7 +40,6 @@ public class AccessibilityPreferences {
     public void setStepFree(boolean enabled) {
         prefs.edit().putBoolean(KEY_STEP_FREE, enabled).apply();
     }
-
 
     public String getWalkingSpeed() {
         String v = prefs.getString(KEY_WALKING_SPEED, SPEED_AVERAGE);
@@ -64,4 +60,5 @@ public class AccessibilityPreferences {
         prefs.edit().putInt(KEY_MAX_WALKING_MINUTES, clamped).apply();
     }
 }
+
 

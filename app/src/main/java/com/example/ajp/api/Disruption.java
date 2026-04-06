@@ -3,15 +3,12 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
-
-
-
-
-
-
 /**
- * DTO used to parse API payloads for Disruption.
+ * API response model for Disruption.
+ * Matches remote payload fields so parsing remains predictable and explicit.
+ * This keeps network schema changes localized to model classes and mappers.
  */
+
 public class Disruption implements Serializable {
 
     @SerializedName("description")
@@ -30,7 +27,6 @@ public class Disruption implements Serializable {
     public String getDescription() {
         return description != null ? description : "";
     }
-
 
     public String getDisplayText() {
         if (description != null && !description.trim().isEmpty()) return description.trim();
@@ -82,4 +78,5 @@ public class Disruption implements Serializable {
         this.appearance = appearance;
     }
 }
+
 

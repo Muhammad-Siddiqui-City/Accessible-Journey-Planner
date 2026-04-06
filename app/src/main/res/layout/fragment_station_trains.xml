@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
+<!-- Fragment layout for fragment station trains. Keeps visual structure separate from runtime behavior in the fragment class. -->
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,6 +9,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_home_bg">
 
+    <!-- Title + back; station name from fragment arguments. -->
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="0dp"
@@ -46,6 +46,7 @@
             tools:text="London Waterloo" />
     </LinearLayout>
 
+    <!-- Scroll wraps two RecyclerViews; each section has its own empty TextView. -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_station_trains"
         android:layout_width="0dp"
@@ -138,3 +139,4 @@
     </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

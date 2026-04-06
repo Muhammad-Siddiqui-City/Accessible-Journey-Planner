@@ -23,18 +23,18 @@ import java.util.Collections;
 import java.util.List;
 import retrofit2.Response;
 
-
-
-
-
 /**
- * UI fragment for the PopularStations screen.
+ * Screen controller for PopularStations UI interactions.
+ * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
+ * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
  */
+
 public class PopularStationsFragment extends Fragment {
 
     private FragmentPopularStationsBinding binding;
     private PopularStationsAdapter adapter;
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String normalizeForStationMatch(String s) {
         if (s == null) return "";
         String n = s.toLowerCase().replaceAll("[^a-z0-9]+", " ").trim();
@@ -43,7 +43,7 @@ public class PopularStationsFragment extends Fragment {
         return n;
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String toSearchQuery(String label) {
         if (label == null) return "";
         String q = label.trim();
@@ -53,6 +53,7 @@ public class PopularStationsFragment extends Fragment {
         return q;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static MatchedStop pickBestMatch(List<MatchedStop> matches, String displayLabel) {
         if (matches == null || matches.isEmpty()) return null;
         String qNorm = normalizeForStationMatch(toSearchQuery(displayLabel));
@@ -70,12 +71,14 @@ public class PopularStationsFragment extends Fragment {
 
     @Nullable
     @Override
+    // Lifecycle: inflate view and prepare references for this feature section.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentPopularStationsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
+    // Lifecycle: bind listeners/observers after the view hierarchy exists.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -95,6 +98,7 @@ public class PopularStationsFragment extends Fragment {
         adapter.setOnPopularStationClickListener(this::resolveStopAndOpenTrains);
     }
 
+    // Performs navigation or intent handover to the next screen/action.
     private void resolveStopAndOpenTrains(String displayLabel) {
         if (!ApiKeyManager.isTflKeyValid()) {
             Toast.makeText(requireContext(), R.string.search_no_results, Toast.LENGTH_SHORT).show();
@@ -134,6 +138,7 @@ public class PopularStationsFragment extends Fragment {
     }
 
     @Nullable
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private MatchedStop trySearch(TflApi api, String query, String displayLabel) throws java.io.IOException {
         if (query == null || query.isEmpty()) return null;
         Response<TflSearchResponse> resp = api.searchStops(query).execute();
@@ -144,9 +149,11 @@ public class PopularStationsFragment extends Fragment {
     }
 
     @Override
+    // Lifecycle: clear view references to avoid leaks in fragment recreation.
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 }
+
 

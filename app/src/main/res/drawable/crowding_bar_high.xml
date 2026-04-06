@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Drawable resource for crowding bar high. Centralizes shape/color styling so UI theme updates are easier to maintain. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
@@ -19,3 +17,4 @@
         </scale>
     </item>
 </layer-list>
+

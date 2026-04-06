@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
+<!-- Fragment layout for fragment journey. Keeps visual structure separate from runtime behavior in the fragment class. -->
+
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -68,7 +67,8 @@
                 android:textColor="#E65100" />
         </LinearLayout>
 
-        <!-- Search form card: theme-aware panel (same style as Analytics cards) -->
+        <!-- Search form card.
+             User enters origin/destination and optional filters before requesting routes. -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,6 +76,7 @@
             android:background="@drawable/card_elevated"
             android:padding="16dp"
             android:layout_margin="20dp">
+            <!-- Date/time controls influence request parameters rather than performing local filtering. -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,6 +113,7 @@
                 android:contentDescription="@null"
                 android:padding="8dp"
                 android:layout_marginVertical="4dp" />
+            <!-- Optional accessibility/comfort filters, hidden by default to keep first interaction simple. -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -236,7 +238,7 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Journey loading overlay -->
+        <!-- Loading indicator for active route lookup; paired with hiding route sections while loading. -->
         <ProgressBar
             android:id="@+id/journey_loading"
             android:layout_width="wrap_content"
@@ -269,7 +271,8 @@
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/route_preview_card_bg"
                 android:clipChildren="false">
-            <!-- Leaflet + OSM tiles in WebView; line between points — see JourneyFragment.loadRouteMap -->
+            <!-- WebView map preview.
+                 Uses lightweight Leaflet+OSM HTML generated in JourneyFragment for quick visual context. -->
             <WebView
                 android:id="@+id/wv_route_map"
                 android:layout_width="match_parent"
@@ -346,7 +349,8 @@
         </FrameLayout>
         </LinearLayout>
 
-        <!-- Suggested Routes (hidden until routes are loaded) -->
+        <!-- Suggested routes list.
+             Appears only when valid route results exist; includes strategy chips for re-sorting. -->
         <LinearLayout
             android:id="@+id/suggested_routes_section"
             android:layout_width="match_parent"
@@ -414,3 +418,4 @@
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
+

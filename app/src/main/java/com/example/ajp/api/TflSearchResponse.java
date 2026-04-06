@@ -3,15 +3,12 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-
-
-
-
-
-
 /**
- * DTO used to parse API payloads for TflSearchResponse.
+ * API response model for TflSearchResponse.
+ * Matches remote payload fields so parsing remains predictable and explicit.
+ * This keeps network schema changes localized to model classes and mappers.
  */
+
 public class TflSearchResponse {
 
     @SerializedName("query")
@@ -25,4 +22,5 @@ public class TflSearchResponse {
         return matches != null ? matches : java.util.Collections.emptyList();
     }
 }
+
 

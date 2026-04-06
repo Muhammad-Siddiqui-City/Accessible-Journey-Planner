@@ -2,13 +2,12 @@ package com.example.ajp.utils;
 
 import com.example.ajp.BuildConfig;
 
-
-
-
-
 /**
- * Utility class for ApiKeyManager.
+ * Shared utility class for ApiKeyManager.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
+
 public final class ApiKeyManager {
 
     private ApiKeyManager() { }
@@ -31,4 +30,5 @@ public final class ApiKeyManager {
         return BuildConfig.RAIL_ACCESS_TOKEN != null ? BuildConfig.RAIL_ACCESS_TOKEN : "";
     }
 }
+
 

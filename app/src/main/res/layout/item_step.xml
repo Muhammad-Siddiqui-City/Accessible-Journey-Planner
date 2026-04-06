@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
-<!-- One row in Route Details step-by-step list -->
+<!-- Reusable row/card layout for item step. Used by adapters to render list content consistently. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -49,3 +47,4 @@
             android:textColor="?attr/ajp_muted_foreground" />
     </LinearLayout>
 </LinearLayout>
+

@@ -7,16 +7,13 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import java.util.List;
 
-
-
-
-
-
-
 @Dao
 /**
- * Room DAO for SavedRoute persistence operations.
+ * DAO contract for SavedRoute persistence operations.
+ * Declares query and mutation operations that Room implements at compile time.
+ * Keeping SQL declarations here makes read/write intent explicit and searchable.
  */
+
 public interface SavedRouteDao {
 
     @Insert
@@ -28,4 +25,5 @@ public interface SavedRouteDao {
     @Delete
     void delete(SavedRouteEntity entity);
 }
+
 

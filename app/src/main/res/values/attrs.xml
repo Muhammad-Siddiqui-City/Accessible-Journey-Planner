@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Custom theme attributes referenced by layouts and drawables to support runtime style switching. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
 <resources>
     <!-- Theme attributes so High Contrast can override to black/white without changing every layout. -->
     <attr name="ajp_background" format="color" />
@@ -14,3 +12,4 @@
     <attr name="ajp_primary" format="color" />
     <attr name="ajp_primary_foreground" format="color" />
 </resources>
+

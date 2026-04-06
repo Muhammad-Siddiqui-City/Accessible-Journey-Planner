@@ -1,14 +1,11 @@
 package com.example.ajp.ui.nearby;
 
-
-
-
-
-
-
 /**
- * UI model/helper used by the StopItem feature.
+ * UI-side model/helper used by StopItem.
+ * Encapsulates presentation-oriented behavior needed by screens in this feature package.
+ * Keeping this separate helps avoid leaking API/database concerns into view code.
  */
+
 public class StopItem {
 
     private final String stopId;
@@ -46,4 +43,5 @@ public class StopItem {
 
     public boolean isStation() { return isStation; }
 }
+
 

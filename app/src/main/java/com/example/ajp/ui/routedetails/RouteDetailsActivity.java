@@ -1,5 +1,9 @@
 package com.example.ajp.ui.routedetails;
 
+// AI Generated
+// Built with Claude
+// Lovable.dev reference
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,18 +39,13 @@ import com.google.android.gms.location.LocationServices;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-
-
-
-
-
-
 /**
- * Shows route details, supports save/share, and tracks coarse navigation progress.
+ * Activity entry point for the RouteDetails flow.
+ * Owns lifecycle-sensitive orchestration, screen wiring, and intent-based handover to adjacent features.
+ * Business rules are intentionally pushed to utilities/ViewModels so this class stays focused on UI flow.
  */
+
 public class RouteDetailsActivity extends AppCompatActivity {
-
-
 
     public static final String EXTRA_ROUTE_ID = "route_id";
     public static final String EXTRA_ROUTE = "selected_route";
@@ -71,12 +70,14 @@ public class RouteDetailsActivity extends AppCompatActivity {
     private TtsHelper ttsHelper;
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     protected void attachBaseContext(Context newBase) {
         // Apply locale before view inflation so translated resources are used immediately.
         super.attachBaseContext(LocaleHelper.applyFull(newBase));
     }
 
     @Override
+    // Initializes screen state from Intent data and binds all user actions.
     protected void onCreate(Bundle savedInstanceState) {
         if (SettingsPrefs.get(getApplicationContext()).isHighContrast()) {
             setTheme(R.style.Theme_AJP_HighContrast);
@@ -110,7 +111,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         announceRouteSummaryIfTtsOn(currentRoute);
     }
 
-
+    // Derives destination coordinates from the final leg for progress distance estimation.
     private Location buildDestinationLocation(RouteItem route) {
         if (route == null) return null;
         List<Leg> legs = route.getLegs();
@@ -125,6 +126,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         return loc;
     }
 
+    // Optional accessibility narration of the selected route summary and warnings.
     private void announceRouteSummaryIfTtsOn(RouteItem route) {
         if (route == null || ttsHelper == null || !ttsHelper.isTtsEnabled()) return;
         String from = resolveFromDisplay(route);
@@ -135,7 +137,6 @@ public class RouteDetailsActivity extends AppCompatActivity {
         String transfersStr = transfers == 0 ? "no transfers" : transfers == 1 ? "1 transfer" : transfers + " transfers";
         String phrase = "Route from " + from + " to " + to + ", duration " + durationStr + ", " + transfersStr;
         ttsHelper.speak(phrase);
-
 
         if (route.hasLiftDisruption()) {
             String msg = route.getLiftDisruptionDescription() != null
@@ -152,6 +153,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void announceFirstStepIfTtsOn() {
         if (currentRoute == null || ttsHelper == null || !ttsHelper.isTtsEnabled()) return;
         List<Leg> legs = currentRoute.getLegs();
@@ -161,6 +163,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         if (!step.isEmpty()) ttsHelper.speak("Step 1. " + step);
     }
 
+    // Records a local journey log entry, then starts coarse GPS progress monitoring.
     private void logAndStartJourney() {
         if (currentRoute == null) return;
         int currentDuration = parseDuration(currentRoute.getDurationMinutes());
@@ -192,6 +195,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         startGpsProgress();
     }
 
+    // Switches UI into active progress mode and validates location permission prerequisites.
     private void startGpsProgress() {
         binding.startNavigation.setVisibility(View.GONE);
         binding.layoutLiveProgress.setVisibility(View.VISIBLE);
@@ -210,10 +214,12 @@ public class RouteDetailsActivity extends AppCompatActivity {
         startProgressLoop();
     }
 
+    // Starts periodic location updates; callback only updates UI while Activity is valid.
     private void startProgressLoop() {
         if (fusedLocationClient == null || destLocation == null || locationRequest == null || isFinishing()) return;
         locationCallback = new LocationCallback() {
             @Override
+            // Handles a focused part of this feature flow and keeps related logic encapsulated.
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 if (locationResult == null || isFinishing() || binding == null) return;
                 Location loc = locationResult.getLastLocation();
@@ -225,6 +231,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         } catch (SecurityException ignored) { }
     }
 
+    // Applies state changes and keeps dependent UI/data values synchronized.
     private void updateProgressBar(Location loc) {
         if (destLocation == null || binding == null) return;
         float currentDist = loc.distanceTo(destLocation);
@@ -243,6 +250,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION && grantResults.length > 0
@@ -252,7 +260,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         }
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private String resolveFromDisplay(RouteItem route) {
         String from = route.getFromStation() != null ? route.getFromStation().trim() : "";
         if (!from.isEmpty()) {
@@ -265,6 +273,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         return getString(R.string.from_label);
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private String resolveToDisplay(RouteItem route) {
         String to = route.getToStation() != null ? route.getToStation().trim() : "";
         if (!to.isEmpty()) {
@@ -277,11 +286,12 @@ public class RouteDetailsActivity extends AppCompatActivity {
         return getString(R.string.to_label);
     }
 
-
+    // Transforms inputs into the shape required by downstream components.
     private String buildSavedRouteSummary(RouteItem route) {
         return resolveFromDisplay(route) + " → " + resolveToDisplay(route);
     }
 
+    // Transforms inputs into the shape required by downstream components.
     private static int parseDuration(String s) {
         if (s == null || s.isEmpty()) return 0;
         try {
@@ -292,7 +302,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         }
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String deriveMode(RouteItem route) {
         java.util.List<Leg> legs = route.getLegs();
         if (legs == null || legs.isEmpty()) return "Mixed";
@@ -306,6 +316,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         return String.join(",", modes);
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String legMode(Leg leg) {
         ModeRef modeRef = leg.getMode();
         String name = modeRef != null ? modeRef.getName() : "";
@@ -330,6 +341,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         return null;
     }
 
+    // Persists selected route for offline recall in Home saved-routes section.
     private void saveRoute() {
         if (currentRoute == null) {
             Toast.makeText(this, R.string.save, Toast.LENGTH_SHORT).show();
@@ -352,6 +364,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         });
     }
 
+    // Pure view binding for route content with sensible fallback placeholders.
     private void displayRoute(RouteItem route) {
         if (route != null) {
             String fromDisplay = resolveFromDisplay(route);
@@ -363,7 +376,6 @@ public class RouteDetailsActivity extends AppCompatActivity {
             binding.tvArrivalTime.setText("→ " + route.getArrivalTime());
             binding.tvTransfers.setText(route.getTransfersText());
             binding.tvCrowdingWarning.setVisibility(route.getCrowdingLevel() == RouteItem.CROWDING_HIGH ? View.VISIBLE : View.GONE);
-
 
             if (AccessibilityPreferences.get(this).isStepFree() && route.hasLiftDisruption()) {
                 binding.tvLiftDisruptionWarning.setVisibility(View.VISIBLE);
@@ -401,6 +413,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         }
     }
 
+    // Builds a human-readable text itinerary for system share sheet.
     private void shareJourney() {
         if (currentRoute == null) return;
         StringBuilder shareBody = new StringBuilder();
@@ -433,7 +446,6 @@ public class RouteDetailsActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_journey)));
     }
 
-
     private static String getLegSummary(Leg leg) {
         if (leg.getInstruction() != null) {
             String s = leg.getInstruction().getSummary();
@@ -446,6 +458,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    // Releases listeners/resources to avoid leaks across lifecycle recreation.
     protected void onDestroy() {
         if (ttsHelper != null) {
             ttsHelper.shutdown();
@@ -461,4 +474,5 @@ public class RouteDetailsActivity extends AppCompatActivity {
         binding = null;
     }
 }
+
 

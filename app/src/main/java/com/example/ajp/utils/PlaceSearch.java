@@ -9,17 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
-
-
-
-
-
 /**
- * Utility class for PlaceSearch.
+ * Shared utility class for PlaceSearch.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
-public final class PlaceSearch {
 
+public final class PlaceSearch {
 
     private static final double BBOX_SOUTH = 51.2;
     private static final double BBOX_WEST = -0.5;
@@ -33,10 +29,6 @@ public final class PlaceSearch {
     private static final Locale GEOCODER_LOCALE = Locale.UK;
 
     private PlaceSearch() { }
-
-
-
-
 
     /**
      * Geocodes in the London bbox; used to scan multiple results for journey resolution.
@@ -71,6 +63,7 @@ public final class PlaceSearch {
         return (a.hasLatitude() && a.hasLongitude()) ? a : null;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static List<StopItem> searchPlaces(Context context, String query) {
         if (context == null || query == null || query.trim().isEmpty()) {
             return new ArrayList<>();
@@ -110,4 +103,5 @@ public final class PlaceSearch {
         return addr.getLatitude() + ", " + addr.getLongitude();
     }
 }
+
 

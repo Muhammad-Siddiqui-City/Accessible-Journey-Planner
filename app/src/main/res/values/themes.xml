@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Theme definitions controlling app-wide style attributes for normal and high-contrast rendering. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
 <resources>
     <!-- DayNight so the Dark Mode setting can switch to dark theme. -->
     <style name="Theme.AJP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -42,3 +40,4 @@
         <item name="ajp_primary_foreground">#FFFFFF</item>
     </style>
 </resources>
+

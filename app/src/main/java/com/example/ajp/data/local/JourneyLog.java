@@ -4,16 +4,13 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-
-
-
-
-
-
 @Entity(tableName = "journey_logs")
 /**
- * Room entity backing the JourneyLog table.
+ * Room entity model for JourneyLog.
+ * Represents one persisted record and maps fields directly to table columns.
+ * Entity-level constraints and names are kept close to the data model for clarity.
  */
+
 public class JourneyLog {
 
     @PrimaryKey(autoGenerate = true)
@@ -40,4 +37,5 @@ public class JourneyLog {
         this.toStation = toStation != null ? toStation : "";
     }
 }
+
 

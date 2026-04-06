@@ -10,12 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.ajp.R;
 
-
-
-
 /**
- * Custom view for rendering TransportPie content.
+ * Custom view implementation for TransportPieView.
+ * Draws feature-specific visuals that are not covered by stock Android widgets.
+ * Rendering concerns are isolated here so screens can pass data without drawing logic.
  */
+
 public class TransportPieView extends View {
 
     private static final float[] ANGLES = {0.65f * 360f, 0.20f * 360f, 0.10f * 360f, 0.05f * 360f};
@@ -38,6 +38,7 @@ public class TransportPieView extends View {
         init(context);
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void init(Context context) {
         paint.setStyle(Paint.Style.FILL);
         colors = new int[]{
@@ -49,6 +50,7 @@ public class TransportPieView extends View {
     }
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int w = getWidth();
@@ -69,4 +71,5 @@ public class TransportPieView extends View {
         canvas.drawCircle(cx, cy, innerRadius, paint);
     }
 }
+
 

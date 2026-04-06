@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
+<!-- Color token definitions used across the app theme and component styling. -->
+
 <resources>
     <!-- Primary Electric Blue & Teal (from Lovable index.css) -->
     <color name="primary">#0055FF</color>
@@ -44,3 +43,4 @@
     <color name="line_bus">#E32017</color>
     <color name="line_default">#666666</color>
 </resources>
+

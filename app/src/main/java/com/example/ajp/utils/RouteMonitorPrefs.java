@@ -6,13 +6,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-
-
-
-
 /**
- * Utility class for RouteMonitorPrefs.
+ * Shared utility class for RouteMonitorPrefs.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
+
 public final class RouteMonitorPrefs {
 
     private static final String PREFS_NAME = "ajp_route_monitor";
@@ -29,6 +28,7 @@ public final class RouteMonitorPrefs {
         this.prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
+    // Returns data from local state or derives a value needed by callers.
     public static RouteMonitorPrefs get(Context context) {
         return new RouteMonitorPrefs(context);
     }
@@ -66,7 +66,6 @@ public final class RouteMonitorPrefs {
         return prefs.getString(KEY_LAST_SIGNATURE, "");
     }
 
-
     public Set<String> getSimulatedDisruptedStopIds() {
         Set<String> raw = prefs.getStringSet(KEY_SIMULATED_STOPS, null);
         if (raw == null || raw.isEmpty()) return Collections.emptySet();
@@ -81,4 +80,5 @@ public final class RouteMonitorPrefs {
         }
     }
 }
+
 

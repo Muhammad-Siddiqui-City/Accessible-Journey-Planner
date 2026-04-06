@@ -3,15 +3,12 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-
-
-
-
-
-
 /**
- * DTO used to parse API payloads for StopPointResponse.
+ * API response model for StopPointResponse.
+ * Matches remote payload fields so parsing remains predictable and explicit.
+ * This keeps network schema changes localized to model classes and mappers.
  */
+
 public class StopPointResponse {
 
     @SerializedName("stopPoints")
@@ -21,4 +18,5 @@ public class StopPointResponse {
         return stopPoints;
     }
 }
+
 

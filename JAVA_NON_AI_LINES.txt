@@ -3176,6 +3176,14 @@ progressBarCrowding = itemView.findViewById(R.id.progressBarCrowding);
 }
 }
 package com.example.ajp.ui.journey;
+import android.graphics.Color;
+public final class RouteLineColors {
+public static final int WALKING = Color.parseColor("#3949AB");
+public static final int SOUTH_WESTERN_RAILWAY = Color.parseColor("#000000");
+public static final int NATIONAL_RAIL = Color.parseColor("#5D4037");
+private RouteLineColors() { }
+}
+package com.example.ajp.ui.journey;
 import com.example.ajp.api.Leg;
 import java.io.Serializable;
 import java.util.List;

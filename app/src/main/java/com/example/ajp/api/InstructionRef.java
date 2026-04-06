@@ -3,15 +3,12 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
-
-
-
-
-
-
 /**
- * DTO used to parse API payloads for InstructionRef.
+ * API response model for InstructionRef.
+ * Matches remote payload fields so parsing remains predictable and explicit.
+ * This keeps network schema changes localized to model classes and mappers.
  */
+
 public class InstructionRef implements Serializable {
 
     @SerializedName("summary")
@@ -25,4 +22,5 @@ public class InstructionRef implements Serializable {
         return r;
     }
 }
+
 

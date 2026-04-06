@@ -13,36 +13,22 @@ import java.util.Map;
 import java.util.Set;
 import retrofit2.Response;
 
-
-
-
-
-
-
 /**
- * Utility class for LiftDisruptionChecker.
+ * Shared utility class for LiftDisruptionChecker.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
+
 public class LiftDisruptionChecker {
 
     private final Context appContext;
 
-
     private final Map<String, Boolean> stationIssueCache = new HashMap<>();
     private final Gson gson = new Gson();
-
 
     public LiftDisruptionChecker(Context context) {
         this.appContext = context != null ? context.getApplicationContext() : null;
     }
-
-
-
-
-
-
-
-
-
 
     public boolean hasLiftIssues(String originalStopId, TflApi api) {
         android.util.Log.d("LiftChecker", "hasLiftIssues called with ID: " + originalStopId);
@@ -50,8 +36,6 @@ public class LiftDisruptionChecker {
             android.util.Log.d("LiftChecker", "hasLiftIssues: ID is null or empty, returning false");
             return false;
         }
-
-
 
         java.util.Set<String> simulated = null;
 
@@ -71,11 +55,8 @@ public class LiftDisruptionChecker {
             }
         }
 
-
-
         String stopId = originalStopId;
         android.util.Log.d("LiftChecker", "hasLiftIssues: Using original ID " + stopId + " for API calls");
-
 
         if (stationIssueCache.containsKey(stopId)) {
             boolean cached = stationIssueCache.get(stopId);
@@ -106,7 +87,6 @@ public class LiftDisruptionChecker {
                 String rawJson = gson.toJson(disruptionResp.body());
                 android.util.Log.d("LiftChecker", "hasLiftIssues: Raw disruption response for " + stopId + ": " + rawJson);
 
-
                 Type listType = new TypeToken<List<Disruption>>(){}.getType();
                 List<Disruption> disruptions = gson.fromJson(rawJson, listType);
 
@@ -118,7 +98,6 @@ public class LiftDisruptionChecker {
                         if (d.getAdditionalInfo() != null) text += " " + d.getAdditionalInfo().toLowerCase();
                         if (d.getType() != null) text += " " + d.getType().toLowerCase();
                         android.util.Log.d("LiftChecker", "hasLiftIssues: Checking disruption - description: " + d.getDescription() + ", additionalInfo: " + d.getAdditionalInfo() + ", type: " + d.getType());
-
 
                         if (text.contains("lift") || text.contains("escalator") ||
                             text.contains("step-free") || text.contains("no access") ||
@@ -132,7 +111,6 @@ public class LiftDisruptionChecker {
                     }
                 }
             }
-
 
             android.util.Log.d("LiftChecker", "hasLiftIssues: Checking lift count API for " + stopId);
             Response<StopPoint> stopPointResp = api.getStopPoint(stopId).execute();
@@ -151,7 +129,6 @@ public class LiftDisruptionChecker {
             if (stopPointResp.isSuccessful() && stopPointResp.body() != null) {
                 StopPoint stopPoint = stopPointResp.body();
 
-
                 if (simulated != null && isSimulatedByName(stopPoint, simulated)) {
                     stationIssueCache.put(stopId, true);
                     return true;
@@ -163,7 +140,6 @@ public class LiftDisruptionChecker {
                     return true;
                 }
             }
-
 
             android.util.Log.d("LiftChecker", "hasLiftIssues: No issues found for " + stopId + ", returning false");
             stationIssueCache.put(stopId, false);
@@ -179,16 +155,9 @@ public class LiftDisruptionChecker {
         }
     }
 
-
-
-
-
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private String normalizeStationId(String id) {
         if (id == null) return null;
-
 
         if (id.startsWith("940GZZ")) {
 
@@ -196,9 +165,6 @@ public class LiftDisruptionChecker {
                 android.util.Log.d("JourneyVM", "CONVERTED ID: 940GZZDLTWG to HUBTWG");
                 return "HUBTWG";
             }
-
-
-
 
             if (id.length() > 9) {
                 String shortCode = id.substring(id.length() - 3);
@@ -208,13 +174,8 @@ public class LiftDisruptionChecker {
             }
         }
 
-
         return id;
     }
-
-
-
-
 
     private boolean isSimulatedByName(StopPoint stopPoint, java.util.Set<String> simulated) {
         if (stopPoint == null || simulated == null || simulated.isEmpty()) return false;
@@ -233,4 +194,5 @@ public class LiftDisruptionChecker {
         return false;
     }
 }
+
 

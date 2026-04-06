@@ -4,15 +4,12 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-
-
-
-
-
-
 /**
- * DTO used to parse API payloads for Leg.
+ * API response model for Leg.
+ * Matches remote payload fields so parsing remains predictable and explicit.
+ * This keeps network schema changes localized to model classes and mappers.
  */
+
 public class Leg implements Serializable {
 
     @SerializedName("departurePoint")
@@ -53,4 +50,5 @@ public class Leg implements Serializable {
         return leg;
     }
 }
+
 

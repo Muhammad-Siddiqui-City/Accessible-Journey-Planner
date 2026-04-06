@@ -1,14 +1,11 @@
 package com.example.ajp.ui.analytics;
 
-
-
-
-
-
-
 /**
- * UI model/helper used by the FrequentRouteItem feature.
+ * UI-side model/helper used by FrequentRouteItem.
+ * Encapsulates presentation-oriented behavior needed by screens in this feature package.
+ * Keeping this separate helps avoid leaking API/database concerns into view code.
  */
+
 public class FrequentRouteItem {
     private final String routeLabel;
     private final String detail;
@@ -24,4 +21,5 @@ public class FrequentRouteItem {
     public String getDetail() { return detail; }
     public int getCount() { return count; }
 }
+
 

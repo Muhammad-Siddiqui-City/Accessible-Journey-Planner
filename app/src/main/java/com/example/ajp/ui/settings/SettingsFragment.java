@@ -1,5 +1,9 @@
 package com.example.ajp.ui.settings;
 
+// AI Generated
+// Built with Claude
+// Lovable.dev reference
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +18,6 @@ import androidx.fragment.app.Fragment;
 import com.example.ajp.R;
 import com.example.ajp.databinding.FragmentSettingsBinding;
 import com.example.ajp.ui.feedback.FeedbackActivity;
-import com.example.ajp.ui.main.MainActivity;
 import com.example.ajp.utils.AccessibilityPreferences;
 import com.example.ajp.utils.RouteMonitorPrefs;
 import com.example.ajp.utils.RouteMonitorScheduler;
@@ -22,42 +25,36 @@ import com.example.ajp.utils.SettingsPrefs;
 import java.util.HashSet;
 import java.util.Set;
 
-
-
-
-
-
-
-
-
 /**
- * UI fragment for the Settings screen.
+ * Screen controller for Settings UI interactions.
+ * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
+ * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
  */
+
 public class SettingsFragment extends Fragment {
 
     private FragmentSettingsBinding binding;
 
     @Nullable
     @Override
+    // Lifecycle: inflate view and prepare references for this feature section.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
+    // Lifecycle: bind listeners/observers after the view hierarchy exists.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SettingsPrefs prefs = SettingsPrefs.get(requireContext());
-
 
         binding.switchDarkMode.setChecked(prefs.isDarkMode());
         binding.switchHighContrast.setChecked(prefs.isHighContrast());
         binding.switchLargeText.setChecked(prefs.isLargeText());
         binding.switchTts.setChecked(prefs.isTtsEnabled());
 
-
         AccessibilityPreferences accPrefs = AccessibilityPreferences.get(requireContext());
-
 
         String speed = accPrefs.getWalkingSpeed();
         int speedButtonId = R.id.btn_speed_avg;
@@ -71,7 +68,6 @@ public class SettingsFragment extends Fragment {
             else if (checkedId == R.id.btn_speed_fast) accPrefs.setWalkingSpeed(AccessibilityPreferences.SPEED_FAST);
         });
 
-
         int maxWalk = accPrefs.getMaxWalkingMinutes();
         binding.sliderMaxWalk.setValue(maxWalk);
         binding.tvMaxWalkValue.setText(maxWalk + " min");
@@ -81,25 +77,21 @@ public class SettingsFragment extends Fragment {
             if (fromUser) accPrefs.setMaxWalkingMinutes(minutes);
         });
 
-
         binding.switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.setDarkMode(isChecked);
             AppCompatDelegate.setDefaultNightMode(isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
             if (getActivity() != null) getActivity().recreate();
         });
 
-
         binding.switchHighContrast.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.setHighContrast(isChecked);
             if (getActivity() != null) getActivity().recreate();
         });
 
-
         binding.switchLargeText.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.setLargeText(isChecked);
             if (getActivity() != null) getActivity().recreate();
         });
-
 
         binding.switchTts.setOnCheckedChangeListener((buttonView, isChecked) -> prefs.setTtsEnabled(isChecked));
 
@@ -108,14 +100,12 @@ public class SettingsFragment extends Fragment {
             startActivity(i);
         });
 
-
         binding.langEnglish.setOnClickListener(v -> applyLanguage(SettingsPrefs.LANG_EN_GB));
         binding.langSpanish.setOnClickListener(v -> applyLanguage(SettingsPrefs.LANG_ES));
         binding.langChinese.setOnClickListener(v -> applyLanguage(SettingsPrefs.LANG_ZH));
         binding.langArabic.setOnClickListener(v -> applyLanguage(SettingsPrefs.LANG_AR));
 
         binding.sendFeedback.setOnClickListener(v -> startActivity(new Intent(requireContext(), FeedbackActivity.class)));
-
 
         RouteMonitorPrefs routePrefs = RouteMonitorPrefs.get(requireContext());
         Set<String> simulatedIds = routePrefs.getSimulatedDisruptedStopIds();
@@ -143,20 +133,11 @@ public class SettingsFragment extends Fragment {
                 applySimulatedStopIds(routePrefs, binding.editSimulateStopIds.getText().toString());
             }
             Toast.makeText(requireContext(), R.string.test_route_change_scheduled, Toast.LENGTH_SHORT).show();
-            new Thread(() -> {
-                boolean changed = RouteMonitorScheduler.runCheckSync(requireContext());
-                android.app.Activity a = getActivity();
-                if (changed && a != null) {
-                    a.runOnUiThread(() -> {
-                        if (a instanceof MainActivity) {
-                            ((MainActivity) a).checkAndHandleRouteChange();
-                        }
-                    });
-                }
-            }).start();
+            new Thread(() -> RouteMonitorScheduler.runCheckSync(requireContext())).start();
         });
     }
 
+    // Applies state changes and keeps dependent UI/data values synchronized.
     private void applySimulatedStopIds(RouteMonitorPrefs routePrefs, String text) {
         if (text == null || text.trim().isEmpty()) {
             routePrefs.setSimulatedDisruptedStopIds(new HashSet<>());
@@ -170,15 +151,18 @@ public class SettingsFragment extends Fragment {
         routePrefs.setSimulatedDisruptedStopIds(ids);
     }
 
+    // Applies state changes and keeps dependent UI/data values synchronized.
     private void applyLanguage(String langCode) {
         SettingsPrefs.get(requireContext()).setLanguage(langCode);
         if (getActivity() != null) getActivity().recreate();
     }
 
     @Override
+    // Lifecycle: clear view references to avoid leaks in fragment recreation.
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 }
+
 

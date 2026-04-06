@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- XML resource file: strings.xml. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
 <resources>
     <string name="app_name">无障碍行程规划</string>
     <string name="home">首页</string>
@@ -161,3 +159,4 @@
     <string name="version">版本 1.0.0</string>
     <string name="made_with_love">为伦敦用心打造 ❤️</string>
 </resources>
+

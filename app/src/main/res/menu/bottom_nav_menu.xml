@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Menu resource for bottom nav menu. Defines stable item IDs used by navigation handling code. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
@@ -21,3 +19,4 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings" />
 </menu>
+

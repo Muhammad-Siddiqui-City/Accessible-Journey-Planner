@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Drawable resource for disruption card bg. Centralizes shape/color styling so UI theme updates are easier to maintain. -->
 
 <!-- AI Generated -->
 <!-- Lovable.dev: UI mockup reference -->
@@ -8,3 +9,4 @@
     <corners android:radius="16dp" />
     <solid android:color="#FFF0F0" />
 </shape>
+

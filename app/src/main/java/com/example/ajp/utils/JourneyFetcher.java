@@ -34,13 +34,12 @@ import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import retrofit2.Response;
 
-
-
-
-
 /**
- * Resolves free-text endpoints and maps TfL journey responses into RouteItem models.
+ * Shared utility class for JourneyFetcher.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
+
 public final class JourneyFetcher {
 
     private static final Pattern COORDS_PATTERN = Pattern.compile(
@@ -58,7 +57,7 @@ public final class JourneyFetcher {
         this.appContext = context != null ? context.getApplicationContext() : null;
     }
 
-
+    // Transforms inputs into the shape required by downstream components.
     public static String buildSignature(List<RouteItem> routes) {
         if (routes == null || routes.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
@@ -70,9 +69,7 @@ public final class JourneyFetcher {
         return sb.toString();
     }
 
-
-
-
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     public FetchResult fetch(String fromInput, String toInput, String timeHHmm, String dateyyyyMMdd) {
         if (appContext == null) {
             return FetchResult.fail("No context");
@@ -151,17 +148,8 @@ public final class JourneyFetcher {
         int maxWalk = acc.getMaxWalkingMinutes();
         String accessibility = acc.isStepFree() ? "noSolidStairs" : null;
 
-        Response<JourneyResponse> response = api.getJourneyResults(
-                fromEp.journeyPath,
-                toEp.journeyPath,
-                timeHHmm,
-                dateyyyyMMdd,
-                "Departing",
-                walkingSpeed,
-                maxWalk,
-                accessibility,
-                null
-        ).execute();
+        Response<JourneyResponse> response = requestJourneys(
+                api, fromEp, toEp, timeHHmm, dateyyyyMMdd, walkingSpeed, maxWalk, accessibility, null);
 
         if (!response.isSuccessful()) {
             return FetchResult.fail("Journey request failed (" + response.code() + ")");
@@ -170,18 +158,39 @@ public final class JourneyFetcher {
         if (body == null || body.getJourneys().isEmpty()) {
             return FetchResult.fail("No routes found");
         }
+        List<Journey> mergedJourneys = new ArrayList<>(body.getJourneys());
+
+        // Step-free requests can occasionally miss bus-only options in the default response.
+        if (!hasBusJourney(mergedJourneys)) {
+            try {
+                Response<JourneyResponse> busOnlyResponse = requestJourneys(
+                        api, fromEp, toEp, timeHHmm, dateyyyyMMdd, walkingSpeed, maxWalk, accessibility, "bus");
+                if (busOnlyResponse.isSuccessful()
+                        && busOnlyResponse.body() != null
+                        && busOnlyResponse.body().getJourneys() != null) {
+                    mergedJourneys.addAll(busOnlyResponse.body().getJourneys());
+                }
+            } catch (IOException ignored) {
+                // Keep primary results even if bus supplement fails.
+            }
+        }
 
         boolean stepFree = acc.isStepFree();
         LiftDisruptionChecker liftChecker = stepFree ? new LiftDisruptionChecker(appContext) : null;
         String userFrom = fromInput != null ? fromInput.trim() : "";
         String userTo = toInput != null ? toInput.trim() : "";
         List<RouteItem> items = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
         int idx = 0;
-        for (Journey j : body.getJourneys()) {
+        for (Journey j : mergedJourneys) {
             RouteItem item = mapJourneyToRouteItem(j, idx++, liftChecker, api, userFrom, userTo,
-                    fromEp, toEp, walkingSpeed);
+                    fromEp, toEp, walkingSpeed, maxWalk);
             if (item != null) {
-                items.add(item);
+                String sig = item.getDepartureTime() + "|" + item.getArrivalTime() + "|" + item.getDurationMinutes()
+                        + "|" + item.getRouteSummary();
+                if (seen.add(sig)) {
+                    items.add(item);
+                }
             }
         }
         if (items.isEmpty()) {
@@ -204,6 +213,36 @@ public final class JourneyFetcher {
                 }
             }
             t = t.getCause();
+        }
+        return false;
+    }
+
+    private static Response<JourneyResponse> requestJourneys(TflApi api, ResolvedEndpoint fromEp, ResolvedEndpoint toEp,
+            String timeHHmm, String dateyyyyMMdd, String walkingSpeed, int maxWalk, String accessibility, String mode)
+            throws IOException {
+        return api.getJourneyResults(
+                fromEp.journeyPath,
+                toEp.journeyPath,
+                timeHHmm,
+                dateyyyyMMdd,
+                "Departing",
+                walkingSpeed,
+                maxWalk,
+                accessibility,
+                mode
+        ).execute();
+    }
+
+    private static boolean hasBusJourney(List<Journey> journeys) {
+        if (journeys == null || journeys.isEmpty()) return false;
+        for (Journey j : journeys) {
+            if (j == null || j.getLegs() == null) continue;
+            for (Leg leg : j.getLegs()) {
+                if (leg != null && leg.getMode() != null) {
+                    String n = leg.getMode().getName();
+                    if (n != null && n.toLowerCase(Locale.UK).contains("bus")) return true;
+                }
+            }
         }
         return false;
     }
@@ -324,6 +363,7 @@ public final class JourneyFetcher {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String normToken(String w) {
         if (w == null) return "";
         return w.replaceAll("[^a-zA-Z0-9]", "").toLowerCase(Locale.UK);
@@ -349,6 +389,7 @@ public final class JourneyFetcher {
         return anySignificant;
     }
 
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private static StopPoint findNearestTransitStop(TflApi api, double lat, double lon) throws IOException {
         List<StopPoint> all = new ArrayList<>();
         // Run bus and train nearby calls in parallel (separate pool so parent can also resolve from/to in parallel).
@@ -410,6 +451,7 @@ public final class JourneyFetcher {
         return id != null ? id.trim() : "";
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private StopPoint ensureStopCoordinates(TflApi api, StopPoint sp) throws IOException {
         if (sp == null) return null;
         if (Math.abs(sp.getLat()) > 0.0001 && Math.abs(sp.getLon()) > 0.0001) {
@@ -424,6 +466,7 @@ public final class JourneyFetcher {
         return sp;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static double haversineMeters(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
@@ -434,12 +477,14 @@ public final class JourneyFetcher {
         return EARTH_RADIUS_M * c;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static double walkingSpeedToMetersPerSecond(String walkingSpeed) {
         if (AccessibilityPreferences.SPEED_SLOW.equals(walkingSpeed)) return 1.1;
         if (AccessibilityPreferences.SPEED_FAST.equals(walkingSpeed)) return 1.8;
         return 1.4;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static int estimateWalkSeconds(double meters, String walkingSpeed) {
         double mps = walkingSpeedToMetersPerSecond(walkingSpeed);
         int sec = (int) Math.round(meters / mps);
@@ -465,15 +510,72 @@ public final class JourneyFetcher {
         return removedSeconds;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+    private static long stripLeadingWalkingLegs(ArrayList<Leg> legs) {
+        long removedSeconds = 0;
+        while (legs.size() > 1 && isWalkingLeg(legs.get(0))) {
+            Leg head = legs.remove(0);
+            removedSeconds += head.getDuration();
+        }
+        return removedSeconds;
+    }
+
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+    private static List<Leg> mergeConsecutiveWalkingLegs(List<Leg> legs) {
+        if (legs == null || legs.size() < 2) return legs;
+        List<Leg> merged = new ArrayList<>();
+        int i = 0;
+        while (i < legs.size()) {
+            Leg current = legs.get(i);
+            if (!isWalkingLeg(current)) {
+                merged.add(current);
+                i++;
+                continue;
+            }
+            JourneyPlace dep = current.getDeparturePoint();
+            JourneyPlace arr = current.getArrivalPoint();
+            int dur = Math.max(0, current.getDuration());
+            int j = i + 1;
+            while (j < legs.size() && isWalkingLeg(legs.get(j))) {
+                Leg nxt = legs.get(j);
+                if (arr != null && nxt.getDeparturePoint() != null && !samePoint(arr, nxt.getDeparturePoint())) {
+                    break;
+                }
+                if (nxt.getArrivalPoint() != null) arr = nxt.getArrivalPoint();
+                dur += Math.max(0, nxt.getDuration());
+                j++;
+            }
+            merged.add(Leg.createWalkingLeg(dep, arr, dur, null));
+            i = j;
+        }
+        return merged;
+    }
+
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+    private static boolean samePoint(JourneyPlace a, JourneyPlace b) {
+        if (a == null || b == null) return false;
+        double dLat = Math.abs(a.getLat() - b.getLat());
+        double dLon = Math.abs(a.getLon() - b.getLon());
+        return dLat < 0.0002 && dLon < 0.0002;
+    }
+
     private RouteItem mapJourneyToRouteItem(Journey journey, int index, LiftDisruptionChecker liftChecker, TflApi api,
                                             String userFrom, String userTo,
-                                            ResolvedEndpoint fromEp, ResolvedEndpoint toEp, String walkingSpeed) {
+                                            ResolvedEndpoint fromEp, ResolvedEndpoint toEp,
+                                            String walkingSpeed, int maxWalkingMinutes) {
         List<Leg> legs = journey.getLegs();
         if (legs == null || legs.isEmpty()) return null;
 
         ArrayList<Leg> coreLegs = new ArrayList<>(legs);
-        // Drop TfL "walk to street" after alighting when final destination is the stop itself (no place beyond stop).
-        long removedTailWalkSec = stripTrailingWalkingLegs(coreLegs);
+        if (fromEp.placeAnchor != null) {
+            // We inject our own place->stop walk, so remove overlapping TfL leading walk legs.
+            stripLeadingWalkingLegs(coreLegs);
+        }
+        long removedTailWalkSec = 0;
+        if (toEp.placeAnchor != null) {
+            // We inject our own stop->place walk, so remove overlapping TfL trailing walk legs.
+            removedTailWalkSec = stripTrailingWalkingLegs(coreLegs);
+        }
 
         List<Leg> legsOut = new ArrayList<>(coreLegs);
         int originWalkSec = 0;
@@ -507,11 +609,20 @@ public final class JourneyFetcher {
             JourneyPlace arr = JourneyPlace.at(destLabel, toEp.placeAnchor.lat, toEp.placeAnchor.lon);
             legsOut.add(Leg.createWalkingLeg(dep, arr, destWalkSec, null));
         }
+        legsOut = mergeConsecutiveWalkingLegs(legsOut);
 
         // Journey duration is minutes from TfL; subtract stripped tail walks, add place↔stop walks.
         int removedTailWalkMin = (int) ((removedTailWalkSec + 59) / 60);
         int durationMin = Math.max(0, journey.getDuration() - removedTailWalkMin)
                 + (originWalkSec + destWalkSec) / 60;
+        int totalWalkSec = 0;
+        for (Leg leg : legsOut) {
+            if (isWalkingLeg(leg)) totalWalkSec += Math.max(0, leg.getDuration());
+        }
+        // Apply walking cap after we add synthetic place-anchor walks.
+        if (maxWalkingMinutes > 0 && totalWalkSec > (maxWalkingMinutes * 60)) {
+            return null;
+        }
         int originWalkMinRounded = (originWalkSec + 59) / 60;
         String depTime = adjustIsoExtractTime(journey.getStartDateTime(), -originWalkMinRounded);
         // TfL arrival includes stripped tail walks; final time is at the geocoded place after destWalkSec.
@@ -628,6 +739,7 @@ public final class JourneyFetcher {
         );
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String adjustIsoExtractTime(String iso, int plusMinutes) {
         if (iso == null || iso.isEmpty()) return "";
         try {
@@ -639,6 +751,7 @@ public final class JourneyFetcher {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String adjustIsoExtractTimePlusSeconds(String iso, long plusSeconds) {
         if (iso == null || iso.isEmpty()) return "";
         try {
@@ -650,6 +763,7 @@ public final class JourneyFetcher {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String extractTime(String iso) {
         if (iso == null || iso.length() < 16) return "";
         int t = iso.indexOf('T');
@@ -657,6 +771,7 @@ public final class JourneyFetcher {
         return iso.substring(t + 1, t + 6);
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String lineNameToBadge(String name) {
         if (name == null) return "";
         String lower = name.toLowerCase(Locale.UK);
@@ -730,10 +845,12 @@ public final class JourneyFetcher {
             this.error = error;
         }
 
+        // Handles a focused part of this feature flow and keeps related logic encapsulated.
         public static FetchResult ok(List<RouteItem> routes) {
             return new FetchResult(true, routes, null);
         }
 
+        // Handles a focused part of this feature flow and keeps related logic encapsulated.
         public static FetchResult fail(String error) {
             return new FetchResult(false, Collections.emptyList(), error);
         }
@@ -751,4 +868,5 @@ public final class JourneyFetcher {
         }
     }
 }
+
 

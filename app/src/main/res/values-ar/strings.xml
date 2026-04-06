@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- XML resource file: strings.xml. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
 <resources>
     <string name="app_name">مخطط الرحلات المتاح</string>
     <string name="home">الرئيسية</string>
@@ -161,3 +159,4 @@
     <string name="version">الإصدار 1.0.0</string>
     <string name="made_with_love">صُنع بـ ❤️ للندن</string>
 </resources>
+

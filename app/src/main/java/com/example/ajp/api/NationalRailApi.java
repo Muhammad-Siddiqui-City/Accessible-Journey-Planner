@@ -19,30 +19,16 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-
-
-
-
-
-
-
-
 /**
- * Minimal SOAP client for OpenLDBWS departures used when TfL data is unavailable.
+ * API integration component for NationalRailApi.
+ * Builds provider requests and maps transport responses into app-friendly models.
+ * Provider quirks and transport-specific request rules are handled here to shield the UI layer.
  */
+
 public class NationalRailApi {
-
-
-
 
     private static final String SOAP_URL = "https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb10.asmx";
     private static final MediaType SOAP_XML = MediaType.parse("text/xml; charset=utf-8");
-
-
-
-
-
-
 
     private static String buildSoapBody(String fromCrs, String toCrs) {
         StringBuilder xml = new StringBuilder();
@@ -69,11 +55,6 @@ public class NationalRailApi {
         return xml.toString();
     }
 
-
-
-
-
-
     private final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
             .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
@@ -85,11 +66,6 @@ public class NationalRailApi {
         void onDepartures(List<Arrival> arrivals);
         void onError(String message);
     }
-
-
-
-
-
 
     public void getDepartureBoard(String fromCrs, String toCrs, DepartureBoardCallback callback) {
         if (fromCrs == null || fromCrs.trim().length() != 3) {
@@ -151,11 +127,6 @@ public class NationalRailApi {
         });
     }
 
-
-
-
-
-
     private static String extractSoapFault(String xml) {
         if (xml == null || !xml.contains("Fault")) return null;
         int start = xml.indexOf("<faultstring>");
@@ -166,12 +137,6 @@ public class NationalRailApi {
         if (end < 0) end = xml.indexOf("</soap:faultstring>", start);
         return end > start ? xml.substring(start, end).trim() : null;
     }
-
-
-
-
-
-
 
     private static int indexOfIgnoreCase(String haystack, String needle, int from) {
         if (haystack == null || needle == null) return -1;
@@ -187,14 +152,12 @@ public class NationalRailApi {
         List<Arrival> list = new ArrayList<>();
         if (xml == null || xml.isEmpty()) return list;
 
-
         // Strip namespace prefixes so simple tag scanners work across provider variants.
         String cleanXml = xml.replaceAll("<\\w+:", "<").replaceAll("</\\w+:", "</");
         if (!cleanXml.equals(xml)) {
             android.util.Log.d("DEBUG_SWR", "Stripped namespaces from XML for parsing");
         }
         xml = cleanXml;
-
 
         int idx = 0;
         while (true) {
@@ -212,7 +175,6 @@ public class NationalRailApi {
 
             idx = serviceEnd + 1;
         }
-
 
         if (list.isEmpty()) {
             Pattern etdPattern = Pattern.compile("<etd>(.*?)</etd>", Pattern.DOTALL);
@@ -250,11 +212,6 @@ public class NationalRailApi {
         return list;
     }
 
-
-
-
-
-
     private static Arrival parseServiceBlock(String block) {
         String std = extractTag(block, 0, "std", "");
         String etd = extractTag(block, 0, "etd", "");
@@ -276,11 +233,6 @@ public class NationalRailApi {
                 Math.max(0, sec),
                 "national-rail");
     }
-
-
-
-
-
 
     private static String extractTag(String xml, int fromIndex, String parent, String child) {
         int start = xml.indexOf("<" + parent + ">", fromIndex);
@@ -311,11 +263,6 @@ public class NationalRailApi {
         return "";
     }
 
-
-
-
-
-
     private static int computeSecondsToDeparture(String timeStr) {
         if (timeStr == null || timeStr.trim().isEmpty()) return -1;
         timeStr = timeStr.trim();
@@ -340,4 +287,5 @@ public class NationalRailApi {
         return diffMin * 60;
     }
 }
+
 

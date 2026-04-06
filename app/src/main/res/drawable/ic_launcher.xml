@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Drawable resource for ic launcher. Centralizes shape/color styling so UI theme updates are easier to maintain. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -15,3 +13,4 @@
         android:fillColor="#FFFFFF"
         android:pathData="M44,54 L54,44 L64,54 L54,64 Z" />
 </vector>
+

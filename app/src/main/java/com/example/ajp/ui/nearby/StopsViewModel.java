@@ -30,15 +30,12 @@ import java.util.Set;
 import java.util.Arrays;
 import retrofit2.Response;
 
-
-
-
-
-
-
 /**
- * ViewModel that owns UI state for Stops.
+ * ViewModel state holder for Stops screens.
+ * Coordinates asynchronous work and exposes observable state used by fragments/activities.
+ * Validation and transformation are done here so the UI layer can stay mostly declarative.
  */
+
 public class StopsViewModel extends ViewModel {
 
     private static final int QUOTA_PER_MODE = 2;
@@ -46,10 +43,6 @@ public class StopsViewModel extends ViewModel {
     private static final int MAX_STATION_TRAIN_ROWS = 5;
 
     private static final int MAX_LINE_IDS_FOR_DISRUPTIONS = 15;
-
-
-
-
 
     private static final String[] ELIZABETH_LINE_IDS_FOR_FALLBACK = {
             "elizabeth", "elizabeth-line"
@@ -98,11 +91,7 @@ public class StopsViewModel extends ViewModel {
     public LiveData<List<StopItem>> getSearchResults() { return searchResults; }
     public LiveData<Boolean> getSearchLoading() { return searchLoading; }
 
-
-
-
-
-
+    /** Loads mixed-mode nearby stops (e.g. bus + rail) and line disruptions for Home/nearby UIs. */
     public void loadNearestStops(double lat, double lon) {
         cachedLat = lat;
         cachedLon = lon;
@@ -114,7 +103,6 @@ public class StopsViewModel extends ViewModel {
             try {
                 TflApi api = RetrofitClient.getApi();
 
-
                 List<StopItem> busItems = new ArrayList<>();
                 Response<StopPointResponse> busesResp = api.getNearbyBuses(lat, lon).execute();
                 if (busesResp.isSuccessful() && busesResp.body() != null && busesResp.body().getStopPoints() != null) {
@@ -123,14 +111,12 @@ public class StopsViewModel extends ViewModel {
                     }
                 }
 
-
                 List<StopItem> top2Tube = new ArrayList<>();
                 List<StopItem> top2Overground = new ArrayList<>();
                 List<StopItem> top2Elizabeth = new ArrayList<>();
                 List<StopItem> top2Dlr = new ArrayList<>();
                 List<StopItem> top2NationalRail = new ArrayList<>();
                 bucketAndSelectTrainStations(api, lat, lon, top2Tube, top2Overground, top2Elizabeth, top2Dlr, top2NationalRail);
-
 
                 Set<String> addedIds = new HashSet<>();
                 List<StopItem> merged = new ArrayList<>();
@@ -145,7 +131,6 @@ public class StopsViewModel extends ViewModel {
                 addUpToQuota(merged, addedIds, top2Dlr);
                 addUpToQuota(merged, addedIds, top2NationalRail);
 
-
                 Iterator<StopItem> iterator = merged.iterator();
                 while (iterator.hasNext()) {
                     StopItem stop = iterator.next();
@@ -155,11 +140,9 @@ public class StopsViewModel extends ViewModel {
                     }
                 }
 
-
                 Collections.sort(merged, STOPS_COMPARATOR);
 
                 stops.postValue(merged);
-
 
                 loadNearbyDisruptions(api, merged);
             } catch (Exception e) {
@@ -172,10 +155,7 @@ public class StopsViewModel extends ViewModel {
         }).start();
     }
 
-
-
-
-
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private void loadNearbyDisruptions(TflApi api, List<StopItem> nearbyStops) {
         if (nearbyStops == null || nearbyStops.isEmpty()) {
             disruptions.postValue(Collections.emptyList());
@@ -227,6 +207,7 @@ public class StopsViewModel extends ViewModel {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static int minSeverity(LineStatus line) {
         if (line.getLineStatuses() == null || line.getLineStatuses().isEmpty()) return 10;
         int min = 10;
@@ -236,7 +217,7 @@ public class StopsViewModel extends ViewModel {
         return min;
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String lineNameToApiId(String name) {
         String n = name.toLowerCase()
                 .replace(" line", "")
@@ -246,7 +227,7 @@ public class StopsViewModel extends ViewModel {
         return n.replaceAll("[^a-z0-9\\-]", "");
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static void addUpToQuota(List<StopItem> merged, Set<String> addedIds, List<StopItem> source) {
         for (StopItem s : source) {
             if (!hasLines(s)) continue;
@@ -256,14 +237,9 @@ public class StopsViewModel extends ViewModel {
         }
     }
 
-
     private static boolean hasLines(StopItem s) {
         return s.getLineCodes() != null && s.getLineCodes().length > 0;
     }
-
-
-
-
 
     private void bucketAndSelectTrainStations(TflApi api, double lat, double lon,
                                               List<StopItem> top2TubeOut, List<StopItem> top2OvergroundOut,
@@ -320,16 +296,12 @@ public class StopsViewModel extends ViewModel {
         addTopN(top2NationalRailOut, nationalRailStations, QUOTA_PER_MODE);
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static void addTopN(List<StopItem> out, List<StopPoint> bucket, int n) {
         for (int i = 0; i < Math.min(n, bucket.size()); i++) {
             out.add(mapToStopItem(bucket.get(i), true));
         }
     }
-
-
-
-
 
     private static final Comparator<StopItem> STOPS_COMPARATOR = (s1, s2) -> {
         int p1 = getPriority(s1);
@@ -340,10 +312,6 @@ public class StopsViewModel extends ViewModel {
         return Double.compare(s1.getDistance(), s2.getDistance());
     };
 
-
-
-
-
     private static int getPriority(StopItem stop) {
         if (containsLine(stop, "South Western Railway")) return 2;
         if (containsTubeLine(stop)) return 3;
@@ -351,6 +319,7 @@ public class StopsViewModel extends ViewModel {
         return 4;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static boolean containsLine(StopItem stop, String lineSubstring) {
         String[] codes = stop.getLineCodes();
         if (codes == null) return false;
@@ -361,6 +330,7 @@ public class StopsViewModel extends ViewModel {
         return false;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static boolean containsTubeLine(StopItem stop) {
         String[] codes = stop.getLineCodes();
         if (codes == null) return false;
@@ -376,10 +346,7 @@ public class StopsViewModel extends ViewModel {
         return false;
     }
 
-
-
-
-
+    /** Picks a small subset of nearest stops for compact Home cards (quota/variety rules). */
     public static List<StopItem> getHomeHighlights(List<StopItem> nearestStops) {
         List<StopItem> out = new ArrayList<>(2);
         if (nearestStops == null || nearestStops.isEmpty()) return out;
@@ -410,10 +377,7 @@ public class StopsViewModel extends ViewModel {
         return out;
     }
 
-
-
-
-
+    /** TfL-aware stop search for Station Search screen; clears results when query is empty. */
     public void searchStopsByName(android.content.Context context, String query) {
         String q = query != null ? query.trim() : "";
         if (q.isEmpty()) {
@@ -443,7 +407,7 @@ public class StopsViewModel extends ViewModel {
         }).start();
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static List<StopItem> deduplicateSearchResultsById(List<StopItem> list) {
         if (list == null || list.isEmpty()) return list;
         Set<String> seen = new HashSet<>();
@@ -455,7 +419,7 @@ public class StopsViewModel extends ViewModel {
         return out;
     }
 
-
+    // Transforms inputs into the shape required by downstream components.
     private static List<StopItem> mapMatchedStopToStopItems(TflApi api, MatchedStop m) {
         if (m == null) return Collections.emptyList();
         List<String> modes = m.getModes();
@@ -482,6 +446,7 @@ public class StopsViewModel extends ViewModel {
         return mapBusMatchedStopToItems(api, m, lineCodes, isStation);
     }
 
+    // Transforms inputs into the shape required by downstream components.
     private static List<StopItem> mapBusMatchedStopToItems(TflApi api, MatchedStop m, String[] fallbackLineCodes, boolean isStation) {
         List<StopItem> out = new ArrayList<>();
         String stopId = m.getId();
@@ -534,6 +499,7 @@ public class StopsViewModel extends ViewModel {
         return out;
     }
 
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private static StopPoint fetchStopPointSafely(TflApi api, String stopId) {
         if (api == null || stopId == null || stopId.trim().isEmpty()) return null;
         try {
@@ -545,10 +511,12 @@ public class StopsViewModel extends ViewModel {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String[] stopPointLinesToCodes(StopPoint stopPoint, String[] fallbackCodes) {
         return stopPointLinesToCodes(null, stopPoint, fallbackCodes, null);
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String[] stopPointLinesToCodes(TflApi api, StopPoint stopPoint, String[] fallbackCodes, MatchedStop matchedStop) {
         if (stopPoint == null || stopPoint.getLines() == null || stopPoint.getLines().isEmpty()) {
             String[] fallback = fallbackCodes != null ? fallbackCodes : new String[0];
@@ -563,6 +531,7 @@ public class StopsViewModel extends ViewModel {
         return loadBusLinesFromArrivalsIfNeeded(api, stopPoint, out, matchedStop);
     }
 
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private static String[] loadBusLinesFromArrivalsIfNeeded(TflApi api, StopPoint stopPoint, String[] currentCodes, MatchedStop matchedStop) {
         String[] codes = currentCodes != null ? currentCodes : new String[0];
         if (stopPoint == null || api == null) return codes;
@@ -624,6 +593,7 @@ public class StopsViewModel extends ViewModel {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static void collectBusLinesFromArrivals(TflApi api, String stopId, Set<String> out) {
         if (api == null || stopId == null || stopId.isEmpty() || out == null || out.size() >= 4) return;
         try {
@@ -657,6 +627,7 @@ public class StopsViewModel extends ViewModel {
         return true;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static List<StopItem> enrichGenericSearchResults(TflApi api, List<StopItem> list) {
         if (api == null || list == null || list.isEmpty()) return list;
         List<StopItem> out = new ArrayList<>(list.size());
@@ -679,6 +650,7 @@ public class StopsViewModel extends ViewModel {
         return out;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String[] resolveLineCodesForGenericStop(TflApi api, StopItem item) {
         String[] fallback = item != null && item.getLineCodes() != null ? item.getLineCodes() : new String[0];
         if (api == null || item == null) return fallback;
@@ -729,6 +701,7 @@ public class StopsViewModel extends ViewModel {
         return matches >= Math.min(2, aTokens.length);
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String normalizeStopName(String raw) {
         if (raw == null) return "";
         String n = raw.toLowerCase(Locale.UK);
@@ -742,6 +715,7 @@ public class StopsViewModel extends ViewModel {
         return n;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static boolean containsBusMode(List<String> modes) {
         if (modes == null || modes.isEmpty()) return false;
         for (String mode : modes) {
@@ -750,6 +724,7 @@ public class StopsViewModel extends ViewModel {
         return false;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String modeToDisplayName(String mode) {
         if (mode == null || mode.isEmpty()) return "";
         String m = mode.toLowerCase();
@@ -763,12 +738,10 @@ public class StopsViewModel extends ViewModel {
         return mode.substring(0, 1).toUpperCase() + (mode.length() > 1 ? mode.substring(1).toLowerCase() : "");
     }
 
-
-
-
-
-
-
+    /**
+     * Loads arrivals for one stop; tries TfL predictions first, then fallbacks including National Rail when needed.
+     * Sets {@link #nationalRailNoDataHint} when rail data is expected but unavailable.
+     */
     public void loadArrivals(String stopId) {
         if (stopId == null || stopId.isEmpty()) {
             selectedStopArrivals.postValue(Collections.emptyList());
@@ -835,17 +808,13 @@ public class StopsViewModel extends ViewModel {
         }).start();
     }
 
-
-
-
-
-
+    /** Splits "trains to" (TfL) vs "departures from" (National Rail) for the two-list Station Trains UI. */
     public void loadTrainsToAndFrom(String stopId) {
         loadTflArrivalsOnly(stopId);
         loadNationalRailDeparturesOnly(stopId);
     }
 
-
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private void loadTflArrivalsOnly(String stopId) {
         if (stopId == null || stopId.isEmpty()) {
             tflArrivalsToStation.postValue(Collections.emptyList());
@@ -873,7 +842,7 @@ public class StopsViewModel extends ViewModel {
         }).start();
     }
 
-
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private void loadNationalRailDeparturesOnly(String stopId) {
         if (stopId == null || stopId.isEmpty()) {
             nationalRailDeparturesFromStation.postValue(Collections.emptyList());
@@ -898,6 +867,7 @@ public class StopsViewModel extends ViewModel {
                 NationalRailApi railApi = new NationalRailApi();
                 railApi.getDepartureBoard(crs, null, new NationalRailApi.DepartureBoardCallback() {
                     @Override
+                    // Handles a focused part of this feature flow and keeps related logic encapsulated.
                     public void onDepartures(List<Arrival> arrivals) {
                         List<Arrival> filtered = filterAndSortNationalRailArrivals(arrivals);
                         filtered = dropArrivalsUnderOneMinuteForStationTrains(filtered);
@@ -913,6 +883,7 @@ public class StopsViewModel extends ViewModel {
                     }
 
                     @Override
+                    // Handles a focused part of this feature flow and keeps related logic encapsulated.
                     public void onError(String message) {
                         postTflFromStationTrainsFallback(sid);
                     }
@@ -923,10 +894,7 @@ public class StopsViewModel extends ViewModel {
         }).start();
     }
 
-
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void postTflFromStationTrainsFallback(String stopId) {
         new Thread(() -> {
             try {
@@ -1014,12 +982,13 @@ public class StopsViewModel extends ViewModel {
         }).start();
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static void addUniqueStopId(List<String> list, String id) {
         if (list == null || id == null || id.isEmpty()) return;
         if (!list.contains(id)) list.add(id);
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static void appendElizabethRailAliases(String stopId, List<String> out) {
         if (stopId == null || out == null) return;
         String u = stopId.toUpperCase(Locale.UK).trim();
@@ -1032,10 +1001,7 @@ public class StopsViewModel extends ViewModel {
         }
     }
 
-
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String resolveNationalRailCrs(TflApi api, String stopId) throws java.io.IOException {
         String crs = CrsLookup.getCrs(stopId);
         if (crs != null) return crs;
@@ -1045,7 +1011,7 @@ public class StopsViewModel extends ViewModel {
         return findCrsInStopTree(spResp.body(), 6);
     }
 
-
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private static String findCrsInStopTree(StopPoint sp, int depth) {
         if (sp == null || depth < 0) return null;
         String crs = CrsLookup.getCrs(sp.getNaptanId());
@@ -1061,6 +1027,7 @@ public class StopsViewModel extends ViewModel {
         return null;
     }
 
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private List<ArrivalPrediction> fetchArrivalsFromApi(TflApi api, String stopId) throws java.io.IOException {
         Response<List<ArrivalPrediction>> resp = api.getArrivals(stopId).execute();
         if (resp.isSuccessful() && resp.body() != null) {
@@ -1069,7 +1036,7 @@ public class StopsViewModel extends ViewModel {
         return Collections.emptyList();
     }
 
-
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private List<ArrivalPrediction> fetchLineArrivalsFallback(TflApi api, String stopId) {
         String[] nationalRailLines = {"south-western-railway", "southern", "southeastern", "thameslink", "great-western-railway", "greater-anglia", "c2c"};
         for (String lineId : nationalRailLines) {
@@ -1085,7 +1052,7 @@ public class StopsViewModel extends ViewModel {
         return Collections.emptyList();
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static List<Arrival> filterAndSortArrivals(List<Arrival> list) {
         if (list == null) return Collections.emptyList();
         List<Arrival> out = new ArrayList<>();
@@ -1102,10 +1069,7 @@ public class StopsViewModel extends ViewModel {
         return out;
     }
 
-
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static List<Arrival> filterAndSortNationalRailArrivals(List<Arrival> list) {
         if (list == null) return Collections.emptyList();
         List<Arrival> out = new ArrayList<>();
@@ -1126,9 +1090,7 @@ public class StopsViewModel extends ViewModel {
         return out;
     }
 
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static List<Arrival> dropArrivalsUnderOneMinuteForStationTrains(List<Arrival> list) {
         if (list == null) return Collections.emptyList();
         List<Arrival> out = new ArrayList<>();
@@ -1140,7 +1102,7 @@ public class StopsViewModel extends ViewModel {
         return out;
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static <T> List<T> truncateToTopN(List<T> list, int n) {
         if (list == null) return Collections.emptyList();
         if (n <= 0) return Collections.emptyList();
@@ -1148,11 +1110,12 @@ public class StopsViewModel extends ViewModel {
         return new ArrayList<>(list.subList(0, n));
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void tryNationalRailFallback(String crs, String stopId) {
         NationalRailApi railApi = new NationalRailApi();
         railApi.getDepartureBoard(crs, null, new NationalRailApi.DepartureBoardCallback() {
             @Override
+            // Handles a focused part of this feature flow and keeps related logic encapsulated.
             public void onDepartures(List<Arrival> arrivals) {
                 nationalRailNoDataHint.postValue(false);
                 List<Arrival> filtered = filterAndSortArrivals(arrivals);
@@ -1160,6 +1123,7 @@ public class StopsViewModel extends ViewModel {
             }
 
             @Override
+            // Handles a focused part of this feature flow and keeps related logic encapsulated.
             public void onError(String message) {
                 nationalRailNoDataHint.postValue(true);
                 selectedStopArrivals.postValue(Collections.emptyList());
@@ -1167,7 +1131,7 @@ public class StopsViewModel extends ViewModel {
         });
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private boolean checkIsNationalRailNoData(TflApi api, String stopId) {
         try {
             Response<StopPoint> resp = api.getStopPoint(stopId).execute();
@@ -1177,7 +1141,7 @@ public class StopsViewModel extends ViewModel {
         }
     }
 
-
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private List<ArrivalPrediction> fetchChildPlatformArrivals(TflApi api, String stopId) {
         try {
             Response<StopPoint> resp = api.getStopPoint(stopId).execute();
@@ -1205,6 +1169,7 @@ public class StopsViewModel extends ViewModel {
         }
     }
 
+    // Transforms inputs into the shape required by downstream components.
     private static StopItem mapToStopItem(StopPoint sp, boolean isStation) {
         String[] codes = new String[0];
         if (sp.getLines() != null && !sp.getLines().isEmpty()) {
@@ -1217,4 +1182,5 @@ public class StopsViewModel extends ViewModel {
         return new StopItem(sp.getNaptanId(), sp.getCommonName(), sp.getDistance(), codes, false, sp.getStopLetter(), isStation);
     }
 }
+
 

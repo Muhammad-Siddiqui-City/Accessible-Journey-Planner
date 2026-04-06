@@ -35,9 +35,5 @@
             android:name=".ui.feedback.FeedbackActivity"
             android:exported="false"
             android:theme="@style/Theme.AJP" />
-        <activity
-            android:name=".ui.notfound.NotFoundActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AJP" />
     </application>
 </manifest>

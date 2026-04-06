@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Night-mode value overrides applied when dark theme resources are active. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
 <resources>
     <!-- Dark theme overrides when Dark Mode is on. -->
     <color name="background">#121212</color>
@@ -19,3 +17,4 @@
     <color name="gradient_end">#2A2430</color>
     <color name="charts_container_bg">#1E2830</color>
 </resources>
+

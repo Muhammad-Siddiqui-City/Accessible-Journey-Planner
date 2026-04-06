@@ -1,5 +1,9 @@
 package com.example.ajp.ui.feedback;
 
+// AI Generated
+// Built with Claude
+// Lovable.dev reference
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,28 +19,25 @@ import com.example.ajp.ui.main.MainActivity;
 import com.example.ajp.utils.LocaleHelper;
 import com.example.ajp.utils.SettingsPrefs;
 
-
-
-
-
-
-
-
-
 /**
- * Activity that hosts the Feedback flow.
+ * Activity entry point for the Feedback flow.
+ * Owns lifecycle-sensitive orchestration, screen wiring, and intent-based handover to adjacent features.
+ * Business rules are intentionally pushed to utilities/ViewModels so this class stays focused on UI flow.
  */
+
 public class FeedbackActivity extends AppCompatActivity {
 
     private ActivityFeedbackBinding binding;
     private int rating = 0;
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(LocaleHelper.applyFull(newBase));
     }
 
     @Override
+    // Lifecycle: initialise dependencies and wire initial UI state.
     protected void onCreate(Bundle savedInstanceState) {
         if (SettingsPrefs.get(getApplicationContext()).isHighContrast()) {
             setTheme(R.style.Theme_AJP_HighContrast);
@@ -103,7 +104,7 @@ public class FeedbackActivity extends AppCompatActivity {
         binding.star5.setAlpha(r >= 5 ? 1f : 0.3f);
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void sendFeedbackEmail() {
         String issueType = "";
         Object selected = binding.issueTypeSpinner.getSelectedItem();
@@ -126,9 +127,11 @@ public class FeedbackActivity extends AppCompatActivity {
     }
 
     @Override
+    // Releases listeners/resources to avoid leaks across lifecycle recreation.
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
     }
 }
+
 

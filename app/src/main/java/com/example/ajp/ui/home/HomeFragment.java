@@ -1,5 +1,9 @@
 package com.example.ajp.ui.home;
 
+// AI Generated
+// Built with Claude
+// Lovable.dev reference
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -42,18 +46,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
-
-
-
-
 /**
- * UI fragment for the Home screen.
+ * Screen controller for Home UI interactions.
+ * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
+ * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
  */
+
 public class HomeFragment extends Fragment {
-
-
 
     private static final int REQUEST_LOCATION = 1001;
 
@@ -68,24 +67,26 @@ public class HomeFragment extends Fragment {
 
     @Nullable
     @Override
+    // Inflate binding for this Fragment view instance; released in onDestroyView.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
+    // Attach observers and click handlers after view inflation to avoid null view access.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         permissionManager = PermissionManager.getInstance(requireContext());
         locationManager = LocationManager.getInstance(requireContext());
         viewModel = new ViewModelProvider(requireActivity()).get(StopsViewModel.class);
 
-
         if (viewModel.hasCachedLocation()) {
             viewModel.loadNearestStops(viewModel.getCachedLat(), viewModel.getCachedLon());
         } else if (permissionManager.checkLocationPermission(requireContext())) {
             locationManager.getCurrentLocation(new LocationManager.LocationCallback() {
                 @Override
+                // Handles a focused part of this feature flow and keeps related logic encapsulated.
                 public void onLocationReceived(double lat, double lon) {
                     viewModel.loadNearestStops(lat, lon);
                 }
@@ -170,7 +171,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
         voiceResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -182,7 +182,6 @@ public class HomeFragment extends Fragment {
                         openStationSearch(spoken);
                     }
                 });
-
 
         binding.searchMicTouch.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -229,7 +228,6 @@ public class HomeFragment extends Fragment {
         binding.transportTube.setOnClickListener(v -> Toast.makeText(requireContext(), R.string.tube_rail, Toast.LENGTH_SHORT).show());
         binding.transportBus.setOnClickListener(v -> Toast.makeText(requireContext(), R.string.buses, Toast.LENGTH_SHORT).show());
 
-
         savedRouteAdapter = new SavedRouteAdapter();
         savedRouteAdapter.setOnSavedRouteClickListener(entity -> {
             if (entity.routeItem != null) {
@@ -259,7 +257,7 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-
+    // Single guard point for search input quality before navigating to search results screen.
     private void openStationSearch(String query) {
         if (query == null || query.trim().isEmpty()) {
             Toast.makeText(requireContext(), R.string.search_placeholder, Toast.LENGTH_SHORT).show();
@@ -270,6 +268,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // Opens nearby flow from cached location when possible to reduce repeated GPS calls.
     private void openNearbyStationsWithLocation() {
         if (viewModel.hasCachedLocation()) {
             if (getActivity() instanceof MainActivity) {
@@ -280,12 +279,14 @@ public class HomeFragment extends Fragment {
         if (permissionManager.checkLocationPermission(requireContext())) {
             locationManager.getCurrentLocation(new LocationManager.LocationCallback() {
                 @Override
+                // Handles a focused part of this feature flow and keeps related logic encapsulated.
                 public void onLocationReceived(double lat, double lon) {
                     if (getActivity() instanceof MainActivity) {
                         ((MainActivity) getActivity()).showNearbyStationsFragment(lat, lon);
                     }
                 }
                 @Override
+                // Handles a focused part of this feature flow and keeps related logic encapsulated.
                 public void onLocationFailed() {
                     Toast.makeText(requireContext(), R.string.nearby_stations, Toast.LENGTH_SHORT).show();
                 }
@@ -295,7 +296,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
+    // Opens arrivals from the highlighted nearby cards, with fallback to nearby list flow.
     private void openStationArrivals(int index) {
         if (index < 0 || index >= currentHighlights.size()) {
             openNearbyStationsWithLocation();
@@ -307,7 +308,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
+    // Keeps Home → Popular arrivals navigation intent explicit and easy to explain in viva.
     private void openPopularStationArrivals() {
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).showPopularStationsFragment();
@@ -315,17 +316,20 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION && permissionManager.isPermissionGranted(grantResults)) {
             locationManager.getCurrentLocation(new LocationManager.LocationCallback() {
                 @Override
+                // Handles a focused part of this feature flow and keeps related logic encapsulated.
                 public void onLocationReceived(double lat, double lon) {
                     if (getActivity() instanceof MainActivity) {
                         ((MainActivity) getActivity()).showNearbyStationsFragment(lat, lon);
                     }
                 }
                 @Override
+                // Handles a focused part of this feature flow and keeps related logic encapsulated.
                 public void onLocationFailed() {
                     Toast.makeText(requireContext(), R.string.nearby_stations, Toast.LENGTH_SHORT).show();
                 }
@@ -333,11 +337,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String formatDistance(android.content.Context context, double meters) {
         double km = meters / 1000.0;
         return context.getString(R.string.distance_km_away, km);
     }
 
+    // Creates simple dynamic line badges from nearest-stop metadata.
     private void populateBadges(LinearLayout container, StopItem stop) {
         if (container == null) return;
         container.removeAllViews();
@@ -355,12 +361,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private int dp(int px) {
         float density = getResources().getDisplayMetrics().density;
         return (int) (px * density);
     }
 
-
+    // Maps line names to recognisable brand colours for fast visual scanning in cards.
     private static int getLineColor(String lineName) {
         if (lineName == null) return Color.parseColor("#0019A8");
         String n = lineName.trim().toLowerCase();
@@ -388,7 +395,6 @@ public class HomeFragment extends Fragment {
         return Color.WHITE;
     }
 
-
     private static String getLineBadgeText(String name, String id) {
         if (name != null && !name.isEmpty()) {
             String n = name.toUpperCase();
@@ -413,18 +419,19 @@ public class HomeFragment extends Fragment {
         return "—";
     }
 
-
     private static StatusDetail getFirstStatusDetail(LineStatus line) {
         if (line.getLineStatuses() == null || line.getLineStatuses().isEmpty()) return null;
         return line.getLineStatuses().get(0);
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String extractUrl(String text) {
         if (text == null) return null;
         Matcher matcher = Pattern.compile("(https?://\\S+)").matcher(text);
         return matcher.find() ? matcher.group(1) : null;
     }
 
+    // Reads condensed disruption summary for users who enable spoken accessibility feedback.
     private void announceDisruptionsIfTtsOn(List<LineStatus> disruptions) {
         if (ttsHelper == null) ttsHelper = new TtsHelper(requireContext());
         if (!ttsHelper.isTtsEnabled() || disruptions == null || disruptions.isEmpty()) return;
@@ -439,6 +446,7 @@ public class HomeFragment extends Fragment {
         ttsHelper.speak(phrase);
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private String cleanDisruptionText(String rawReason, String severityDescription) {
         if (rawReason == null || rawReason.isEmpty()) {
             return severityDescription != null ? severityDescription : "";
@@ -453,6 +461,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    // Lifecycle: clear view references to avoid leaks in fragment recreation.
     public void onDestroyView() {
         if (ttsHelper != null) {
             ttsHelper.shutdown();
@@ -462,4 +471,5 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 }
+
 

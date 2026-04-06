@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Drawable resource for ic arrow down. Centralizes shape/color styling so UI theme updates are easier to maintain. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
-<!-- Downward arrow between From and To inputs. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
@@ -13,3 +10,4 @@
         android:fillColor="#333333"
         android:pathData="M7,10l5,5 5,-5z" />
 </vector>
+

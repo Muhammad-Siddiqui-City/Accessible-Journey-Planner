@@ -19,15 +19,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-
-
-
-
-
-
 /**
- * RecyclerView adapter for Steps items.
+ * RecyclerView adapter for Steps item rendering.
+ * Maps domain/UI models into row views and keeps list-specific formatting in one place.
+ * This avoids repeating display logic in fragments and keeps row behavior consistent across updates.
  */
+
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHolder> {
 
     private static final int COLOR_TUBE = 0xFF2196F3;
@@ -46,12 +43,14 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
 
     @NonNull
     @Override
+    // Initializes screen state, wiring, and startup behavior for this lifecycle stage.
     public StepViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_step, parent, false);
         return new StepViewHolder(v);
     }
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void onBindViewHolder(@NonNull StepViewHolder holder, int position) {
         Leg leg = legs.get(position);
         String modeName = leg.getMode() != null ? leg.getMode().getName() : "";
@@ -96,6 +95,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         return detail;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String collapseForDedupe(String s) {
         if (s == null) return "";
         String out = s.trim().toLowerCase(Locale.UK)
@@ -108,6 +108,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         return out;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String walkDestinationCore(String line) {
         if (line == null) return "";
         String core = WALK_PREFIX.matcher(line.trim()).replaceFirst("").trim();
@@ -125,6 +126,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         return !titleDest.isEmpty() && titleDest.equals(insDest);
     }
 
+    // Transforms inputs into the shape required by downstream components.
     private String buildStepTitle(Leg leg, String modeName) {
         String m = modeName.toLowerCase();
         if (m.contains("walk")) {
@@ -221,4 +223,5 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         }
     }
 }
+
 

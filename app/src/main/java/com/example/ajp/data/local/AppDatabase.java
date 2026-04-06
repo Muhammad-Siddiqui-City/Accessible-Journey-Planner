@@ -7,10 +7,6 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-
-
-
-
 @Database(entities = {SavedRouteEntity.class, JourneyLog.class}, version = 4, exportSchema = false)
 @TypeConverters(Converters.class)
 /**
@@ -18,13 +14,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
  */
 public abstract class AppDatabase extends androidx.room.RoomDatabase {
 
-
-
-
-
-
     private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
         @Override
+        // Handles a focused part of this feature flow and keeps related logic encapsulated.
         public void migrate(SupportSQLiteDatabase db) {
             db.execSQL("DELETE FROM journey_logs");
         }
@@ -34,11 +26,6 @@ public abstract class AppDatabase extends androidx.room.RoomDatabase {
 
     public abstract SavedRouteDao savedRouteDao();
     public abstract JourneyLogDao journeyLogDao();
-
-
-
-
-
 
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
@@ -55,4 +42,5 @@ public abstract class AppDatabase extends androidx.room.RoomDatabase {
         return INSTANCE;
     }
 }
+
 

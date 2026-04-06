@@ -17,15 +17,12 @@ import com.example.ajp.utils.TimeFormatUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
-
-
 /**
- * Holds plan-journey UI state, route loading, and preview metadata.
+ * ViewModel state holder for Journey screens.
+ * Coordinates asynchronous work and exposes observable state used by fragments/activities.
+ * Validation and transformation are done here so the UI layer can stay mostly declarative.
  */
+
 public class JourneyViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<RouteItem>> routes = new MutableLiveData<>(List.of());
@@ -42,7 +39,6 @@ public class JourneyViewModel extends AndroidViewModel {
     public JourneyViewModel(@NonNull Application application) {
         super(application);
     }
-
 
     public static class MapCoords {
         public final double startLat, startLon, endLat, endLon;
@@ -67,13 +63,12 @@ public class JourneyViewModel extends AndroidViewModel {
     public void setSavedOrigin(String s) { savedOrigin.setValue(s != null ? s : ""); }
     public void setSavedDestination(String s) { savedDestination.setValue(s != null ? s : ""); }
 
-
     public void setOptimizationStrategy(RouteOptimizer.Strategy strategy) {
         currentStrategy = strategy;
         reSortRoutes();
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void reSortRoutes() {
         List<RouteItem> current = routes.getValue();
         if (current != null && !current.isEmpty()) {
@@ -85,9 +80,7 @@ public class JourneyViewModel extends AndroidViewModel {
         }
     }
 
-
-
-
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     public void findRoutes(String from, String to, String timeHHmm, String dateyyyyMMdd) {
         String fromTrimmed = from != null ? from.trim() : "";
         String toTrimmed = to != null ? to.trim() : "";
@@ -160,4 +153,5 @@ public class JourneyViewModel extends AndroidViewModel {
     }
 
 }
+
 

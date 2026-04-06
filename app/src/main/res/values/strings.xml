@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- String resource table for this locale. Text lives here so UI copy can be updated and localized without touching Java code. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
 <resources>
     <string name="app_name">Accessible Journey Planner</string>
 
@@ -211,8 +209,5 @@
     <string name="test_route_change_now">Test route change now</string>
     <string name="test_route_change_scheduled">Test route change scheduled</string>
     <string name="no_email_app">No email app found</string>
-
-    <!-- NotFound -->
-    <string name="not_found_title">404</string>
-    <string name="oops_not_found">Oops! Page not found</string>
 </resources>
+

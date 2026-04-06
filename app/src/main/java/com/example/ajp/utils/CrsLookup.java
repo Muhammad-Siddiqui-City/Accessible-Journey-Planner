@@ -8,15 +8,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
-
-
-
-
-
 /**
- * Utility class for CrsLookup.
+ * Shared utility class for CrsLookup.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
+
 public class CrsLookup {
 
     private static final Map<String, String> tflToCrs = new HashMap<>();
@@ -42,7 +39,6 @@ public class CrsLookup {
         tflToCrs.put("910GKINGX", "KGX");
         tflToCrs.put("910GKNGX", "KGX");
         tflToCrs.put("910GWIMBLEDON", "WIM");
-
 
         tflToCrs.put("910GLIVST", "LST");
         tflToCrs.put("910GPADTON", "PAD");
@@ -70,7 +66,6 @@ public class CrsLookup {
         tflToCrs.put("910GFARIND", "ZFD");
         tflToCrs.put("910GFARRING", "ZFD");
 
-
         tflToCrs.put("940GZZLUWLO", "WAT");
         tflToCrs.put("940GZZLUVIC", "VIC");
         tflToCrs.put("940GZZLULVT", "LST");
@@ -90,7 +85,6 @@ public class CrsLookup {
         tflToCrs.put("940GZZLUCRD", "ECR");
         tflToCrs.put("940GZZLUFCN", "ZFD");
 
-
         hubToCrs.put("HUBKGX", "KGX");
         hubToCrs.put("HUBLST", "LST");
         hubToCrs.put("HUBPAD", "PAD");
@@ -108,7 +102,6 @@ public class CrsLookup {
         hubToCrs.put("HUBTCR", "TCR");
         hubToCrs.put("HUBWHC", "WHC");
         hubToCrs.put("HUBZFD", "ZFD");
-
 
         nameToCrs.put("barnes", "BNS");
         nameToCrs.put("barnes rail station", "BNS");
@@ -161,7 +154,6 @@ public class CrsLookup {
         nameToCrs.put("london liverpool street rail station", "LST");
     }
 
-
     public static String getCrs(String tflId) {
         if (tflId == null || tflId.trim().isEmpty()) return null;
         String id = normalizeId(tflId.trim());
@@ -177,9 +169,7 @@ public class CrsLookup {
         return tflToCrs.get(id.toLowerCase(Locale.UK));
     }
 
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static String normalizeForCrsLookup(String commonName) {
         if (commonName == null) return "";
         String n = commonName.trim().toLowerCase(Locale.UK);
@@ -195,7 +185,6 @@ public class CrsLookup {
         n = n.replace(" (stop b)", "");
         return n.trim();
     }
-
 
     public static String getCrsFromName(String commonName) {
         if (commonName == null || commonName.isEmpty()) return null;
@@ -216,7 +205,7 @@ public class CrsLookup {
         return null;
     }
 
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String normalizeId(String id) {
         if (id.contains("/")) {
             int last = id.lastIndexOf('/');
@@ -227,4 +216,5 @@ public class CrsLookup {
         return id;
     }
 }
+
 

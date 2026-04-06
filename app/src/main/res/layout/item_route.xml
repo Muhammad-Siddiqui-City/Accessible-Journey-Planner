@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
-<!-- Suggested route card: outlined, with duration, BEST badge, crowding bar. -->
+<!-- Reusable row/card layout for item route. Used by adapters to render list content consistently. -->
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -294,3 +292,4 @@
         android:layout_marginTop="2dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

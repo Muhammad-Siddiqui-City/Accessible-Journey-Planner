@@ -10,15 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ajp.R;
 import java.util.List;
 
-
-
-
-
-
-
 /**
- * RecyclerView adapter for NearbyStations items.
+ * RecyclerView adapter for NearbyStations item rendering.
+ * Maps domain/UI models into row views and keeps list-specific formatting in one place.
+ * This avoids repeating display logic in fragments and keeps row behavior consistent across updates.
  */
+
 public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAdapter.StopViewHolder> {
 
     public interface OnStopClickListener {
@@ -32,11 +29,11 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         this.clickListener = listener;
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void submitList(List<StopItem> list) {
         this.items = list != null ? list : java.util.Collections.emptyList();
         notifyDataSetChanged();
     }
-
 
     public void setStops(List<StopItem> stops) {
         submitList(stops);
@@ -44,12 +41,14 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
 
     @NonNull
     @Override
+    // Initializes screen state, wiring, and startup behavior for this lifecycle stage.
     public StopViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_nearby_station, parent, false);
         return new StopViewHolder(view);
     }
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void onBindViewHolder(@NonNull StopViewHolder holder, int position) {
         StopItem item = items.get(position);
         String displayName = formatStationName(item.getName(), item.getStopLetter());
@@ -62,7 +61,6 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
             holder.tvWalkTime.setText(holder.itemView.getContext().getString(R.string.distance_not_available));
         }
         holder.iconStepFree.setVisibility(View.GONE);
-
 
         TextView[] badges = { holder.badge1, holder.badge2, holder.badge3, holder.badge4 };
         String[] lineNames = item.getLineCodes();
@@ -94,9 +92,7 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         return items.size();
     }
 
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String formatStationName(String commonName, String stopLetter) {
         if (commonName == null) commonName = "";
         if (stopLetter == null) stopLetter = "";
@@ -104,10 +100,6 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         if (letter.isEmpty()) return commonName;
         return commonName + " (Stop " + letter + ")";
     }
-
-
-
-
 
     private static int getLineColor(String lineName) {
         if (lineName == null) return Color.parseColor("#0019A8");
@@ -138,7 +130,6 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         return Color.parseColor("#0019A8");
     }
 
-
     private static int getLineTextColor(String lineName) {
         if (lineName == null) return Color.WHITE;
         if (lineName.trim().toLowerCase().contains("circle")) return Color.BLACK;
@@ -163,4 +154,5 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         }
     }
 }
+
 

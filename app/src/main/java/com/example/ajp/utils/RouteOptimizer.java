@@ -4,15 +4,12 @@ import com.example.ajp.ui.journey.RouteItem;
 import java.util.Collections;
 import java.util.List;
 
-
-
-
-
-
-
 /**
- * Utility class for RouteOptimizer.
+ * Shared utility class for RouteOptimizer.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
+
 public class RouteOptimizer {
 
     public enum Strategy {
@@ -22,11 +19,7 @@ public class RouteOptimizer {
         LEAST_CROWDED
     }
 
-
-
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static double calculateScore(RouteItem route, Strategy strategy, boolean avoidCrowded) {
         double score = route.getDurationMinutesInt();
 
@@ -61,17 +54,12 @@ public class RouteOptimizer {
         return score;
     }
 
-
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static void sortRoutes(List<RouteItem> routes, Strategy strategy) {
         sortRoutes(routes, strategy, false);
     }
 
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static void sortRoutes(List<RouteItem> routes, Strategy strategy, boolean avoidCrowded) {
         if (routes == null || routes.isEmpty()) return;
 
@@ -82,4 +70,5 @@ public class RouteOptimizer {
         });
     }
 }
+
 

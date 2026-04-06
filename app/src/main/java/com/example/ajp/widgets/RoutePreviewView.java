@@ -12,12 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.ajp.R;
 
-
-
-
 /**
- * Custom view for rendering RoutePreview content.
+ * Custom view implementation for RoutePreviewView.
+ * Draws feature-specific visuals that are not covered by stock Android widgets.
+ * Rendering concerns are isolated here so screens can pass data without drawing logic.
  */
+
 public class RoutePreviewView extends View {
 
     private Paint pathPaint;
@@ -43,6 +43,7 @@ public class RoutePreviewView extends View {
         init(context);
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void init(Context context) {
         tealColor = ContextCompat.getColor(context, R.color.secondary);
         blueColor = ContextCompat.getColor(context, R.color.primary);
@@ -61,11 +62,13 @@ public class RoutePreviewView extends View {
         circlePaint.setStrokeWidth(dp(2));
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private float dp(float dp) {
         return dp * getResources().getDisplayMetrics().density;
     }
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int w = getWidth();
@@ -85,7 +88,6 @@ public class RoutePreviewView extends View {
         path.cubicTo(15 * scaleX, 55 * scaleY, 15 * scaleX, 45 * scaleY, 28 * scaleX, 45 * scaleY);
         path.lineTo(72 * scaleX, 45 * scaleY);
         path.cubicTo(85 * scaleX, 45 * scaleY, 85 * scaleX, 32 * scaleY, 85 * scaleX, 22 * scaleY);
-
 
         Shader pathShader = new LinearGradient(0, 0, w, 0,
                 new int[]{tealColor, blueColor, purpleColor},
@@ -119,4 +121,5 @@ public class RoutePreviewView extends View {
         canvas.drawCircle(85 * scaleX, 22 * scaleY, r1, circlePaint);
     }
 }
+
 

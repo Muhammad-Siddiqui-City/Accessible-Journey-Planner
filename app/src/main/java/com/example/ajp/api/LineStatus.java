@@ -3,15 +3,12 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-
-
-
-
-
-
 /**
- * DTO used to parse API payloads for LineStatus.
+ * API response model for LineStatus.
+ * Matches remote payload fields so parsing remains predictable and explicit.
+ * This keeps network schema changes localized to model classes and mappers.
  */
+
 public class LineStatus {
 
     @SerializedName("id")
@@ -25,4 +22,5 @@ public class LineStatus {
     public String getName() { return name != null ? name : ""; }
     public List<StatusDetail> getLineStatuses() { return lineStatuses; }
 }
+
 

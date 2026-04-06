@@ -7,17 +7,14 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 import com.example.ajp.ui.journey.RouteItem;
 
-
-
-
-
-
-
 @Entity(tableName = "saved_routes")
 @TypeConverters(Converters.class)
 /**
- * Room entity backing the SavedRouteEntity table.
+ * Room entity model for SavedRouteEntity.
+ * Represents one persisted record and maps fields directly to table columns.
+ * Entity-level constraints and names are kept close to the data model for clarity.
  */
+
 public class SavedRouteEntity {
 
     @PrimaryKey(autoGenerate = true)
@@ -41,4 +38,5 @@ public class SavedRouteEntity {
         this.summary = summary;
     }
 }
+
 

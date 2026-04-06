@@ -15,13 +15,12 @@ import com.example.ajp.ui.nearby.StopsViewModel;
 import java.util.Collections;
 import java.util.List;
 
-
-
-
-
 /**
- * UI fragment for the StationTrains screen.
+ * Screen controller for StationTrains UI interactions.
+ * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
+ * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
  */
+
 public class StationTrainsFragment extends Fragment {
 
     public static final String ARG_STOP_ID = "stop_id";
@@ -32,6 +31,7 @@ public class StationTrainsFragment extends Fragment {
     private ArrivalsAdapter arrivalsAdapter;
     private ArrivalsAdapter departuresAdapter;
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static StationTrainsFragment newInstance(String stopId, String stopName) {
         StationTrainsFragment f = new StationTrainsFragment();
         Bundle args = new Bundle();
@@ -43,12 +43,14 @@ public class StationTrainsFragment extends Fragment {
 
     @Nullable
     @Override
+    // Inflate binding once; binding nulled in onDestroyView.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentStationTrainsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
+    // Start dual fetch and observe separate LiveData for arrivals vs departures lists.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -78,6 +80,7 @@ public class StationTrainsFragment extends Fragment {
         viewModel.getNationalRailDeparturesFromStation().observe(getViewLifecycleOwner(), this::onDeparturesFromStation);
     }
 
+    /** TfL "trains to" list: toggles empty label independently of departures. */
     private void onArrivalsToStation(List<Arrival> arrivals) {
         List<Arrival> list = arrivals != null ? arrivals : Collections.emptyList();
         arrivalsAdapter.submitList(list);
@@ -86,6 +89,7 @@ public class StationTrainsFragment extends Fragment {
         binding.arrivalsList.setVisibility(empty ? View.GONE : View.VISIBLE);
     }
 
+    /** National Rail departures list: mirrors arrivals pattern for consistent UX. */
     private void onDeparturesFromStation(List<Arrival> departures) {
         List<Arrival> list = departures != null ? departures : Collections.emptyList();
         departuresAdapter.submitList(list);
@@ -95,9 +99,11 @@ public class StationTrainsFragment extends Fragment {
     }
 
     @Override
+    // Clear binding to avoid holding detached views after back navigation.
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 }
+
 

@@ -26,15 +26,12 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import java.util.List;
 
-
-
-
-
-
-
 /**
- * UI fragment for the Analytics screen.
+ * Screen controller for Analytics UI interactions.
+ * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
+ * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
  */
+
 public class AnalyticsFragment extends Fragment {
 
     private FragmentAnalyticsBinding binding;
@@ -43,12 +40,14 @@ public class AnalyticsFragment extends Fragment {
 
     @Nullable
     @Override
+    // Lifecycle: inflate view and prepare references for this feature section.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentAnalyticsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
+    // Load Room-backed stats, wire chart observers, and bind frequent-routes RecyclerView.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().getApplication()))
@@ -128,6 +127,7 @@ public class AnalyticsFragment extends Fragment {
         });
     }
 
+    /** Shared bar-chart styling: no legend, weekday X-axis, simple animation. */
     private void setupChart(BarChart chart) {
         chart.getDescription().setEnabled(false);
         chart.getLegend().setEnabled(false);
@@ -140,6 +140,7 @@ public class AnalyticsFragment extends Fragment {
         chart.getAxisRight().setEnabled(false);
     }
 
+    // Applies state changes and keeps dependent UI/data values synchronized.
     private void setupLineChart(LineChart chart) {
         chart.getDescription().setEnabled(false);
         chart.getLegend().setEnabled(false);
@@ -151,6 +152,7 @@ public class AnalyticsFragment extends Fragment {
         chart.animateX(600, Easing.EaseInOutQuad);
     }
 
+    /** Donut-style pie: hide slice labels (legend built manually beside chart). */
     private void setupPieChart(PieChart chart) {
         chart.getDescription().setEnabled(false);
         chart.setDrawEntryLabels(false);
@@ -166,6 +168,7 @@ public class AnalyticsFragment extends Fragment {
         chart.animateY(600, Easing.EaseInOutQuad);
     }
 
+    /** Programmatic legend row with optional colour dot for mode breakdown. */
     private View createLegendRow(String label, int count, int color) {
         LinearLayout row = new LinearLayout(requireContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -195,15 +198,19 @@ public class AnalyticsFragment extends Fragment {
     }
 
     @Override
+    // Refreshes transient state that should be accurate when the screen becomes active.
     public void onResume() {
         super.onResume();
+        // Refresh after returning from other screens so counts stay in sync with new logs.
         if (viewModel != null) viewModel.loadWeeklyStats();
     }
 
     @Override
+    // Null binding only; ViewModel survives across tab switches.
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 }
+
 

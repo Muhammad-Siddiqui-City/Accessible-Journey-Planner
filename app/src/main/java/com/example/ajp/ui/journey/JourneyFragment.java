@@ -1,5 +1,9 @@
 package com.example.ajp.ui.journey;
 
+// AI Generated
+// Built with Claude
+// Lovable.dev reference
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.app.Activity;
@@ -43,17 +47,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
-
-
-
-
-
 /**
- * UI fragment for the Journey screen.
+ * Screen controller for Journey UI interactions.
+ * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
+ * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
  */
-public class JourneyFragment extends Fragment {
 
+public class JourneyFragment extends Fragment {
 
     private static final String TAG = "JourneyFragment";
     private static final int REQUEST_LOCATION = 1002;
@@ -77,12 +77,14 @@ public class JourneyFragment extends Fragment {
 
     @Nullable
     @Override
+    // Inflate view binding once per view lifecycle; binding is cleared in onDestroyView.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentJourneyBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
+    // Wire listeners and observers only after view inflation so bound views are non-null.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         permissionManager = PermissionManager.getInstance(requireContext());
@@ -165,17 +167,14 @@ public class JourneyFragment extends Fragment {
         binding.btnToday.setOnClickListener(v -> openDatePicker());
         binding.btnDepartNow.setOnClickListener(v -> openTimePicker());
 
-
         AccessibilityPreferences accPrefs = AccessibilityPreferences.get(requireContext());
         binding.switchStepFree.setChecked(accPrefs.isStepFree());
-
 
         binding.switchStepFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
             accPrefs.setStepFree(isChecked);
             android.util.Log.d("JourneyFragment", "Step-free toggle changed to: " + isChecked);
             refreshRoutesIfSearchValid();
         });
-
 
         SettingsPrefs prefs = SettingsPrefs.get(requireContext());
         binding.switchAvoidCrowds.setChecked(prefs.isAvoidCrowded());
@@ -222,6 +221,7 @@ public class JourneyFragment extends Fragment {
         });
     }
 
+    // Keeps action controls aligned with current connectivity to avoid failed user actions.
     private void updateOfflineState() {
         if (networkMonitor == null || binding == null) return;
         networkMonitor.refreshOnlineState();
@@ -235,11 +235,7 @@ public class JourneyFragment extends Fragment {
         }
     }
 
-
-
-
-
-
+    // Builds a tiny self-contained Leaflet page for WebView to avoid adding a full map SDK.
     private static String buildRoutePreviewMapHtml(double sLat, double sLon, double eLat, double eLon) {
         String a = String.format(Locale.US, "[%f,%f]", sLat, sLon);
         String b = String.format(Locale.US, "[%f,%f]", eLat, eLon);
@@ -260,6 +256,7 @@ public class JourneyFragment extends Fragment {
                 + "</script></body></html>";
     }
 
+    // Renders route preview map from already-resolved coordinates supplied by ViewModel.
     private void loadRouteMap(JourneyViewModel.MapCoords coords) {
         if (binding == null) return;
         Log.d(TAG, "MAP: loadRouteMap leaflet coords=" + coords.startLat + "," + coords.startLon + " -> " + coords.endLat + "," + coords.endLon);
@@ -275,6 +272,7 @@ public class JourneyFragment extends Fragment {
         wv.loadDataWithBaseURL("https://unpkg.com/", html, "text/html", "UTF-8", null);
     }
 
+    // Applies state changes and keeps dependent UI/data values synchronized.
     private void updateDateTimeButtons() {
         if (binding == null) return;
         binding.btnToday.setText(String.format(Locale.UK, "%d %s",
@@ -284,6 +282,7 @@ public class JourneyFragment extends Fragment {
                 selectedDateTime.get(Calendar.HOUR_OF_DAY), selectedDateTime.get(Calendar.MINUTE)));
     }
 
+    // Performs navigation or intent handover to the next screen/action.
     private void openDatePicker() {
         DatePickerDialog dlg = new DatePickerDialog(requireContext(),
                 (view, year, month, dayOfMonth) -> {
@@ -305,6 +304,7 @@ public class JourneyFragment extends Fragment {
         dlg.show();
     }
 
+    // Performs navigation or intent handover to the next screen/action.
     private void openTimePicker() {
         TimePickerDialog dlg = new TimePickerDialog(requireContext(),
                 (view, hourOfDay, minute) -> {
@@ -319,7 +319,7 @@ public class JourneyFragment extends Fragment {
         dlg.show();
     }
 
-
+    // Re-runs search after filter/date changes only when both endpoints are already valid.
     private void refreshRoutesIfSearchValid() {
         if (binding == null) return;
         String from = binding.origin.getText() != null ? binding.origin.getText().toString().trim() : "";
@@ -329,6 +329,7 @@ public class JourneyFragment extends Fragment {
         }
     }
 
+    // Centralised route request builder so all triggers share one parameter path.
     private void findRoutesWithCurrentParams() {
         if (binding == null) return;
         String from = binding.origin.getText() != null ? binding.origin.getText().toString().trim() : "";
@@ -356,10 +357,12 @@ public class JourneyFragment extends Fragment {
         }
     };
 
+    // Attempts origin autofill using device location; falls back to runtime permission flow.
     private void useCurrentLocation() {
         if (permissionManager.checkLocationPermission(requireContext())) {
             locationManager.getCurrentLocation(new LocationManager.LocationCallback() {
                 @Override
+                // Handles a focused part of this feature flow and keeps related logic encapsulated.
                 public void onLocationReceived(double lat, double lon) {
                     if (binding != null) {
                         String coords = String.format(Locale.UK, "%.4f,%.4f", lat, lon);
@@ -370,6 +373,7 @@ public class JourneyFragment extends Fragment {
                     }
                 }
                 @Override
+                // Handles a focused part of this feature flow and keeps related logic encapsulated.
                 public void onLocationFailed() {
                     Toast.makeText(requireContext(), R.string.current_location, Toast.LENGTH_SHORT).show();
                 }
@@ -379,6 +383,7 @@ public class JourneyFragment extends Fragment {
         }
     }
 
+    // Starts speech recognizer for a specific field; result is routed via pendingVoiceTarget.
     private void launchVoiceInput(VoiceTarget target) {
         pendingVoiceTarget = target;
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -393,6 +398,7 @@ public class JourneyFragment extends Fragment {
     }
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION && permissionManager.isPermissionGranted(grantResults)) {
@@ -400,6 +406,7 @@ public class JourneyFragment extends Fragment {
         }
     }
 
+    // Opens detailed view with selected route plus alternatives for comparison context.
     private void openRouteDetails(RouteItem selectedRoute) {
         Intent i = new Intent(requireContext(), RouteDetailsActivity.class);
         i.putExtra(RouteDetailsActivity.EXTRA_ROUTE, selectedRoute);
@@ -416,6 +423,7 @@ public class JourneyFragment extends Fragment {
         startActivity(i);
     }
 
+    // Entry point from "Find Routes" button with user-facing validation/guardrails.
     private void findRoutes() {
         if (networkMonitor != null && !networkMonitor.isOnline()) {
             Toast.makeText(requireContext(), R.string.youre_offline_view_saved, Toast.LENGTH_SHORT).show();
@@ -431,12 +439,14 @@ public class JourneyFragment extends Fragment {
     }
 
     @Override
+    // Refreshes transient state that should be accurate when the screen becomes active.
     public void onResume() {
         super.onResume();
         updateOfflineState();
         startMinuteTick();
     }
 
+    // UI renderer for route list state; shows preview sections only when data is available.
     private void onRoutes(List<RouteItem> routes) {
         if (binding == null) return;
         adapter.submitList(routes != null ? routes : List.of());
@@ -456,7 +466,7 @@ public class JourneyFragment extends Fragment {
         }
     }
 
-
+    // Keeps "Depart now" style time controls synchronized with real time while screen is active.
     private void startMinuteTick() {
         if (minuteTickHandler == null) minuteTickHandler = new Handler(Looper.getMainLooper());
         if (minuteTickRunnable != null) minuteTickHandler.removeCallbacks(minuteTickRunnable);
@@ -481,6 +491,7 @@ public class JourneyFragment extends Fragment {
     }
 
     @Override
+    // Lifecycle: clear view references to avoid leaks in fragment recreation.
     public void onDestroyView() {
         if (minuteTickHandler != null && minuteTickRunnable != null) {
             minuteTickHandler.removeCallbacks(minuteTickRunnable);
@@ -502,4 +513,5 @@ public class JourneyFragment extends Fragment {
         binding = null;
     }
 }
+
 

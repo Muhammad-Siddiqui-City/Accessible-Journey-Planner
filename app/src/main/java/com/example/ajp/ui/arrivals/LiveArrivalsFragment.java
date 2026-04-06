@@ -17,15 +17,12 @@ import com.example.ajp.utils.TtsHelper;
 import java.util.List;
 import java.util.Locale;
 
-
-
-
-
-
-
 /**
- * UI fragment for the LiveArrivals screen.
+ * Screen controller for LiveArrivals UI interactions.
+ * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
+ * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
  */
+
 public class LiveArrivalsFragment extends Fragment {
 
     public static final String ARG_STOP_ID = "stop_id";
@@ -37,6 +34,7 @@ public class LiveArrivalsFragment extends Fragment {
     private TtsHelper ttsHelper;
     private Boolean nationalRailNoDataHint = false;
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static LiveArrivalsFragment newInstance(String stopId, String stopName) {
         LiveArrivalsFragment f = new LiveArrivalsFragment();
         Bundle args = new Bundle();
@@ -48,12 +46,14 @@ public class LiveArrivalsFragment extends Fragment {
 
     @Nullable
     @Override
+    // Lifecycle: inflate view and prepare references for this feature section.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentLiveArrivalsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
+    // Read stop args, trigger initial load, then observe arrivals and rail-hint for empty messaging.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -83,6 +83,7 @@ public class LiveArrivalsFragment extends Fragment {
         viewModel.getNationalRailNoDataHint().observe(getViewLifecycleOwner(), this::onNationalRailHintChanged);
     }
 
+    /** Maps list state to list vs empty UI; drives TTS only on non-empty successful loads. */
     private void onArrivalsReceived(List<Arrival> arrivals) {
         binding.progressBar.setVisibility(View.GONE);
         if (arrivals == null || arrivals.isEmpty()) {
@@ -100,6 +101,7 @@ public class LiveArrivalsFragment extends Fragment {
         }
     }
 
+    /** When empty, swap copy between generic "no arrivals" vs National Rail unavailable. */
     private void onNationalRailHintChanged(Boolean hint) {
         nationalRailNoDataHint = hint;
         if (binding.emptyText.getVisibility() == View.VISIBLE) {
@@ -110,7 +112,7 @@ public class LiveArrivalsFragment extends Fragment {
         }
     }
 
-
+    /** Picks soonest arrival and speaks a short phrase for accessibility users. */
     private void announceFirstArrivalIfTtsOn(List<Arrival> arrivals) {
         if (arrivals == null || arrivals.isEmpty() || ttsHelper == null) return;
 
@@ -126,7 +128,7 @@ public class LiveArrivalsFragment extends Fragment {
         }
     }
 
-
+    /** Human-readable phrase for TTS (bus vs train wording, sub-minute handling). */
     private static String formatArrivalPhrase(Arrival arrival) {
         String mode = arrival.getModeName() != null ? arrival.getModeName().toLowerCase(Locale.ROOT) : "";
         String vehicle = mode.contains("bus") ? "bus" : "train";
@@ -142,6 +144,7 @@ public class LiveArrivalsFragment extends Fragment {
     }
 
     @Override
+    // Release TTS and binding; Fragment instance may outlive the view.
     public void onDestroyView() {
         if (ttsHelper != null) {
             ttsHelper.shutdown();
@@ -151,4 +154,5 @@ public class LiveArrivalsFragment extends Fragment {
         binding = null;
     }
 }
+
 

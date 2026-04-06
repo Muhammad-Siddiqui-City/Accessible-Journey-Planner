@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fixed list shown on Popular Stations screen; stop IDs resolved via TfL search on tap. -->
+<!-- Array resources used for static option lists shown in the UI. -->
+
 <resources>
     <string-array name="popular_station_labels">
         <item>London Liverpool Street Station</item>
@@ -19,3 +20,4 @@
         <item>East Croydon Station</item>
     </string-array>
 </resources>
+

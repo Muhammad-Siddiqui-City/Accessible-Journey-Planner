@@ -6,88 +6,37 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-
-
-
-
 /**
- * Interface/client for Tfl API calls.
+ * API integration component for TflApi.
+ * Builds provider requests and maps transport responses into app-friendly models.
+ * Provider quirks and transport-specific request rules are handled here to shield the UI layer.
  */
+
 public interface TflApi {
-
-
-
-
-
-
 
     @GET("StopPoint?stopTypes=NaptanPublicBusCoachTram&radius=300")
     Call<StopPointResponse> getNearbyBuses(@Query("lat") double lat, @Query("lon") double lon);
 
-
-
-
-
-
-
     @GET("StopPoint?stopTypes=NaptanMetroStation,NaptanRailStation&radius=3500")
     Call<StopPointResponse> getNearbyTrains(@Query("lat") double lat, @Query("lon") double lon);
-
-
-
-
-
 
     @GET("StopPoint/{id}")
     Call<StopPoint> getStopPoint(@Path("id") String stopId);
 
-
-
-
-
-
-
     @GET("StopPoint/{id}/Arrivals")
     Call<List<ArrivalPrediction>> getArrivals(@Path("id") String stopId);
-
-
-
-
-
 
     @GET("Line/{lineIds}/Arrivals/{stopPointId}")
     Call<List<ArrivalPrediction>> getLineArrivals(@Path("lineIds") String lineIds, @Path("stopPointId") String stopPointId);
 
-
-
-
-
-
     @GET("Line/{ids}/Status")
     Call<List<LineStatus>> getLineStatus(@Path("ids") String commaSeparatedIds);
-
-
-
-
-
 
     @GET("StopPoint/{id}/Disruption")
     Call<List<Object>> getStopPointDisruptions(@Path("id") String stopId);
 
-
-
-
-
-
     @GET("StopPoint/Search/{query}")
     Call<TflSearchResponse> searchStops(@Path("query") String query);
-
-
-
-
-
-
-
 
     @GET("Journey/JourneyResults/{from}/to/{to}")
     Call<JourneyResponse> getJourneyResults(
@@ -101,4 +50,5 @@ public interface TflApi {
             @Query("accessibilityPreference") String accessibilityPreference,
             @Query("mode") String mode);
 }
+
 

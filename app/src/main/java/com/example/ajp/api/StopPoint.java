@@ -5,16 +5,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-
-
-
-
-
-
-
 /**
- * DTO used to parse API payloads for StopPoint.
+ * API response model for StopPoint.
+ * Matches remote payload fields so parsing remains predictable and explicit.
+ * This keeps network schema changes localized to model classes and mappers.
  */
+
 public class StopPoint {
 
     private static final String STOP_TYPE_METRO = "NaptanMetroStation";
@@ -61,13 +57,6 @@ public class StopPoint {
     public List<StopPoint> getChildren() { return children != null ? children : java.util.Collections.emptyList(); }
     public List<AdditionalProperty> getAdditionalProperties() { return additionalProperties != null ? additionalProperties : java.util.Collections.emptyList(); }
 
-
-
-
-
-
-
-
     public int getLiftCount() {
         if (additionalProperties == null) {
             android.util.Log.d("StopPoint", "getLiftCount: additionalProperties is null for station " + getCommonName() + " - returning -1 (no info)");
@@ -96,15 +85,10 @@ public class StopPoint {
         return -1;
     }
 
-
-
-
-
     public boolean hasNoLifts() {
 
         int count = getLiftCount();
         if (count == 0) return true;
-
 
         if (additionalProperties != null) {
             for (AdditionalProperty prop : additionalProperties) {
@@ -130,9 +114,6 @@ public class StopPoint {
 
     private static final Pattern THREE_LETTER = Pattern.compile("^[A-Za-z]{3}$");
 
-
-
-
     public String getCrsFromAdditionalProperties() {
         if (additionalProperties == null) return null;
         for (AdditionalProperty p : additionalProperties) {
@@ -151,10 +132,6 @@ public class StopPoint {
         return null;
     }
 
-
-
-
-
     public static class AdditionalProperty {
         @SerializedName("category")
         private String category;
@@ -168,4 +145,5 @@ public class StopPoint {
         public String getValue() { return value != null ? value : ""; }
     }
 }
+
 

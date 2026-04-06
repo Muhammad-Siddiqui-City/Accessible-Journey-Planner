@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
+<!-- Screen layout for activity route details. This file defines view structure and IDs consumed by view binding. -->
+
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -59,7 +58,8 @@
                 android:contentDescription="Share" />
         </LinearLayout>
 
-        <!-- Summary card -->
+        <!-- Summary card.
+             Presents "from/to", duration, timing, and warnings as a quick decision snapshot. -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -134,7 +134,8 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <!-- Start Journey button (logs to analytics) -->
+        <!-- Start Journey action.
+             Triggers local journey logging and then enables coarse live progress feedback. -->
         <Button
             android:id="@+id/start_navigation"
             android:layout_width="match_parent"
@@ -147,7 +148,8 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <!-- GPS-based progress (shown when navigation started) -->
+        <!-- Live progress panel.
+             Hidden by default; shown only after navigation starts and location permissions are satisfied. -->
         <LinearLayout
             android:id="@+id/layout_live_progress"
             android:layout_width="match_parent"
@@ -187,7 +189,7 @@
                 android:textColor="?attr/ajp_muted_foreground" />
         </LinearLayout>
 
-        <!-- Step by step -->
+        <!-- Step-by-step itinerary section for detailed leg-by-leg instructions. -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -216,3 +218,4 @@
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+

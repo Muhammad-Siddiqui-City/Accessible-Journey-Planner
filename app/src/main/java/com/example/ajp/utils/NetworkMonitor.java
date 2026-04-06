@@ -8,15 +8,12 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import androidx.annotation.NonNull;
 
-
-
-
-
-
-
 /**
- * Utility class for NetworkMonitor.
+ * Shared utility class for NetworkMonitor.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
+
 public class NetworkMonitor {
 
     private final ConnectivityManager connectivityManager;
@@ -28,16 +25,11 @@ public class NetworkMonitor {
         refreshOnlineState();
     }
 
-
-
-
     public boolean isOnline() {
         return isOnline;
     }
 
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void refreshOnlineState() {
         if (connectivityManager == null) {
             isOnline = false;
@@ -61,20 +53,20 @@ public class NetworkMonitor {
         }
     }
 
-
-
-
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void registerCallback(@NonNull OnConnectivityChangedListener listener) {
         if (connectivityManager == null) return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             connectivityManager.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {
                 @Override
+                // Handles a focused part of this feature flow and keeps related logic encapsulated.
                 public void onAvailable(@NonNull Network network) {
                     isOnline = true;
                     listener.onConnectivityChanged(true);
                 }
 
                 @Override
+                // Handles a focused part of this feature flow and keeps related logic encapsulated.
                 public void onLost(@NonNull Network network) {
                     refreshOnlineState();
                     listener.onConnectivityChanged(isOnline);
@@ -87,4 +79,5 @@ public class NetworkMonitor {
         void onConnectivityChanged(boolean isOnline);
     }
 }
+
 

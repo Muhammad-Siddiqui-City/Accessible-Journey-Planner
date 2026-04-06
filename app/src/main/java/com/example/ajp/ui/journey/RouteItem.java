@@ -1,13 +1,19 @@
 package com.example.ajp.ui.journey;
 
+// AI Generated
+// Built with Claude
+// Lovable.dev reference
+
 import com.example.ajp.api.Leg;
 import java.io.Serializable;
 import java.util.List;
 
-
 /**
- * UI model/helper used by the RouteItem feature.
+ * UI-side model/helper used by RouteItem.
+ * Encapsulates presentation-oriented behavior needed by screens in this feature package.
+ * Keeping this separate helps avoid leaking API/database concerns into view code.
  */
+
 public class RouteItem implements Serializable {
 
     public static final int CROWDING_LOW = 0;
@@ -116,6 +122,7 @@ public class RouteItem implements Serializable {
     }
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof RouteItem)) return false;
@@ -124,7 +131,10 @@ public class RouteItem implements Serializable {
     }
 
     @Override
+    // Evaluates a condition used to branch behavior in the surrounding flow.
     public int hashCode() {
         return routeId != null ? routeId.hashCode() : 0;
     }
 }
+
+

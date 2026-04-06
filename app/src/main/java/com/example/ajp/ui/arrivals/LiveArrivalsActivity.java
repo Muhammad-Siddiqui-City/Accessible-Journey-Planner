@@ -16,15 +16,12 @@ import com.example.ajp.utils.SettingsPrefs;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
-
-
 /**
- * Activity that hosts the LiveArrivals flow.
+ * Activity entry point for the LiveArrivals flow.
+ * Owns lifecycle-sensitive orchestration, screen wiring, and intent-based handover to adjacent features.
+ * Business rules are intentionally pushed to utilities/ViewModels so this class stays focused on UI flow.
  */
+
 public class LiveArrivalsActivity extends AppCompatActivity {
 
     public static final String EXTRA_STOP_ID = "stopId";
@@ -38,11 +35,13 @@ public class LiveArrivalsActivity extends AppCompatActivity {
     private List<Arrival> allArrivals = new ArrayList<>();
 
     @Override
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(LocaleHelper.applyFull(newBase));
     }
 
     @Override
+    // Lifecycle: initialise dependencies and wire initial UI state.
     protected void onCreate(Bundle savedInstanceState) {
         if (SettingsPrefs.get(getApplicationContext()).isHighContrast()) {
             setTheme(R.style.Theme_AJP_HighContrast);
@@ -57,7 +56,6 @@ public class LiveArrivalsActivity extends AppCompatActivity {
             binding.stationName.setText(stopName);
         }
 
-
         viewModel = new ViewModelProvider(this).get(StopsViewModel.class);
         adapter = new ArrivalsAdapter();
         binding.arrivalsList.setLayoutManager(new LinearLayoutManager(this));
@@ -66,14 +64,12 @@ public class LiveArrivalsActivity extends AppCompatActivity {
         binding.back.setOnClickListener(v -> finish());
         binding.refresh.setOnClickListener(v -> loadArrivals());
 
-
         binding.pillAll.setOnClickListener(v -> selectPill("all"));
         binding.pillVictoria.setOnClickListener(v -> selectPill("victoria"));
         binding.pillPiccadilly.setOnClickListener(v -> selectPill("piccadilly"));
         binding.pillNorthern.setOnClickListener(v -> selectPill("northern"));
         binding.pillCentral.setOnClickListener(v -> selectPill("central"));
         binding.pillJubilee.setOnClickListener(v -> selectPill("jubilee"));
-
 
         viewModel.getSelectedStopArrivals().observe(this, arrivals -> {
             binding.progressBar.setVisibility(View.GONE);
@@ -88,10 +84,10 @@ public class LiveArrivalsActivity extends AppCompatActivity {
             }
         });
 
-
         loadArrivals();
     }
 
+    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private void loadArrivals() {
         if (stopId != null && !stopId.isEmpty()) {
             binding.progressBar.setVisibility(View.VISIBLE);
@@ -103,6 +99,7 @@ public class LiveArrivalsActivity extends AppCompatActivity {
         }
     }
 
+    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void selectPill(String line) {
         selectedLine = line;
         setPill(binding.pillAll, "all");
@@ -114,6 +111,7 @@ public class LiveArrivalsActivity extends AppCompatActivity {
         applyFilter();
     }
 
+    // Applies state changes and keeps dependent UI/data values synchronized.
     private void applyFilter() {
         List<Arrival> filtered;
         if ("all".equals(selectedLine)) {
@@ -148,9 +146,11 @@ public class LiveArrivalsActivity extends AppCompatActivity {
     }
 
     @Override
+    // Releases listeners/resources to avoid leaks across lifecycle recreation.
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
     }
 }
+
 

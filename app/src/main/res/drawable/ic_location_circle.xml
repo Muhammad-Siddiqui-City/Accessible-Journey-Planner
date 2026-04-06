@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Drawable resource for ic location circle. Centralizes shape/color styling so UI theme updates are easier to maintain. -->
 
-<!-- AI Generated -->
-<!-- Lovable.dev: UI mockup reference -->
-<!-- Built with Claude -->
-<!-- Current location (From): hollow circle / dot. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
@@ -15,3 +12,4 @@
         android:fillColor="@android:color/transparent"
         android:strokeColor="#333333" />
 </vector>
+

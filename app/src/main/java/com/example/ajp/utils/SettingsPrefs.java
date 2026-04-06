@@ -3,15 +3,12 @@ package com.example.ajp.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-
-
-
-
-
-
 /**
- * Utility class for SettingsPrefs.
+ * Shared utility class for SettingsPrefs.
+ * Encapsulates reusable behavior that would otherwise be duplicated across features.
+ * Centralizing this logic keeps edge-case handling consistent and easier to test.
  */
+
 public class SettingsPrefs {
 
     private static final String PREFS_NAME = "ajp_settings";
@@ -35,6 +32,7 @@ public class SettingsPrefs {
         this.prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
+    // Returns data from local state or derives a value needed by callers.
     public static SettingsPrefs get(Context context) {
         return new SettingsPrefs(context);
     }
@@ -50,7 +48,6 @@ public class SettingsPrefs {
 
     public boolean isTtsEnabled() { return prefs.getBoolean(KEY_TTS, false); }
     public void setTtsEnabled(boolean on) { prefs.edit().putBoolean(KEY_TTS, on).apply(); }
-
 
     public boolean isDisruptionAlerts() { return prefs.getBoolean(KEY_DISRUPTION_ALERTS, false); }
     public void setDisruptionAlerts(boolean on) { prefs.edit().putBoolean(KEY_DISRUPTION_ALERTS, on).apply(); }
@@ -70,4 +67,5 @@ public class SettingsPrefs {
         prefs.edit().putString(KEY_LANGUAGE, lang != null ? lang.trim() : LANG_EN_GB).commit();
     }
 }
+
 
