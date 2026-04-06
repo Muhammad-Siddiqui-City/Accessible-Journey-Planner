@@ -3,6 +3,7 @@ package com.example.ajp.utils;
 import android.content.Context;
 import android.location.Address;
 import com.example.ajp.R;
+import com.example.ajp.api.InstructionRef;
 import com.example.ajp.api.Journey;
 import com.example.ajp.api.JourneyPlace;
 import com.example.ajp.api.JourneyResponse;
@@ -34,12 +35,7 @@ import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import retrofit2.Response;
 
-/**
- * Shared utility class for JourneyFetcher.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** Resolves from/to, calls TfL journey API, maps legs to RouteItems, optional lift checks. */
 public final class JourneyFetcher {
 
     private static final Pattern COORDS_PATTERN = Pattern.compile(
@@ -57,7 +53,6 @@ public final class JourneyFetcher {
         this.appContext = context != null ? context.getApplicationContext() : null;
     }
 
-    // Transforms inputs into the shape required by downstream components.
     public static String buildSignature(List<RouteItem> routes) {
         if (routes == null || routes.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
@@ -69,7 +64,6 @@ public final class JourneyFetcher {
         return sb.toString();
     }
 
-    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     public FetchResult fetch(String fromInput, String toInput, String timeHHmm, String dateyyyyMMdd) {
         if (appContext == null) {
             return FetchResult.fail("No context");
@@ -233,6 +227,20 @@ public final class JourneyFetcher {
         ).execute();
     }
 
+    /** True when nearest stop is a bus-style stop (not tube/rail/DLR/etc.) so the first step says "bus stop". */
+    private static boolean isStreetLevelConnectorStop(StopPoint s) {
+        if (s == null) return true;
+        if (s.isTubeStation() || s.isRailStation()) return false;
+        for (String m : s.getModes()) {
+            if (m == null) continue;
+            String low = m.toLowerCase(Locale.UK);
+            if (low.contains("dlr") || low.contains("tram") || low.contains("elizabeth") || low.contains("overground")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static boolean hasBusJourney(List<Journey> journeys) {
         if (journeys == null || journeys.isEmpty()) return false;
         for (Journey j : journeys) {
@@ -249,8 +257,8 @@ public final class JourneyFetcher {
 
     /**
      * TfL stop search first; if that fails, geocode in London and snap to the nearest bus/rail stop.
-     * For the destination only, queries like "McDonald's elderfield place" are split: we plan to the location
-     * ("elderfield place") and keep the brand text only for UI / a verification warning.
+     * Brand + location text is split for both endpoints; the brand is used for the POI verification warning only.
+     * Split queries skip the origin TfL name shortcut so we geocode and add a place-to-stop walk from the pin.
      */
     private ResolvedEndpoint resolveEndpoint(TflApi api, String input, AccessibilityPreferences acc,
             boolean isDestination) throws IOException {
@@ -258,7 +266,7 @@ public final class JourneyFetcher {
         if (t.isEmpty()) {
             throw new IOException("Empty place");
         }
-        BrandLocationSplit bl = isDestination ? BrandLocationSplit.analyze(t) : BrandLocationSplit.none();
+        BrandLocationSplit bl = BrandLocationSplit.analyze(t);
         String resolveQuery = bl.isSplit() ? bl.getLocationQuery() : t;
         String brandPhrase = bl.isSplit() ? bl.getBrandDisplay() : null;
         String locationLabel = bl.isSplit() ? bl.getLocationQuery() : null;
@@ -274,7 +282,8 @@ public final class JourneyFetcher {
             // Destination: never shortcut here — TfL's first hit is often a roadside stop while the map pin is the
             // real place; we always geocode and add a final "Walk to [your text]" from the nearest stop to that pin.
             if (allSignificantQueryTokensAppearInStopName(resolveQuery, m.getName())) {
-                if (!isDestination) {
+                // Split queries need geocoding + place anchor for a correct pin, even when from matches a stop name.
+                if (!isDestination && !bl.isSplit()) {
                     return ResolvedEndpoint.direct(m.getLat() + "," + m.getLon());
                 }
             }
@@ -300,8 +309,8 @@ public final class JourneyFetcher {
     }
 
     /**
-     * Detects "place name + street/area" (e.g. McDonald's elderfield place) so we route only to the location part.
-     * Brand text is kept exactly as typed for the verification warning.
+     * Detects brand + place in either order (e.g. McDonald's elderfield place, elderfield place McDonald's,
+     * Barclays Canary Wharf, Canary Wharf Barclays). Brand text is kept for the verification warning.
      */
     private static final class BrandLocationSplit {
         private static final Set<String> STREET_PLACE_SUFFIXES = new HashSet<>(Arrays.asList(
@@ -311,6 +320,16 @@ public final class JourneyFetcher {
 
         private static final Set<String> NO_SPLIT_SECOND = new HashSet<>(Arrays.asList(
                 "station", "railway", "underground", "central", "circle", "district", "line", "loop"));
+
+        /** Last token is usually geography/infrastructure, not a shop/bank name (e.g. "Canary Wharf Barclays"). */
+        private static final Set<String> TRAILING_BRAND_LAST_BLOCKLIST = new HashSet<>(Arrays.asList(
+                "station", "airport", "international", "junction", "interchange", "national", "north", "south",
+                "east", "west", "central", "express", "pier", "terminal", "line", "bridge", "gate", "circus",
+                "underground", "overground", "common", "green", "hill", "park", "wood", "town", "city",
+                "quay", "market", "hall", "house", "centre", "center", "village", "county", "college",
+                "university", "hospital", "museum", "gallery", "wharf", "dock", "docks", "basin", "marina",
+                "plaza", "gardens", "heath", "field", "fields", "copse", "rise", "end", "change", "exchange",
+                "arcade", "mall", "heights", "tower", "towers", "point", "cross", "royal", "estate", "works"));
 
         final boolean split;
         final String locationQuery;
@@ -347,7 +366,48 @@ public final class JourneyFetcher {
                     return new BrandLocationSplit(true, raw[1], raw[0]);
                 }
             }
+            // "elderfield place McDonald's" — brand with apostrophe often appears last.
+            String lastTok = raw[raw.length - 1];
+            if (raw.length >= 2 && (lastTok.contains("'") || lastTok.contains("\u2019"))) {
+                String brand = lastTok;
+                String location = String.join(" ", Arrays.copyOfRange(raw, 0, raw.length - 1)).trim();
+                if (location.isEmpty()) return none();
+                return new BrandLocationSplit(true, location, brand);
+            }
+            // "Canary Wharf Barclays" — multi-word place + trailing capitalised brand (same warning as brand-first order).
+            if (raw.length >= 3 && !STREET_PLACE_SUFFIXES.contains(lastNorm) && isLikelyTrailingBrandWord(lastTok)) {
+                String brand = lastTok;
+                String location = String.join(" ", Arrays.copyOfRange(raw, 0, raw.length - 1)).trim();
+                if (!location.isEmpty()) {
+                    return new BrandLocationSplit(true, location, brand);
+                }
+            }
+            // "McDonald's Clapham Junction" — "Junction" is blocklisted as a trailing brand token, so handle explicitly.
+            if (raw.length == 3 && "junction".equals(normToken(raw[2]))
+                    && isLikelyBrandFirstToken(raw[0])
+                    && normToken(raw[1]).length() >= 4) {
+                return new BrandLocationSplit(true, raw[1] + " " + raw[2], raw[0]);
+            }
             return none();
+        }
+
+        /** Brand at start of query: apostrophe (McDonald's) or long capitalised token (McDonalds). */
+        private static boolean isLikelyBrandFirstToken(String token) {
+            if (token == null || token.isEmpty()) return false;
+            if (token.contains("'") || token.contains("\u2019")) return true;
+            return token.length() >= 6 && isLikelyTrailingBrandWord(token);
+        }
+
+        private static boolean isLikelyTrailingBrandWord(String token) {
+            if (token == null || token.length() < 4) return false;
+            if (!Character.isUpperCase(token.charAt(0))) return false;
+            for (int i = 1; i < token.length(); i++) {
+                char c = token.charAt(i);
+                if (c == '\'' || c == '\u2019') continue;
+                if (!Character.isLetter(c)) return false;
+            }
+            String n = normToken(token);
+            return !n.isEmpty() && !TRAILING_BRAND_LAST_BLOCKLIST.contains(n);
         }
 
         boolean isSplit() {
@@ -363,7 +423,6 @@ public final class JourneyFetcher {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String normToken(String w) {
         if (w == null) return "";
         return w.replaceAll("[^a-zA-Z0-9]", "").toLowerCase(Locale.UK);
@@ -389,7 +448,6 @@ public final class JourneyFetcher {
         return anySignificant;
     }
 
-    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private static StopPoint findNearestTransitStop(TflApi api, double lat, double lon) throws IOException {
         List<StopPoint> all = new ArrayList<>();
         // Run bus and train nearby calls in parallel (separate pool so parent can also resolve from/to in parallel).
@@ -451,7 +509,6 @@ public final class JourneyFetcher {
         return id != null ? id.trim() : "";
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private StopPoint ensureStopCoordinates(TflApi api, StopPoint sp) throws IOException {
         if (sp == null) return null;
         if (Math.abs(sp.getLat()) > 0.0001 && Math.abs(sp.getLon()) > 0.0001) {
@@ -466,7 +523,6 @@ public final class JourneyFetcher {
         return sp;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static double haversineMeters(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
@@ -477,14 +533,12 @@ public final class JourneyFetcher {
         return EARTH_RADIUS_M * c;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static double walkingSpeedToMetersPerSecond(String walkingSpeed) {
         if (AccessibilityPreferences.SPEED_SLOW.equals(walkingSpeed)) return 1.1;
         if (AccessibilityPreferences.SPEED_FAST.equals(walkingSpeed)) return 1.8;
         return 1.4;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static int estimateWalkSeconds(double meters, String walkingSpeed) {
         double mps = walkingSpeedToMetersPerSecond(walkingSpeed);
         int sec = (int) Math.round(meters / mps);
@@ -494,6 +548,20 @@ public final class JourneyFetcher {
     private static boolean isWalkingLeg(Leg leg) {
         return leg != null && leg.getMode() != null
                 && "walking".equalsIgnoreCase(leg.getMode().getName());
+    }
+
+    private static Leg firstNonWalkingLeg(ArrayList<Leg> legs) {
+        if (legs == null) return null;
+        for (Leg lg : legs) {
+            if (lg != null && !isWalkingLeg(lg)) return lg;
+        }
+        return null;
+    }
+
+    private static boolean legModeLooksLikeBus(Leg leg) {
+        if (leg == null || leg.getMode() == null) return false;
+        String n = leg.getMode().getName();
+        return n != null && n.toLowerCase(Locale.UK).contains("bus");
     }
 
     /**
@@ -510,7 +578,6 @@ public final class JourneyFetcher {
         return removedSeconds;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static long stripLeadingWalkingLegs(ArrayList<Leg> legs) {
         long removedSeconds = 0;
         while (legs.size() > 1 && isWalkingLeg(legs.get(0))) {
@@ -520,7 +587,6 @@ public final class JourneyFetcher {
         return removedSeconds;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static List<Leg> mergeConsecutiveWalkingLegs(List<Leg> legs) {
         if (legs == null || legs.size() < 2) return legs;
         List<Leg> merged = new ArrayList<>();
@@ -528,6 +594,12 @@ public final class JourneyFetcher {
         while (i < legs.size()) {
             Leg current = legs.get(i);
             if (!isWalkingLeg(current)) {
+                merged.add(current);
+                i++;
+                continue;
+            }
+            // Pin→stop connector must stay a distinct Leg; recreating it here drops synthetic flags and shows "Walk to … street".
+            if (current.isSyntheticOriginConnector()) {
                 merged.add(current);
                 i++;
                 continue;
@@ -551,7 +623,6 @@ public final class JourneyFetcher {
         return merged;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static boolean samePoint(JourneyPlace a, JourneyPlace b) {
         if (a == null || b == null) return false;
         double dLat = Math.abs(a.getLat() - b.getLat());
@@ -585,12 +656,30 @@ public final class JourneyFetcher {
             StopPoint s = fromEp.placeAnchor.nearestStop;
             double m = haversineMeters(fromEp.placeAnchor.lat, fromEp.placeAnchor.lon, s.getLat(), s.getLon());
             originWalkSec = estimateWalkSeconds(m, walkingSpeed);
-            String originLabel = !userFrom.isEmpty()
-                    ? userFrom.trim()
-                    : (fromEp.placeAnchor.label != null ? fromEp.placeAnchor.label.trim() : "");
+            String originLabel;
+            if (fromEp.splitLocationLabel != null) {
+                originLabel = fromEp.splitLocationLabel.trim();
+            } else if (!userFrom.isEmpty()) {
+                originLabel = userFrom.trim();
+            } else {
+                originLabel = fromEp.placeAnchor.label != null ? fromEp.placeAnchor.label.trim() : "";
+            }
             JourneyPlace dep = JourneyPlace.at(originLabel, fromEp.placeAnchor.lat, fromEp.placeAnchor.lon);
-            JourneyPlace arr = JourneyPlace.at(s.getCommonName(), s.getLat(), s.getLon());
-            legsOut.add(0, Leg.createWalkingLeg(dep, arr, originWalkSec, null));
+            Leg firstTransit = firstNonWalkingLeg(coreLegs);
+            String boardingName = "";
+            if (firstTransit != null && firstTransit.getDeparturePoint() != null) {
+                String cn = firstTransit.getDeparturePoint().getCommonName();
+                if (cn != null) boardingName = cn.trim();
+            }
+            if (boardingName.isEmpty()) {
+                boardingName = s.getCommonName() != null ? s.getCommonName().trim() : "";
+            }
+            JourneyPlace arr = JourneyPlace.at(boardingName, s.getLat(), s.getLon());
+            boolean connectorBus = firstTransit != null
+                    ? legModeLooksLikeBus(firstTransit)
+                    : isStreetLevelConnectorStop(s);
+            InstructionRef connectorDetail = InstructionRef.withSummary(boardingName);
+            legsOut.add(0, Leg.createWalkingLeg(dep, arr, originWalkSec, connectorDetail, true, connectorBus));
         }
         if (toEp.placeAnchor != null) {
             StopPoint s = toEp.placeAnchor.nearestStop;
@@ -675,7 +764,9 @@ public final class JourneyFetcher {
 
         String fromName = firstDep != null && firstDep.getCommonName() != null ? firstDep.getCommonName().trim() : "";
         String toName = lastArr != null && lastArr.getCommonName() != null ? lastArr.getCommonName().trim() : "";
-        if (!userFrom.isEmpty()) {
+        if (fromEp.splitLocationLabel != null) {
+            fromName = fromEp.splitLocationLabel.trim();
+        } else if (!userFrom.isEmpty()) {
             fromName = userFrom.trim();
         } else if (fromEp.placeAnchor != null && fromEp.placeAnchor.label != null && !fromEp.placeAnchor.label.isEmpty()) {
             fromName = fromEp.placeAnchor.label.trim();
@@ -716,10 +807,10 @@ public final class JourneyFetcher {
             }
         }
 
-        String poiWarning = null;
-        if (toEp.splitBrandPhrase != null) {
-            poiWarning = appContext.getString(R.string.poi_verify_warning, toEp.splitBrandPhrase);
-        }
+        String poiBrandFrom = fromEp.splitBrandPhrase;
+        String poiBrandTo = toEp.splitBrandPhrase;
+        String poiLocationFrom = fromEp.splitLocationLabel;
+        String poiLocationTo = toEp.splitLocationLabel;
 
         return new RouteItem(
                 String.valueOf(durationMin),
@@ -735,11 +826,13 @@ public final class JourneyFetcher {
                 new ArrayList<>(legsOut),
                 liftIssue,
                 liftDetail,
-                poiWarning
+                poiBrandFrom,
+                poiLocationFrom,
+                poiBrandTo,
+                poiLocationTo
         );
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String adjustIsoExtractTime(String iso, int plusMinutes) {
         if (iso == null || iso.isEmpty()) return "";
         try {
@@ -751,7 +844,6 @@ public final class JourneyFetcher {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String adjustIsoExtractTimePlusSeconds(String iso, long plusSeconds) {
         if (iso == null || iso.isEmpty()) return "";
         try {
@@ -763,7 +855,6 @@ public final class JourneyFetcher {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String extractTime(String iso) {
         if (iso == null || iso.length() < 16) return "";
         int t = iso.indexOf('T');
@@ -771,7 +862,6 @@ public final class JourneyFetcher {
         return iso.substring(t + 1, t + 6);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String lineNameToBadge(String name) {
         if (name == null) return "";
         String lower = name.toLowerCase(Locale.UK);
@@ -800,7 +890,7 @@ public final class JourneyFetcher {
         final PlaceAnchor placeAnchor;
         /** Exact brand/place phrase from user input when we split brand + location; used for POI warning only. */
         final String splitBrandPhrase;
-        /** Location part only for "To" and final walk label when split. */
+        /** Location part only for route summary and synthetic walk labels when split. */
         final String splitLocationLabel;
 
         ResolvedEndpoint(String journeyPath, PlaceAnchor placeAnchor, String splitBrandPhrase,
@@ -813,10 +903,6 @@ public final class JourneyFetcher {
 
         static ResolvedEndpoint direct(String path) {
             return new ResolvedEndpoint(path, null, null, null);
-        }
-
-        static ResolvedEndpoint direct(String path, String brandPhrase, String locationLabel) {
-            return new ResolvedEndpoint(path, null, brandPhrase, locationLabel);
         }
     }
 
@@ -845,12 +931,10 @@ public final class JourneyFetcher {
             this.error = error;
         }
 
-        // Handles a focused part of this feature flow and keeps related logic encapsulated.
         public static FetchResult ok(List<RouteItem> routes) {
             return new FetchResult(true, routes, null);
         }
 
-        // Handles a focused part of this feature flow and keeps related logic encapsulated.
         public static FetchResult fail(String error) {
             return new FetchResult(false, Collections.emptyList(), error);
         }

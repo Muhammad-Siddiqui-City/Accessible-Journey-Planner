@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Screen layout for activity main. This file defines view structure and IDs consumed by view binding. -->
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<!-- Built with Claude -->
+
+<!-- Single-activity shell: NavHost + bottom navigation. -->
 
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"

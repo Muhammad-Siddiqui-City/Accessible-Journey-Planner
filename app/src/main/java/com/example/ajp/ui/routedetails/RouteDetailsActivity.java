@@ -1,9 +1,5 @@
 package com.example.ajp.ui.routedetails;
 
-// AI Generated
-// Built with Claude
-// Lovable.dev reference
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -39,12 +35,7 @@ import com.google.android.gms.location.LocationServices;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-/**
- * Activity entry point for the RouteDetails flow.
- * Owns lifecycle-sensitive orchestration, screen wiring, and intent-based handover to adjacent features.
- * Business rules are intentionally pushed to utilities/ViewModels so this class stays focused on UI flow.
- */
-
+/** Shows one chosen route: steps, save/share, lift warning, coarse GPS progress bar. */
 public class RouteDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_ROUTE_ID = "route_id";
@@ -70,14 +61,14 @@ public class RouteDetailsActivity extends AppCompatActivity {
     private TtsHelper ttsHelper;
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     protected void attachBaseContext(Context newBase) {
         // Apply locale before view inflation so translated resources are used immediately.
         super.attachBaseContext(LocaleHelper.applyFull(newBase));
     }
 
     @Override
-    // Initializes screen state from Intent data and binds all user actions.
+
     protected void onCreate(Bundle savedInstanceState) {
         if (SettingsPrefs.get(getApplicationContext()).isHighContrast()) {
             setTheme(R.style.Theme_AJP_HighContrast);
@@ -147,13 +138,12 @@ public class RouteDetailsActivity extends AppCompatActivity {
         if (route.getCrowdingLevel() == RouteItem.CROWDING_HIGH) {
             ttsHelper.speak(getString(R.string.crowding_warning), TtsHelper.QUEUE_ADD);
         }
-        String poi = route.getPoiVerificationWarning();
+        String poi = buildPoiVerificationText(route);
         if (poi != null && !poi.trim().isEmpty()) {
             ttsHelper.speak(poi.trim(), TtsHelper.QUEUE_ADD);
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void announceFirstStepIfTtsOn() {
         if (currentRoute == null || ttsHelper == null || !ttsHelper.isTtsEnabled()) return;
         List<Leg> legs = currentRoute.getLegs();
@@ -219,7 +209,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
         if (fusedLocationClient == null || destLocation == null || locationRequest == null || isFinishing()) return;
         locationCallback = new LocationCallback() {
             @Override
-            // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 if (locationResult == null || isFinishing() || binding == null) return;
                 Location loc = locationResult.getLastLocation();
@@ -231,7 +221,6 @@ public class RouteDetailsActivity extends AppCompatActivity {
         } catch (SecurityException ignored) { }
     }
 
-    // Applies state changes and keeps dependent UI/data values synchronized.
     private void updateProgressBar(Location loc) {
         if (destLocation == null || binding == null) return;
         float currentDist = loc.distanceTo(destLocation);
@@ -250,7 +239,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION && grantResults.length > 0
@@ -260,7 +249,6 @@ public class RouteDetailsActivity extends AppCompatActivity {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private String resolveFromDisplay(RouteItem route) {
         String from = route.getFromStation() != null ? route.getFromStation().trim() : "";
         if (!from.isEmpty()) {
@@ -273,7 +261,6 @@ public class RouteDetailsActivity extends AppCompatActivity {
         return getString(R.string.from_label);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private String resolveToDisplay(RouteItem route) {
         String to = route.getToStation() != null ? route.getToStation().trim() : "";
         if (!to.isEmpty()) {
@@ -286,12 +273,10 @@ public class RouteDetailsActivity extends AppCompatActivity {
         return getString(R.string.to_label);
     }
 
-    // Transforms inputs into the shape required by downstream components.
     private String buildSavedRouteSummary(RouteItem route) {
         return resolveFromDisplay(route) + " → " + resolveToDisplay(route);
     }
 
-    // Transforms inputs into the shape required by downstream components.
     private static int parseDuration(String s) {
         if (s == null || s.isEmpty()) return 0;
         try {
@@ -302,7 +287,6 @@ public class RouteDetailsActivity extends AppCompatActivity {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String deriveMode(RouteItem route) {
         java.util.List<Leg> legs = route.getLegs();
         if (legs == null || legs.isEmpty()) return "Mixed";
@@ -316,7 +300,6 @@ public class RouteDetailsActivity extends AppCompatActivity {
         return String.join(",", modes);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String legMode(Leg leg) {
         ModeRef modeRef = leg.getMode();
         String name = modeRef != null ? modeRef.getName() : "";
@@ -364,7 +347,6 @@ public class RouteDetailsActivity extends AppCompatActivity {
         });
     }
 
-    // Pure view binding for route content with sensible fallback placeholders.
     private void displayRoute(RouteItem route) {
         if (route != null) {
             String fromDisplay = resolveFromDisplay(route);
@@ -385,7 +367,7 @@ public class RouteDetailsActivity extends AppCompatActivity {
                 binding.tvLiftDisruptionWarning.setVisibility(View.GONE);
             }
 
-            String poiWarn = route.getPoiVerificationWarning();
+            String poiWarn = buildPoiVerificationText(route);
             if (poiWarn != null && !poiWarn.trim().isEmpty()) {
                 binding.tvPoiVerificationWarning.setText(poiWarn.trim());
                 binding.tvPoiVerificationWarning.setVisibility(View.VISIBLE);
@@ -446,12 +428,61 @@ public class RouteDetailsActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_journey)));
     }
 
-    private static String getLegSummary(Leg leg) {
+    /** POI brands are stored on the route; format here so language matches the activity (not application context). */
+    private String buildPoiVerificationText(RouteItem route) {
+        if (route == null) return null;
+        String bf = route.getPoiVerifyBrandFrom();
+        String bt = route.getPoiVerifyBrandTo();
+        boolean hasF = bf != null && !bf.trim().isEmpty();
+        boolean hasT = bt != null && !bt.trim().isEmpty();
+        if (!hasF && !hasT) return null;
+        StringBuilder wb = new StringBuilder();
+        if (hasF) {
+            String locFrom = route.getPoiVerifyLocationFrom();
+            if (locFrom != null && !locFrom.trim().isEmpty()) {
+                wb.append(getString(R.string.poi_verify_warning_from_place, bf.trim(), locFrom.trim()));
+            } else {
+                wb.append(getString(R.string.poi_verify_warning_from, bf.trim()));
+            }
+        }
+        if (hasT) {
+            if (wb.length() > 0) wb.append("\n\n");
+            String locTo = route.getPoiVerifyLocationTo();
+            if (locTo != null && !locTo.trim().isEmpty()) {
+                wb.append(getString(R.string.poi_verify_warning_to_place, bt.trim(), locTo.trim()));
+            } else {
+                wb.append(getString(R.string.poi_verify_warning_to, bt.trim()));
+            }
+        }
+        return wb.toString();
+    }
+
+    private String getLegSummary(Leg leg) {
+        if (leg.isSyntheticOriginConnector()) {
+            String stopName = leg.getInstruction() != null ? leg.getInstruction().getSummary() : "";
+            if (stopName == null) stopName = "";
+            stopName = stopName.trim();
+            if (stopName.isEmpty() && leg.getArrivalPoint() != null && leg.getArrivalPoint().getCommonName() != null) {
+                stopName = leg.getArrivalPoint().getCommonName().trim();
+            }
+            String head = leg.isSyntheticConnectorBusStop()
+                    ? getString(R.string.walk_connector_bus_stop)
+                    : getString(R.string.walk_connector_train_station);
+            if (stopName.isEmpty()) return head;
+            if (leg.isSyntheticConnectorBusStop()) {
+                return head + " — " + getString(R.string.walk_connector_bus_stop_detail, stopName);
+            }
+            return head + " (" + stopName + ")";
+        }
         if (leg.getInstruction() != null) {
             String s = leg.getInstruction().getSummary();
-            if (s != null && !s.trim().isEmpty()) return s.trim();
+            if (s != null && !s.trim().isEmpty()) {
+                return StepsAdapter.normalizeInstructionForStepDisplay(s.trim());
+            }
         }
-        String mode = leg.getMode() != null ? leg.getMode().getName() : "Travel";
+        String rawMode = leg.getMode() != null ? leg.getMode().getName() : null;
+        String prettyMode = rawMode != null ? StepsAdapter.humanizeTflModeId(rawMode) : "";
+        String mode = !prettyMode.isEmpty() ? prettyMode : "Travel";
         String arrival = leg.getArrivalPoint() != null ? leg.getArrivalPoint().getCommonName() : "";
         if (arrival == null) arrival = "";
         return mode + " to " + (arrival.isEmpty() ? "Destination" : arrival);

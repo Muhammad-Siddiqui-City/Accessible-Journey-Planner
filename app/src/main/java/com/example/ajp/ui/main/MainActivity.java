@@ -22,12 +22,7 @@ import com.example.ajp.ui.settings.SettingsFragment;
 import com.example.ajp.utils.LocaleHelper;
 import com.example.ajp.utils.SettingsPrefs;
 
-/**
- * Activity entry point for the Main flow.
- * Owns lifecycle-sensitive orchestration, screen wiring, and intent-based handover to adjacent features.
- * Business rules are intentionally pushed to utilities/ViewModels so this class stays focused on UI flow.
- */
-
+/** Root activity: bottom navigation and fragment container for main tabs. */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -35,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private int selectedItemId = R.id.navigation_home;
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(LocaleHelper.applyFull(newBase));
     }
@@ -71,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_SELECTED_ITEM, selectedItemId);
@@ -111,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void showLiveArrivalsFragment(String stopId, String stopName) {
         Fragment fragment = LiveArrivalsFragment.newInstance(stopId, stopName);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -120,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void showPopularStationsFragment() {
         Fragment fragment = new PopularStationsFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -129,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void showStationTrainsFragment(String stopId, String stopName) {
         Fragment fragment = StationTrainsFragment.newInstance(stopId, stopName);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -138,14 +130,12 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void switchToJourneysTab() {
         selectedItemId = R.id.navigation_journeys;
         binding.bottomNavigation.setSelectedItemId(selectedItemId);
         showFragment(new JourneyFragment());
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void switchToHomeTab() {
         selectedItemId = R.id.navigation_home;
         binding.bottomNavigation.setSelectedItemId(selectedItemId);

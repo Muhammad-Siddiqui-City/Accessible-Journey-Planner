@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<!-- Built with Claude -->
+
 <!-- XML resource file: strings.xml. -->
 
 <resources>
@@ -158,5 +162,12 @@
     <string name="send_feedback">إرسال ملاحظات</string>
     <string name="version">الإصدار 1.0.0</string>
     <string name="made_with_love">صُنع بـ ❤️ للندن</string>
+    <string name="poi_verify_warning_from">من: لا يمكننا التحقق مما إذا كان %1$s في هذا الموقع.</string>
+    <string name="poi_verify_warning_from_place">من: لا يمكننا التحقق مما إذا كان %1$s في %2$s.</string>
+    <string name="poi_verify_warning_to">الوجهة: لا يمكننا التحقق مما إذا كان %1$s في هذا الموقع.</string>
+    <string name="poi_verify_warning_to_place">الوجهة: لا يمكننا التحقق مما إذا كان %1$s في %2$s.</string>
+    <string name="walk_connector_bus_stop">امشِ إلى موقف الحافلة</string>
+    <string name="walk_connector_bus_stop_detail">%1$s (موقف حافلة)</string>
+    <string name="walk_connector_train_station">امشِ إلى محطة القطار</string>
 </resources>
 

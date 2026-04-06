@@ -3,12 +3,7 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-/**
- * API response model for Journey.
- * Matches remote payload fields so parsing remains predictable and explicit.
- * This keeps network schema changes localized to model classes and mappers.
- */
-
+/** Gson DTO: Journey (TfL JSON field names). */
 public class Journey {
 
     @SerializedName("startDateTime")
@@ -25,5 +20,4 @@ public class Journey {
     public String getArrivalDateTime() { return arrivalDateTime != null ? arrivalDateTime : ""; }
     public List<Leg> getLegs() { return legs != null ? legs : java.util.Collections.emptyList(); }
 }
-
 

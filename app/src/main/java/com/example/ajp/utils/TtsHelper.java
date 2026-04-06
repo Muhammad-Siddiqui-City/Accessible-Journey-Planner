@@ -5,12 +5,7 @@ import android.speech.tts.TextToSpeech;
 import androidx.annotation.NonNull;
 import java.util.Locale;
 
-/**
- * Shared utility class for TtsHelper.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** Optional TextToSpeech queue for route summaries and accessibility prompts. */
 public class TtsHelper {
 
     public static final int QUEUE_FLUSH = TextToSpeech.QUEUE_FLUSH;
@@ -25,12 +20,10 @@ public class TtsHelper {
         this.context = context.getApplicationContext();
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void speak(@NonNull String phrase) {
         speak(phrase, QUEUE_FLUSH);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void speak(@NonNull String phrase, int mode) {
         if (phrase.trim().isEmpty()) return;
         if (!SettingsPrefs.get(context).isTtsEnabled()) return;
@@ -53,7 +46,6 @@ public class TtsHelper {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void stop() {
         if (tts != null) {
             tts.stop();
@@ -61,7 +53,6 @@ public class TtsHelper {
         pendingPhrase = null;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void shutdown() {
         if (tts != null) {
             tts.stop();
@@ -75,5 +66,4 @@ public class TtsHelper {
         return SettingsPrefs.get(context).isTtsEnabled();
     }
 }
-
 

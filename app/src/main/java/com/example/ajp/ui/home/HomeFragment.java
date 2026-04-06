@@ -1,9 +1,5 @@
 package com.example.ajp.ui.home;
 
-// AI Generated
-// Built with Claude
-// Lovable.dev reference
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -46,12 +42,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Screen controller for Home UI interactions.
- * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
- * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
- */
-
+/** Home: fragment wiring; data from ViewModel / services. */
 public class HomeFragment extends Fragment {
 
     private static final int REQUEST_LOCATION = 1001;
@@ -86,7 +77,7 @@ public class HomeFragment extends Fragment {
         } else if (permissionManager.checkLocationPermission(requireContext())) {
             locationManager.getCurrentLocation(new LocationManager.LocationCallback() {
                 @Override
-                // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
                 public void onLocationReceived(double lat, double lon) {
                     viewModel.loadNearestStops(lat, lon);
                 }
@@ -279,14 +270,14 @@ public class HomeFragment extends Fragment {
         if (permissionManager.checkLocationPermission(requireContext())) {
             locationManager.getCurrentLocation(new LocationManager.LocationCallback() {
                 @Override
-                // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
                 public void onLocationReceived(double lat, double lon) {
                     if (getActivity() instanceof MainActivity) {
                         ((MainActivity) getActivity()).showNearbyStationsFragment(lat, lon);
                     }
                 }
                 @Override
-                // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
                 public void onLocationFailed() {
                     Toast.makeText(requireContext(), R.string.nearby_stations, Toast.LENGTH_SHORT).show();
                 }
@@ -316,20 +307,20 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION && permissionManager.isPermissionGranted(grantResults)) {
             locationManager.getCurrentLocation(new LocationManager.LocationCallback() {
                 @Override
-                // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
                 public void onLocationReceived(double lat, double lon) {
                     if (getActivity() instanceof MainActivity) {
                         ((MainActivity) getActivity()).showNearbyStationsFragment(lat, lon);
                     }
                 }
                 @Override
-                // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
                 public void onLocationFailed() {
                     Toast.makeText(requireContext(), R.string.nearby_stations, Toast.LENGTH_SHORT).show();
                 }
@@ -337,7 +328,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String formatDistance(android.content.Context context, double meters) {
         double km = meters / 1000.0;
         return context.getString(R.string.distance_km_away, km);
@@ -361,7 +351,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private int dp(int px) {
         float density = getResources().getDisplayMetrics().density;
         return (int) (px * density);
@@ -424,7 +413,6 @@ public class HomeFragment extends Fragment {
         return line.getLineStatuses().get(0);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String extractUrl(String text) {
         if (text == null) return null;
         Matcher matcher = Pattern.compile("(https?://\\S+)").matcher(text);
@@ -446,7 +434,6 @@ public class HomeFragment extends Fragment {
         ttsHelper.speak(phrase);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private String cleanDisruptionText(String rawReason, String severityDescription) {
         if (rawReason == null || rawReason.isEmpty()) {
             return severityDescription != null ? severityDescription : "";

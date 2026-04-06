@@ -16,7 +16,7 @@ public abstract class AppDatabase extends androidx.room.RoomDatabase {
 
     private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
         @Override
-        // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
         public void migrate(SupportSQLiteDatabase db) {
             db.execSQL("DELETE FROM journey_logs");
         }

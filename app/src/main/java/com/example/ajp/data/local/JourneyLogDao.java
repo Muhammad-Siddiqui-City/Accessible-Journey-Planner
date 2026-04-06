@@ -21,4 +21,3 @@ public interface JourneyLogDao {
     List<JourneyLog> getLogsSince(long startTime);
 }
 
-

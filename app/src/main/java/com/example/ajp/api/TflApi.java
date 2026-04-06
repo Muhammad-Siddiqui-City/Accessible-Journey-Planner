@@ -6,12 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-/**
- * API integration component for TflApi.
- * Builds provider requests and maps transport responses into app-friendly models.
- * Provider quirks and transport-specific request rules are handled here to shield the UI layer.
- */
-
+/** Retrofit interface for TfL Unified API endpoints used by the app. */
 public interface TflApi {
 
     @GET("StopPoint?stopTypes=NaptanPublicBusCoachTram&radius=300")
@@ -50,5 +45,4 @@ public interface TflApi {
             @Query("accessibilityPreference") String accessibilityPreference,
             @Query("mode") String mode);
 }
-
 

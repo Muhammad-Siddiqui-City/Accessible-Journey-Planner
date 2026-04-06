@@ -11,12 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.ajp.R;
 
-/**
- * Custom view implementation for TimeSavedLineChartView.
- * Draws feature-specific visuals that are not covered by stock Android widgets.
- * Rendering concerns are isolated here so screens can pass data without drawing logic.
- */
-
+/** Line chart for time-saved trend from journey logs. */
 public class TimeSavedLineChartView extends View {
 
     private static final String[] DAYS = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
@@ -56,7 +51,6 @@ public class TimeSavedLineChartView extends View {
         init(context);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void init(Context context) {
         tealColor = ContextCompat.getColor(context, R.color.secondary);
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -85,7 +79,6 @@ public class TimeSavedLineChartView extends View {
         pointsY = new float[7];
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private float dp(float dp) {
         return dp * getResources().getDisplayMetrics().density;
     }
@@ -95,7 +88,7 @@ public class TimeSavedLineChartView extends View {
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         computePoints();
@@ -140,7 +133,6 @@ public class TimeSavedLineChartView extends View {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void computePoints() {
         int w = getWidth();
         int h = getHeight();
@@ -159,7 +151,7 @@ public class TimeSavedLineChartView extends View {
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP && listener != null) {
             computePoints();
@@ -183,5 +175,4 @@ public class TimeSavedLineChartView extends View {
         return super.onTouchEvent(event);
     }
 }
-
 

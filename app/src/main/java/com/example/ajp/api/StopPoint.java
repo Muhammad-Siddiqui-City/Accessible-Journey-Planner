@@ -5,12 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/**
- * API response model for StopPoint.
- * Matches remote payload fields so parsing remains predictable and explicit.
- * This keeps network schema changes localized to model classes and mappers.
- */
-
+/** Gson DTO: StopPoint (TfL JSON field names). */
 public class StopPoint {
 
     private static final String STOP_TYPE_METRO = "NaptanMetroStation";
@@ -49,6 +44,7 @@ public class StopPoint {
     public String getCommonName() { return commonName != null ? commonName : ""; }
     public double getDistance() { return distance; }
     public List<LineIdentifier> getLines() { return lines; }
+    public List<String> getModes() { return modes != null ? modes : java.util.Collections.emptyList(); }
     public String getStopType() { return stopType != null ? stopType : ""; }
     public String getStopLetter() { return stopLetter != null ? stopLetter : ""; }
     public void setStopLetter(String stopLetter) { this.stopLetter = stopLetter; }
@@ -145,5 +141,4 @@ public class StopPoint {
         public String getValue() { return value != null ? value : ""; }
     }
 }
-
 

@@ -6,12 +6,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import androidx.appcompat.widget.AppCompatTextView;
 
-/**
- * Custom view implementation for LineBadgeView.
- * Draws feature-specific visuals that are not covered by stock Android widgets.
- * Rendering concerns are isolated here so screens can pass data without drawing logic.
- */
-
+/** Pill badge for a single line or mode colour. */
 public class LineBadgeView extends AppCompatTextView {
 
     private static final int[][] LINE_COLORS = {
@@ -53,7 +48,6 @@ public class LineBadgeView extends AppCompatTextView {
         init(attrs);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void init(AttributeSet attrs) {
         setGravity(Gravity.CENTER);
         setTypeface(Typeface.DEFAULT_BOLD);
@@ -82,5 +76,4 @@ public class LineBadgeView extends AppCompatTextView {
         setText(abbr);
     }
 }
-
 

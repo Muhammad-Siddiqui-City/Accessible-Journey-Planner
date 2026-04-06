@@ -1,19 +1,10 @@
 package com.example.ajp.ui.journey;
 
-// AI Generated
-// Built with Claude
-// Lovable.dev reference
-
 import com.example.ajp.api.Leg;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * UI-side model/helper used by RouteItem.
- * Encapsulates presentation-oriented behavior needed by screens in this feature package.
- * Keeping this separate helps avoid leaking API/database concerns into view code.
- */
-
+/** Serializable route card: TfL legs, crowding, lift flag, optional POI warning. */
 public class RouteItem implements Serializable {
 
     public static final int CROWDING_LOW = 0;
@@ -35,14 +26,19 @@ public class RouteItem implements Serializable {
 
     private final String liftDisruptionDescription;
 
-    /** Full sentence when user typed brand + location (e.g. cannot verify shop exists). */
-    private final String poiVerificationWarning;
+    /** Brand phrase for POI warning (resolved to UI language in RouteDetailsActivity, not here). */
+    private final String poiVerifyBrandFrom;
+    private final String poiVerifyBrandTo;
+    /** Location part when origin brand+place was split (e.g. Canary Wharf); used in origin warning copy. */
+    private final String poiVerifyLocationFrom;
+    /** Location part when brand+place was split (e.g. Clapham Junction); used in destination warning copy. */
+    private final String poiVerifyLocationTo;
 
     public RouteItem(String durationMinutes, String departureTime, String arrivalTime, int crowdingLevel,
                      String transfersText, String[] lineBadges, String routeSummary, String routeId,
                      String fromStation, String toStation, List<Leg> legs) {
         this(durationMinutes, departureTime, arrivalTime, crowdingLevel, transfersText, lineBadges,
-                routeSummary, routeId, fromStation, toStation, legs, false, null, null);
+                routeSummary, routeId, fromStation, toStation, legs, false, null, null, null, null, null);
     }
 
     public RouteItem(String durationMinutes, String departureTime, String arrivalTime, int crowdingLevel,
@@ -51,13 +47,23 @@ public class RouteItem implements Serializable {
                      String liftDisruptionDescription) {
         this(durationMinutes, departureTime, arrivalTime, crowdingLevel, transfersText, lineBadges,
                 routeSummary, routeId, fromStation, toStation, legs, hasLiftDisruption,
-                liftDisruptionDescription, null);
+                liftDisruptionDescription, null, null, null, null);
     }
 
     public RouteItem(String durationMinutes, String departureTime, String arrivalTime, int crowdingLevel,
                      String transfersText, String[] lineBadges, String routeSummary, String routeId,
                      String fromStation, String toStation, List<Leg> legs, boolean hasLiftDisruption,
-                     String liftDisruptionDescription, String poiVerificationWarning) {
+                     String liftDisruptionDescription, String poiVerifyBrandFrom, String poiVerifyBrandTo) {
+        this(durationMinutes, departureTime, arrivalTime, crowdingLevel, transfersText, lineBadges,
+                routeSummary, routeId, fromStation, toStation, legs, hasLiftDisruption,
+                liftDisruptionDescription, poiVerifyBrandFrom, null, poiVerifyBrandTo, null);
+    }
+
+    public RouteItem(String durationMinutes, String departureTime, String arrivalTime, int crowdingLevel,
+                     String transfersText, String[] lineBadges, String routeSummary, String routeId,
+                     String fromStation, String toStation, List<Leg> legs, boolean hasLiftDisruption,
+                     String liftDisruptionDescription, String poiVerifyBrandFrom, String poiVerifyLocationFrom,
+                     String poiVerifyBrandTo, String poiVerifyLocationTo) {
         this.durationMinutes = durationMinutes;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime != null ? arrivalTime : "";
@@ -71,7 +77,10 @@ public class RouteItem implements Serializable {
         this.legs = legs != null ? legs : java.util.Collections.emptyList();
         this.hasLiftDisruption = hasLiftDisruption;
         this.liftDisruptionDescription = liftDisruptionDescription;
-        this.poiVerificationWarning = poiVerificationWarning;
+        this.poiVerifyBrandFrom = poiVerifyBrandFrom;
+        this.poiVerifyBrandTo = poiVerifyBrandTo;
+        this.poiVerifyLocationFrom = poiVerifyLocationFrom;
+        this.poiVerifyLocationTo = poiVerifyLocationTo;
     }
 
     public String getDurationMinutes() { return durationMinutes; }
@@ -89,7 +98,13 @@ public class RouteItem implements Serializable {
 
     public String getLiftDisruptionDescription() { return liftDisruptionDescription; }
 
-    public String getPoiVerificationWarning() { return poiVerificationWarning; }
+    public String getPoiVerifyBrandFrom() { return poiVerifyBrandFrom; }
+
+    public String getPoiVerifyBrandTo() { return poiVerifyBrandTo; }
+
+    public String getPoiVerifyLocationFrom() { return poiVerifyLocationFrom; }
+
+    public String getPoiVerifyLocationTo() { return poiVerifyLocationTo; }
 
     public int getDurationMinutesInt() {
         if (durationMinutes == null || durationMinutes.isEmpty()) return 0;
@@ -122,7 +137,7 @@ public class RouteItem implements Serializable {
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof RouteItem)) return false;
@@ -131,10 +146,9 @@ public class RouteItem implements Serializable {
     }
 
     @Override
-    // Evaluates a condition used to branch behavior in the surrounding flow.
+
     public int hashCode() {
         return routeId != null ? routeId.hashCode() : 0;
     }
 }
-
 

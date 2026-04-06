@@ -3,12 +3,7 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-/**
- * API response model for MatchedStop.
- * Matches remote payload fields so parsing remains predictable and explicit.
- * This keeps network schema changes localized to model classes and mappers.
- */
-
+/** Gson DTO: MatchedStop (TfL JSON field names). */
 public class MatchedStop {
 
     @SerializedName("id")
@@ -28,5 +23,4 @@ public class MatchedStop {
     public double getLon() { return lon; }
     public List<String> getModes() { return modes != null ? modes : java.util.Collections.emptyList(); }
 }
-
 

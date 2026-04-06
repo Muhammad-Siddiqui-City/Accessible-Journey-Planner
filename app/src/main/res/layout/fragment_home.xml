@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fragment layout for fragment home. Keeps visual structure separate from runtime behavior in the fragment class. -->
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<!-- Built with Claude -->
+
+<!-- Home tab: search, shortcuts, disruptions, saved routes, nearby section. -->
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"

@@ -3,12 +3,7 @@ package com.example.ajp.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Shared utility class for AccessibilityPreferences.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** Step-free, walking speed, max walk — persisted for TfL journey requests. */
 public class AccessibilityPreferences {
 
     private static final String PREFS_NAME = "ajp_accessibility";
@@ -60,5 +55,4 @@ public class AccessibilityPreferences {
         prefs.edit().putInt(KEY_MAX_WALKING_MINUTES, clamped).apply();
     }
 }
-
 

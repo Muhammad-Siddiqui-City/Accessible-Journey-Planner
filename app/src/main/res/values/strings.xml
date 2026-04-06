@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<!-- Built with Claude -->
+
 <!-- String resource table for this locale. Text lives here so UI copy can be updated and localized without touching Java code. -->
 
 <resources>
@@ -77,7 +81,14 @@
     <string name="sort_least_crowded">Least crowded</string>
     <string name="youre_offline_view_saved">You\'re offline. View saved journeys from the home screen.</string>
     <string name="could_not_find_place">Could not find that place: %1$s</string>
-    <string name="poi_verify_warning">We cannot verify if %1$s exists here.</string>
+    <string name="poi_verify_warning_from">From: we cannot verify if %1$s exists at this location.</string>
+    <string name="poi_verify_warning_from_place">From: we cannot verify if %1$s exists at %2$s.</string>
+    <string name="poi_verify_warning_to">Destination: we cannot verify if %1$s exists at this location.</string>
+    <string name="poi_verify_warning_to_place">Destination: we cannot verify if %1$s exists at %2$s.</string>
+    <string name="walk_connector_bus_stop">Walk to bus stop</string>
+    <!-- TfL stop names are often street names; label explicitly so it does not read like a random road. -->
+    <string name="walk_connector_bus_stop_detail">%1$s (bus stop)</string>
+    <string name="walk_connector_train_station">Walk to train station</string>
     <string name="no_transit_near_place">No bus or rail stop found near: %1$s</string>
     <string name="walk_estimated_minutes">About %1$d min (estimated)</string>
     <string name="go_to_home">Go to home</string>

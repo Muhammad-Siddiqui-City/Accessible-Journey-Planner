@@ -2,12 +2,7 @@ package com.example.ajp.utils;
 
 import com.example.ajp.BuildConfig;
 
-/**
- * Shared utility class for ApiKeyManager.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** Reads TfL and National Rail secrets from BuildConfig (from local.properties). */
 public final class ApiKeyManager {
 
     private ApiKeyManager() { }
@@ -30,5 +25,4 @@ public final class ApiKeyManager {
         return BuildConfig.RAIL_ACCESS_TOKEN != null ? BuildConfig.RAIL_ACCESS_TOKEN : "";
     }
 }
-
 

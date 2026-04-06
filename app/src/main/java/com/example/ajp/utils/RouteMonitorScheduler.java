@@ -9,12 +9,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Shared utility class for RouteMonitorScheduler.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** Schedules/cancels route monitor work and runs a one-off check for settings tests. */
 public final class RouteMonitorScheduler {
 
     private static final String UNIQUE_WORK_NAME = "ajp_route_monitor";
@@ -40,7 +35,6 @@ public final class RouteMonitorScheduler {
                 work);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static boolean runCheckSync(@NonNull Context context) {
         RouteMonitorPrefs prefs = RouteMonitorPrefs.get(context);
         String from = prefs.getLastFrom();
@@ -68,5 +62,4 @@ public final class RouteMonitorScheduler {
         return false;
     }
 }
-
 

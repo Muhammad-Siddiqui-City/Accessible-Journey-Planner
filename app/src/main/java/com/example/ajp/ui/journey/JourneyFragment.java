@@ -1,9 +1,5 @@
 package com.example.ajp.ui.journey;
 
-// AI Generated
-// Built with Claude
-// Lovable.dev reference
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.app.Activity;
@@ -47,12 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Screen controller for Journey UI interactions.
- * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
- * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
- */
-
+/** Journey: fragment wiring; data from ViewModel / services. */
 public class JourneyFragment extends Fragment {
 
     private static final String TAG = "JourneyFragment";
@@ -272,7 +263,6 @@ public class JourneyFragment extends Fragment {
         wv.loadDataWithBaseURL("https://unpkg.com/", html, "text/html", "UTF-8", null);
     }
 
-    // Applies state changes and keeps dependent UI/data values synchronized.
     private void updateDateTimeButtons() {
         if (binding == null) return;
         binding.btnToday.setText(String.format(Locale.UK, "%d %s",
@@ -282,7 +272,6 @@ public class JourneyFragment extends Fragment {
                 selectedDateTime.get(Calendar.HOUR_OF_DAY), selectedDateTime.get(Calendar.MINUTE)));
     }
 
-    // Performs navigation or intent handover to the next screen/action.
     private void openDatePicker() {
         DatePickerDialog dlg = new DatePickerDialog(requireContext(),
                 (view, year, month, dayOfMonth) -> {
@@ -304,7 +293,6 @@ public class JourneyFragment extends Fragment {
         dlg.show();
     }
 
-    // Performs navigation or intent handover to the next screen/action.
     private void openTimePicker() {
         TimePickerDialog dlg = new TimePickerDialog(requireContext(),
                 (view, hourOfDay, minute) -> {
@@ -362,7 +350,7 @@ public class JourneyFragment extends Fragment {
         if (permissionManager.checkLocationPermission(requireContext())) {
             locationManager.getCurrentLocation(new LocationManager.LocationCallback() {
                 @Override
-                // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
                 public void onLocationReceived(double lat, double lon) {
                     if (binding != null) {
                         String coords = String.format(Locale.UK, "%.4f,%.4f", lat, lon);
@@ -373,7 +361,7 @@ public class JourneyFragment extends Fragment {
                     }
                 }
                 @Override
-                // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
                 public void onLocationFailed() {
                     Toast.makeText(requireContext(), R.string.current_location, Toast.LENGTH_SHORT).show();
                 }
@@ -398,7 +386,7 @@ public class JourneyFragment extends Fragment {
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION && permissionManager.isPermissionGranted(grantResults)) {

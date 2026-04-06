@@ -3,12 +3,7 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
-/**
- * API response model for Disruption.
- * Matches remote payload fields so parsing remains predictable and explicit.
- * This keeps network schema changes localized to model classes and mappers.
- */
-
+/** Gson DTO: Disruption (TfL JSON field names). */
 public class Disruption implements Serializable {
 
     @SerializedName("description")
@@ -78,5 +73,4 @@ public class Disruption implements Serializable {
         this.appearance = appearance;
     }
 }
-
 

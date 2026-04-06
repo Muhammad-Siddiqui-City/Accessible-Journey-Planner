@@ -3,12 +3,7 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
-/**
- * API response model for ModeRef.
- * Matches remote payload fields so parsing remains predictable and explicit.
- * This keeps network schema changes localized to model classes and mappers.
- */
-
+/** Gson DTO: ModeRef (TfL JSON field names). */
 public class ModeRef implements Serializable {
 
     @SerializedName("name")
@@ -22,5 +17,4 @@ public class ModeRef implements Serializable {
         return m;
     }
 }
-
 

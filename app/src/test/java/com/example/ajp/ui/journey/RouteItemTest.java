@@ -27,6 +27,9 @@ public class RouteItemTest {
                 Collections.<Leg>emptyList(),
                 false,
                 null,
+                null,
+                null,
+                null,
                 null);
     }
 

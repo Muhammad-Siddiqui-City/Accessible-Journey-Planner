@@ -1,5 +1,6 @@
 package com.example.ajp.ui.routedetails;
 
+import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -19,12 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/**
- * RecyclerView adapter for Steps item rendering.
- * Maps domain/UI models into row views and keeps list-specific formatting in one place.
- * This avoids repeating display logic in fragments and keeps row behavior consistent across updates.
- */
-
+/** RecyclerView rows: Steps. */
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHolder> {
 
     private static final int COLOR_TUBE = 0xFF2196F3;
@@ -43,21 +39,31 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
 
     @NonNull
     @Override
-    // Initializes screen state, wiring, and startup behavior for this lifecycle stage.
+
     public StepViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_step, parent, false);
         return new StepViewHolder(v);
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public void onBindViewHolder(@NonNull StepViewHolder holder, int position) {
         Leg leg = legs.get(position);
         String modeName = leg.getMode() != null ? leg.getMode().getName() : "";
-        String instruction = leg.getInstruction() != null ? leg.getInstruction().getSummary() : "";
+        String rawInstruction = leg.getInstruction() != null ? leg.getInstruction().getSummary() : "";
+        String instruction = normalizeInstructionForStepDisplay(rawInstruction);
 
-        String title = buildStepTitle(leg, modeName);
-        String detail = filterRedundantDetail(modeName, title, instruction);
+        String title = buildStepTitle(leg, modeName, holder.itemView.getContext());
+        String detail = filterRedundantDetail(leg, modeName, title, instruction);
+        if (leg.isSyntheticOriginConnector() && leg.isSyntheticConnectorBusStop()) {
+            String stopLabel = detail;
+            if (stopLabel.isEmpty() && leg.getArrivalPoint() != null && leg.getArrivalPoint().getCommonName() != null) {
+                stopLabel = leg.getArrivalPoint().getCommonName().trim();
+            }
+            if (!stopLabel.isEmpty()) {
+                detail = holder.itemView.getContext().getString(R.string.walk_connector_bus_stop_detail, stopLabel);
+            }
+        }
         boolean isWalk = modeName.toLowerCase(Locale.UK).contains("walk");
         int durationSec = leg.getDuration();
         int durationMin = durationSec / 60;
@@ -77,7 +83,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     /**
      * Hides subtitle when it only repeats the bold line (TfL often sends the same wording with minor variants).
      */
-    private static String filterRedundantDetail(String modeName, String title, String instruction) {
+    private static String filterRedundantDetail(Leg leg, String modeName, String title, String instruction) {
         if (instruction == null) return "";
         String detail = instruction.trim();
         if (detail.isEmpty()) return "";
@@ -85,6 +91,10 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         String t = title != null ? title.trim() : "";
         if (collapseForDedupe(detail).equals(collapseForDedupe(t))) {
             return "";
+        }
+        // Pin→stop connector: subtitle is the TfL stop name; never strip it.
+        if (leg != null && leg.isSyntheticOriginConnector()) {
+            return detail;
         }
         // Walking: subtitle is almost always a duplicate of "Walk to …" unless it's extra info (e.g. time estimate).
         if (modeName != null && modeName.toLowerCase(Locale.UK).contains("walk")) {
@@ -95,7 +105,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         return detail;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String collapseForDedupe(String s) {
         if (s == null) return "";
         String out = s.trim().toLowerCase(Locale.UK)
@@ -108,7 +117,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         return out;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String walkDestinationCore(String line) {
         if (line == null) return "";
         String core = WALK_PREFIX.matcher(line.trim()).replaceFirst("").trim();
@@ -126,10 +134,15 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         return !titleDest.isEmpty() && titleDest.equals(insDest);
     }
 
-    // Transforms inputs into the shape required by downstream components.
-    private String buildStepTitle(Leg leg, String modeName) {
-        String m = modeName.toLowerCase();
+    private String buildStepTitle(Leg leg, String modeName, Context ctx) {
+        String m = modeName.toLowerCase(Locale.UK);
         if (m.contains("walk")) {
+            if (leg.isSyntheticOriginConnector()) {
+                if (leg.isSyntheticConnectorBusStop()) {
+                    return ctx.getString(R.string.walk_connector_bus_stop);
+                }
+                return ctx.getString(R.string.walk_connector_train_station);
+            }
             String to = leg.getArrivalPoint() != null ? leg.getArrivalPoint().getCommonName() : "";
             return to.isEmpty() ? "Walk to destination" : "Walk to " + to;
         }
@@ -137,11 +150,16 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
             String to = leg.getArrivalPoint() != null ? leg.getArrivalPoint().getCommonName() : "";
             return to.isEmpty() ? "Bus" : "Bus to " + to;
         }
-        if (m.contains("tube") || m.contains("dlr") || m.contains("overground") || m.contains("rail") || m.contains("underground")) {
+        if (m.contains("tube") || m.contains("dlr") || m.contains("overground") || m.contains("rail")
+                || m.contains("underground") || m.contains("elizabeth")) {
             StringBuilder sb = new StringBuilder();
-            for (RouteOptionRef ro : leg.getRouteOptions()) {
-                if (sb.length() > 0) sb.append(" · ");
-                sb.append(ro.getName());
+            List<RouteOptionRef> opts = leg.getRouteOptions();
+            if (opts != null) {
+                for (RouteOptionRef ro : opts) {
+                    if (ro == null) continue;
+                    if (sb.length() > 0) sb.append(" · ");
+                    sb.append(lineNameForStepTitle(ro.getName()));
+                }
             }
             String from = leg.getDeparturePoint() != null ? leg.getDeparturePoint().getCommonName() : "";
             String to = leg.getArrivalPoint() != null ? leg.getArrivalPoint().getCommonName() : "";
@@ -149,9 +167,75 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
                 return sb.toString() + " → " + to;
             }
             if (!to.isEmpty()) return "Train to " + to;
-            return sb.length() > 0 ? sb.toString() : "Tube";
+            if (sb.length() > 0) return sb.toString();
+            if (m.contains("elizabeth")) return "Elizabeth";
+            return "Tube";
         }
-        return modeName.isEmpty() ? "Step" : modeName + " leg";
+        return modeName.isEmpty() ? "Step" : humanizeModeLegFallback(modeName);
+    }
+
+    /**
+     * TfL route names are usually "Metropolitan" / "Jubilee" but often "Elizabeth line" or "Elizabeth-line";
+     * strip a trailing "line" so the bold title matches other modes.
+     */
+    private static String lineNameForStepTitle(String name) {
+        if (name == null || name.isEmpty()) return "";
+        String t = name.trim().replace('\u00A0', ' ').replace('-', ' ');
+        t = t.replaceAll("\\s+", " ").trim();
+        String low = t.toLowerCase(Locale.UK);
+        if (low.endsWith(" line")) {
+            t = t.substring(0, t.length() - 5).trim();
+        }
+        return t;
+    }
+
+    /** Subtitle text from TfL often says "Elizabeth line to …"; use "Elizabeth" like the bold title. */
+    static String normalizeElizabethLineWording(String text) {
+        if (text == null || text.isEmpty()) return "";
+        return text.replaceAll("(?i)\\bElizabeth\\s*-?\\s*line\\b", "Elizabeth");
+    }
+
+    /**
+     * Normalizes TfL instruction subtitles for display (Elizabeth wording, then drop redundant " line " before to/towards).
+     */
+    static String normalizeInstructionForStepDisplay(String raw) {
+        return normalizeInstructionLineWording(normalizeElizabethLineWording(raw));
+    }
+
+    /** "Jubilee line to Waterloo" → "Jubilee to Waterloo" (National Rail keeps "… Railway to …"). */
+    static String normalizeInstructionLineWording(String text) {
+        if (text == null || text.isEmpty()) return "";
+        return text.replaceAll("(?i)\\s+line\\s+(to|towards)\\b", " $1");
+    }
+
+    /**
+     * TfL sometimes sends mode as an id (e.g. elizabeth-line). Used for step titles, share text, and TTS fallback.
+     */
+    static String humanizeTflModeId(String modeName) {
+        if (modeName == null) return "";
+        String t = modeName.trim();
+        if (t.isEmpty()) return "";
+        String s = t.replace('-', ' ').replace('_', ' ');
+        String[] parts = s.split("\\s+");
+        StringBuilder sb = new StringBuilder();
+        for (String p : parts) {
+            if (p.isEmpty()) continue;
+            if (sb.length() > 0) sb.append(' ');
+            sb.append(Character.toUpperCase(p.charAt(0)));
+            if (p.length() > 1) {
+                sb.append(p.substring(1).toLowerCase(Locale.UK));
+            }
+        }
+        String out = sb.toString();
+        if (out.toLowerCase(Locale.UK).endsWith(" line")) {
+            out = out.substring(0, out.length() - 5).trim();
+        }
+        return out;
+    }
+
+    private static String humanizeModeLegFallback(String modeName) {
+        String h = humanizeTflModeId(modeName);
+        return h.isEmpty() ? "Step" : h + " leg";
     }
 
     private int getStepColor(Leg leg, String modeName) {

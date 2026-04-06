@@ -3,12 +3,7 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-/**
- * API response model for StopPointResponse.
- * Matches remote payload fields so parsing remains predictable and explicit.
- * This keeps network schema changes localized to model classes and mappers.
- */
-
+/** Gson DTO: StopPointResponse (TfL JSON field names). */
 public class StopPointResponse {
 
     @SerializedName("stopPoints")
@@ -18,5 +13,4 @@ public class StopPointResponse {
         return stopPoints;
     }
 }
-
 

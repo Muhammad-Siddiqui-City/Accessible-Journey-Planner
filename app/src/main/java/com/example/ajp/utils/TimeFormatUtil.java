@@ -1,16 +1,10 @@
 package com.example.ajp.utils;
 
-/**
- * Shared utility class for TimeFormatUtil.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** Human-readable minute/labels for UI and share text. */
 public final class TimeFormatUtil {
 
     private TimeFormatUtil() { }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static String formatMinutesToHourMin(int totalMinutes) {
         if (totalMinutes < 0) totalMinutes = 0;
         if (totalMinutes < 60) return totalMinutes + "m";
@@ -21,7 +15,6 @@ public final class TimeFormatUtil {
         return hours + "hr " + mins + "m";
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static String formatRelativeTime(long timestamp) {
         if (timestamp <= 0) return "Unknown";
 
@@ -62,5 +55,4 @@ public final class TimeFormatUtil {
         return years == 1 ? "1 year ago" : years + " years ago";
     }
 }
-
 

@@ -3,12 +3,7 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
-/**
- * API response model for InstructionRef.
- * Matches remote payload fields so parsing remains predictable and explicit.
- * This keeps network schema changes localized to model classes and mappers.
- */
-
+/** Gson DTO: InstructionRef (TfL JSON field names). */
 public class InstructionRef implements Serializable {
 
     @SerializedName("summary")
@@ -22,5 +17,4 @@ public class InstructionRef implements Serializable {
         return r;
     }
 }
-
 

@@ -1,9 +1,5 @@
 package com.example.ajp.ui.settings;
 
-// AI Generated
-// Built with Claude
-// Lovable.dev reference
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,12 +21,7 @@ import com.example.ajp.utils.SettingsPrefs;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Screen controller for Settings UI interactions.
- * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
- * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
- */
-
+/** Settings: fragment wiring; data from ViewModel / services. */
 public class SettingsFragment extends Fragment {
 
     private FragmentSettingsBinding binding;
@@ -79,6 +70,7 @@ public class SettingsFragment extends Fragment {
 
         binding.switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.setDarkMode(isChecked);
+            // AppCompat uses NIGHT_* for dark theme (not a separate "night mode" product feature).
             AppCompatDelegate.setDefaultNightMode(isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
             if (getActivity() != null) getActivity().recreate();
         });
@@ -137,7 +129,6 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    // Applies state changes and keeps dependent UI/data values synchronized.
     private void applySimulatedStopIds(RouteMonitorPrefs routePrefs, String text) {
         if (text == null || text.trim().isEmpty()) {
             routePrefs.setSimulatedDisruptedStopIds(new HashSet<>());
@@ -151,7 +142,6 @@ public class SettingsFragment extends Fragment {
         routePrefs.setSimulatedDisruptedStopIds(ids);
     }
 
-    // Applies state changes and keeps dependent UI/data values synchronized.
     private void applyLanguage(String langCode) {
         SettingsPrefs.get(requireContext()).setLanguage(langCode);
         if (getActivity() != null) getActivity().recreate();
@@ -164,5 +154,4 @@ public class SettingsFragment extends Fragment {
         binding = null;
     }
 }
-
 

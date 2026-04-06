@@ -1,11 +1,6 @@
 package com.example.ajp.ui.analytics;
 
-/**
- * UI-side model/helper used by ModeCountItem.
- * Encapsulates presentation-oriented behavior needed by screens in this feature package.
- * Keeping this separate helps avoid leaking API/database concerns into view code.
- */
-
+/** Label + count for analytics mode donut. */
 public class ModeCountItem {
     private final String mode;
     private final int count;
@@ -21,5 +16,4 @@ public class ModeCountItem {
     public int getCount() { return count; }
     public int getColor() { return color; }
 }
-
 

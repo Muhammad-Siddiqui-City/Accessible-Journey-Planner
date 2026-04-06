@@ -15,12 +15,7 @@ import com.example.ajp.ui.nearby.StopsViewModel;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Screen controller for StationTrains UI interactions.
- * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
- * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
- */
-
+/** StationTrains: fragment wiring; data from ViewModel / services. */
 public class StationTrainsFragment extends Fragment {
 
     public static final String ARG_STOP_ID = "stop_id";
@@ -31,7 +26,6 @@ public class StationTrainsFragment extends Fragment {
     private ArrivalsAdapter arrivalsAdapter;
     private ArrivalsAdapter departuresAdapter;
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static StationTrainsFragment newInstance(String stopId, String stopName) {
         StationTrainsFragment f = new StationTrainsFragment();
         Bundle args = new Bundle();
@@ -105,5 +99,4 @@ public class StationTrainsFragment extends Fragment {
         binding = null;
     }
 }
-
 

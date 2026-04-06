@@ -26,4 +26,3 @@ public interface SavedRouteDao {
     void delete(SavedRouteEntity entity);
 }
 
-

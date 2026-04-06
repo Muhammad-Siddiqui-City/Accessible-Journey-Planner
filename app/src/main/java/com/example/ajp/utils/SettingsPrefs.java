@@ -3,12 +3,7 @@ package com.example.ajp.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Shared utility class for SettingsPrefs.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** High contrast, dark mode, avoid-crowds, and other toggles in SharedPreferences. */
 public class SettingsPrefs {
 
     private static final String PREFS_NAME = "ajp_settings";
@@ -67,5 +62,4 @@ public class SettingsPrefs {
         prefs.edit().putString(KEY_LANGUAGE, lang != null ? lang.trim() : LANG_EN_GB).commit();
     }
 }
-
 

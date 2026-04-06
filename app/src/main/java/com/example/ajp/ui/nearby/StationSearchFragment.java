@@ -15,12 +15,7 @@ import com.example.ajp.databinding.FragmentStationSearchBinding;
 import com.example.ajp.ui.main.MainActivity;
 import java.util.List;
 
-/**
- * Screen controller for StationSearch UI interactions.
- * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
- * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
- */
-
+/** StationSearch: fragment wiring; data from ViewModel / services. */
 public class StationSearchFragment extends Fragment {
 
     private static final String ARG_QUERY = "query";
@@ -29,7 +24,6 @@ public class StationSearchFragment extends Fragment {
     private StopsViewModel viewModel;
     private NearbyStationsAdapter adapter;
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static StationSearchFragment newInstance(String query) {
         StationSearchFragment f = new StationSearchFragment();
         Bundle args = new Bundle();
@@ -75,7 +69,6 @@ public class StationSearchFragment extends Fragment {
         });
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void onSearchResults(List<StopItem> results) {
         if (binding == null) return;
         binding.progressBar.setVisibility(View.GONE);
@@ -97,7 +90,6 @@ public class StationSearchFragment extends Fragment {
         binding = null;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String formatNameWithStopLetter(String stopName, String stopLetter) {
         String name = stopName != null ? stopName.trim() : "";
         String letter = stopLetter != null ? stopLetter.replace("->", "").trim() : "";
@@ -105,5 +97,4 @@ public class StationSearchFragment extends Fragment {
         return name + " (Stop " + letter + ")";
     }
 }
-
 

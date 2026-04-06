@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Screen layout for activity live arrivals. This file defines view structure and IDs consumed by view binding. -->
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<!-- Built with Claude -->
+
+<!-- Host activity for live arrivals (toolbar + fragment container). -->
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"

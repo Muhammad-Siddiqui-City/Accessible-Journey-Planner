@@ -2,12 +2,7 @@ package com.example.ajp.ui.journey;
 
 import android.graphics.Color;
 
-/**
- * UI-side model/helper used by RouteLineColors.
- * Encapsulates presentation-oriented behavior needed by screens in this feature package.
- * Keeping this separate helps avoid leaking API/database concerns into view code.
- */
-
+/** Maps TfL line names to UI colours for badges and charts. */
 public final class RouteLineColors {
 
     /** Walking legs — distinct from all tube lines and national rail brown. */
@@ -21,5 +16,4 @@ public final class RouteLineColors {
 
     private RouteLineColors() { }
 }
-
 

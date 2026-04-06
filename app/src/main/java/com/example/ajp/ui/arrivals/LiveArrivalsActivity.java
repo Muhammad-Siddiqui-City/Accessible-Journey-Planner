@@ -16,12 +16,7 @@ import com.example.ajp.utils.SettingsPrefs;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Activity entry point for the LiveArrivals flow.
- * Owns lifecycle-sensitive orchestration, screen wiring, and intent-based handover to adjacent features.
- * Business rules are intentionally pushed to utilities/ViewModels so this class stays focused on UI flow.
- */
-
+/** Standalone arrivals screen (single-stop board) when launched from manifest/deep link. */
 public class LiveArrivalsActivity extends AppCompatActivity {
 
     public static final String EXTRA_STOP_ID = "stopId";
@@ -35,7 +30,7 @@ public class LiveArrivalsActivity extends AppCompatActivity {
     private List<Arrival> allArrivals = new ArrayList<>();
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(LocaleHelper.applyFull(newBase));
     }
@@ -87,7 +82,6 @@ public class LiveArrivalsActivity extends AppCompatActivity {
         loadArrivals();
     }
 
-    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     private void loadArrivals() {
         if (stopId != null && !stopId.isEmpty()) {
             binding.progressBar.setVisibility(View.VISIBLE);
@@ -99,7 +93,6 @@ public class LiveArrivalsActivity extends AppCompatActivity {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void selectPill(String line) {
         selectedLine = line;
         setPill(binding.pillAll, "all");
@@ -111,7 +104,6 @@ public class LiveArrivalsActivity extends AppCompatActivity {
         applyFilter();
     }
 
-    // Applies state changes and keeps dependent UI/data values synchronized.
     private void applyFilter() {
         List<Arrival> filtered;
         if ("all".equals(selectedLine)) {

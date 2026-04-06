@@ -10,12 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ajp.R;
 import java.util.List;
 
-/**
- * RecyclerView adapter for NearbyStations item rendering.
- * Maps domain/UI models into row views and keeps list-specific formatting in one place.
- * This avoids repeating display logic in fragments and keeps row behavior consistent across updates.
- */
-
+/** RecyclerView rows: NearbyStations. */
 public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAdapter.StopViewHolder> {
 
     public interface OnStopClickListener {
@@ -29,7 +24,6 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         this.clickListener = listener;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void submitList(List<StopItem> list) {
         this.items = list != null ? list : java.util.Collections.emptyList();
         notifyDataSetChanged();
@@ -41,14 +35,14 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
 
     @NonNull
     @Override
-    // Initializes screen state, wiring, and startup behavior for this lifecycle stage.
+
     public StopViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_nearby_station, parent, false);
         return new StopViewHolder(view);
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public void onBindViewHolder(@NonNull StopViewHolder holder, int position) {
         StopItem item = items.get(position);
         String displayName = formatStationName(item.getName(), item.getStopLetter());
@@ -92,7 +86,6 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         return items.size();
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String formatStationName(String commonName, String stopLetter) {
         if (commonName == null) commonName = "";
         if (stopLetter == null) stopLetter = "";
@@ -154,5 +147,4 @@ public class NearbyStationsAdapter extends RecyclerView.Adapter<NearbyStationsAd
         }
     }
 }
-
 

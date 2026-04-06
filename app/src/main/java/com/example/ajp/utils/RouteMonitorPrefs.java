@@ -6,12 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Shared utility class for RouteMonitorPrefs.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** Last journey params + route signature + simulated disruption ids for monitoring. */
 public final class RouteMonitorPrefs {
 
     private static final String PREFS_NAME = "ajp_route_monitor";
@@ -80,5 +75,4 @@ public final class RouteMonitorPrefs {
         }
     }
 }
-
 

@@ -14,17 +14,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * RecyclerView adapter for Arrivals item rendering.
- * Maps domain/UI models into row views and keeps list-specific formatting in one place.
- * This avoids repeating display logic in fragments and keeps row behavior consistent across updates.
- */
-
+/** RecyclerView rows: Arrivals. */
 public class ArrivalsAdapter extends RecyclerView.Adapter<ArrivalsAdapter.ArrivalViewHolder> {
 
     private List<Arrival> items = Collections.emptyList();
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void submitList(List<Arrival> list) {
         this.items = list != null ? new ArrayList<>(list) : new ArrayList<>();
         Collections.sort(this.items, Comparator.comparingInt(Arrival::getTimeToStationSeconds));
@@ -33,14 +27,14 @@ public class ArrivalsAdapter extends RecyclerView.Adapter<ArrivalsAdapter.Arriva
 
     @NonNull
     @Override
-    // Initializes screen state, wiring, and startup behavior for this lifecycle stage.
+
     public ArrivalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_arrival, parent, false);
         return new ArrivalViewHolder(view);
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public void onBindViewHolder(@NonNull ArrivalViewHolder holder, int position) {
         Arrival a = items.get(position);
         holder.tvLineBadge.setText(a.getLineName());
@@ -93,7 +87,6 @@ public class ArrivalsAdapter extends RecyclerView.Adapter<ArrivalsAdapter.Arriva
         return Color.parseColor("#0019A8");
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String formatPlatformForDisplay(String platform) {
         if (platform == null || platform.trim().isEmpty()) return "";
         String p = platform.trim();
@@ -125,5 +118,4 @@ public class ArrivalsAdapter extends RecyclerView.Adapter<ArrivalsAdapter.Arriva
         }
     }
 }
-
 

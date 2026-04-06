@@ -8,12 +8,7 @@ import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * API integration component for RetrofitClient.
- * Builds provider requests and maps transport responses into app-friendly models.
- * Provider quirks and transport-specific request rules are handled here to shield the UI layer.
- */
-
+/** Singleton Retrofit + OkHttp; app_key query param injected on each request. */
 public class RetrofitClient {
 
     private static final String BASE_URL = "https://api.tfl.gov.uk/";
@@ -49,5 +44,4 @@ public class RetrofitClient {
         return api;
     }
 }
-
 

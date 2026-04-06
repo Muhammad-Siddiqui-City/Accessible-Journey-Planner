@@ -19,12 +19,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-/**
- * API integration component for NationalRailApi.
- * Builds provider requests and maps transport responses into app-friendly models.
- * Provider quirks and transport-specific request rules are handled here to shield the UI layer.
- */
-
+/** SOAP client for National Rail OpenLDBWS (live departure boards). */
 public class NationalRailApi {
 
     private static final String SOAP_URL = "https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb10.asmx";

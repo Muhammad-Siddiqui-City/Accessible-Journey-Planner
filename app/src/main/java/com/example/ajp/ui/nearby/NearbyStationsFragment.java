@@ -13,12 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.ajp.databinding.FragmentNearbyStationsBinding;
 import com.example.ajp.ui.main.MainActivity;
 
-/**
- * Screen controller for NearbyStations UI interactions.
- * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
- * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
- */
-
+/** NearbyStations: fragment wiring; data from ViewModel / services. */
 public class NearbyStationsFragment extends Fragment {
 
     private static final String ARG_LAT = "lat";
@@ -28,7 +23,6 @@ public class NearbyStationsFragment extends Fragment {
     private StopsViewModel viewModel;
     private NearbyStationsAdapter adapter;
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static NearbyStationsFragment newInstance(double lat, double lon) {
         NearbyStationsFragment f = new NearbyStationsFragment();
         Bundle args = new Bundle();
@@ -97,7 +91,6 @@ public class NearbyStationsFragment extends Fragment {
         binding = null;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String formatNameWithStopLetter(String stopName, String stopLetter) {
         String name = stopName != null ? stopName.trim() : "";
         String letter = stopLetter != null ? stopLetter.replace("->", "").trim() : "";
@@ -105,5 +98,4 @@ public class NearbyStationsFragment extends Fragment {
         return name + " (Stop " + letter + ")";
     }
 }
-
 

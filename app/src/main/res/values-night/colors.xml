@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Night-mode value overrides applied when dark theme resources are active. -->
+<!-- AI Generated -->
+<!-- Lovable.dev: UI mockup reference -->
+<!-- Built with Claude -->
+
+<!-- Dark-theme palette (values-night qualifier: selected when AppCompat dark theme is active). -->
 
 <resources>
-    <!-- Dark theme overrides when Dark Mode is on. -->
+    <!-- Overrides default colours while Dark Mode is on. -->
     <color name="background">#121212</color>
     <color name="foreground">#E0E0E0</color>
     <color name="muted">#2C2C2C</color>

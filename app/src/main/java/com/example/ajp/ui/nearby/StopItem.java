@@ -1,11 +1,6 @@
 package com.example.ajp.ui.nearby;
 
-/**
- * UI-side model/helper used by StopItem.
- * Encapsulates presentation-oriented behavior needed by screens in this feature package.
- * Keeping this separate helps avoid leaking API/database concerns into view code.
- */
-
+/** Immutable stop/search list row: id, name, distance, line codes, step-free, station flag. */
 public class StopItem {
 
     private final String stopId;
@@ -43,5 +38,4 @@ public class StopItem {
 
     public boolean isStation() { return isStation; }
 }
-
 

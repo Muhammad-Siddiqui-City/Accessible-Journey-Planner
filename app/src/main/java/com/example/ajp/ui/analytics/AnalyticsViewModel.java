@@ -1,9 +1,5 @@
 package com.example.ajp.ui.analytics;
 
-// AI Generated
-// Built with Claude
-// Lovable.dev reference
-
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -31,12 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
-/**
- * ViewModel state holder for Analytics screens.
- * Coordinates asynchronous work and exposes observable state used by fragments/activities.
- * Validation and transformation are done here so the UI layer can stay mostly declarative.
- */
-
+/** Builds MPAndroidChart datasets from JourneyLog Room data. */
 public class AnalyticsViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Integer> journeysCount = new MutableLiveData<>(0);
@@ -63,7 +54,6 @@ public class AnalyticsViewModel extends AndroidViewModel {
     public LiveData<List<FrequentRouteItem>> getFrequentRoutes() { return frequentRoutes; }
     public LiveData<List<ModeCountItem>> getModeBreakdown() { return modeBreakdown; }
 
-    // Retrieves and prepares data needed by the current flow, including error-handling paths.
     public void loadWeeklyStats() {
         Executors.newSingleThreadExecutor().execute(() -> {
             long weekAgo = System.currentTimeMillis() - (7L * 24 * 60 * 60 * 1000);
@@ -72,7 +62,6 @@ public class AnalyticsViewModel extends AndroidViewModel {
         });
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void processLogs(List<JourneyLog> logs) {
         int total = logs.size();
         int saved = 0;

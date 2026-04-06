@@ -13,12 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import retrofit2.Response;
 
-/**
- * Shared utility class for LiftDisruptionChecker.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** TfL disruption + stop metadata to flag possible lift/access issues at a NaPTAN id. */
 public class LiftDisruptionChecker {
 
     private final Context appContext;
@@ -155,7 +150,6 @@ public class LiftDisruptionChecker {
         }
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private String normalizeStationId(String id) {
         if (id == null) return null;
 

@@ -1,9 +1,5 @@
 package com.example.ajp.utils;
 
-// AI Generated
-// Built with Claude
-// Lovable.dev reference
-
 import android.content.Context;
 import android.location.Location;
 import android.os.Handler;
@@ -14,12 +10,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.Task;
 
-/**
- * Shared utility class for LocationManager.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** Single-flight fused location reads for Home / Journey current-location. */
 public class LocationManager {
 
     private static final double FALLBACK_LAT = 51.5072;
@@ -84,5 +75,4 @@ public class LocationManager {
         });
     }
 }
-
 

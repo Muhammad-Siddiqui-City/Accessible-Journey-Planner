@@ -11,12 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.ajp.R;
 
-/**
- * Custom view implementation for WeeklyBarChartView.
- * Draws feature-specific visuals that are not covered by stock Android widgets.
- * Rendering concerns are isolated here so screens can pass data without drawing logic.
- */
-
+/** Simple bar chart for journeys-per-day on Analytics (tap highlights a bar). */
 public class WeeklyBarChartView extends View {
 
     private static final String[] DAYS = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
@@ -58,7 +53,6 @@ public class WeeklyBarChartView extends View {
         init(context);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private void init(Context context) {
         barPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         barPaint.setStyle(Paint.Style.FILL);
@@ -79,7 +73,6 @@ public class WeeklyBarChartView extends View {
         barColorTeal = ContextCompat.getColor(context, R.color.secondary);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private float dp(float dp) {
         return dp * getResources().getDisplayMetrics().density;
     }
@@ -89,7 +82,7 @@ public class WeeklyBarChartView extends View {
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int w = getWidth();
@@ -132,7 +125,7 @@ public class WeeklyBarChartView extends View {
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP && listener != null) {
             float x = event.getX();
@@ -161,5 +154,4 @@ public class WeeklyBarChartView extends View {
         return super.onTouchEvent(event);
     }
 }
-
 

@@ -37,6 +37,9 @@ public class RouteOptimizerTest {
                 legs,
                 false,
                 null,
+                null,
+                null,
+                null,
                 null);
     }
 

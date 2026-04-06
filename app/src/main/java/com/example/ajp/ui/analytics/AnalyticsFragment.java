@@ -26,12 +26,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import java.util.List;
 
-/**
- * Screen controller for Analytics UI interactions.
- * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
- * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
- */
-
+/** Analytics: fragment wiring; data from ViewModel / services. */
 public class AnalyticsFragment extends Fragment {
 
     private FragmentAnalyticsBinding binding;
@@ -140,7 +135,6 @@ public class AnalyticsFragment extends Fragment {
         chart.getAxisRight().setEnabled(false);
     }
 
-    // Applies state changes and keeps dependent UI/data values synchronized.
     private void setupLineChart(LineChart chart) {
         chart.getDescription().setEnabled(false);
         chart.getLegend().setEnabled(false);

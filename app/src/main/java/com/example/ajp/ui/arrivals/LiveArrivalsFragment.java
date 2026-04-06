@@ -17,12 +17,7 @@ import com.example.ajp.utils.TtsHelper;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Screen controller for LiveArrivals UI interactions.
- * Handles view binding, user actions, and state observation from the ViewModel or supporting services.
- * Navigation and rendering decisions are kept here, while heavy data work is delegated to lower layers.
- */
-
+/** LiveArrivals: fragment wiring; data from ViewModel / services. */
 public class LiveArrivalsFragment extends Fragment {
 
     public static final String ARG_STOP_ID = "stop_id";
@@ -34,7 +29,6 @@ public class LiveArrivalsFragment extends Fragment {
     private TtsHelper ttsHelper;
     private Boolean nationalRailNoDataHint = false;
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static LiveArrivalsFragment newInstance(String stopId, String stopName) {
         LiveArrivalsFragment f = new LiveArrivalsFragment();
         Bundle args = new Bundle();

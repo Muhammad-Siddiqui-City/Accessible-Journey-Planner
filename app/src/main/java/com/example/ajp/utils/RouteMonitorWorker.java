@@ -5,12 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-/**
- * Shared utility class for RouteMonitorWorker.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** WorkManager job: re-check last planned route signature vs live journey results. */
 public class RouteMonitorWorker extends Worker {
 
     public RouteMonitorWorker(@NonNull Context context, @NonNull WorkerParameters params) {
@@ -19,11 +14,10 @@ public class RouteMonitorWorker extends Worker {
 
     @NonNull
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public Result doWork() {
         RouteMonitorScheduler.runCheckSync(getApplicationContext());
         return Result.success();
     }
 }
-
 

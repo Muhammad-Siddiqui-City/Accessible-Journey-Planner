@@ -8,12 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Shared utility class for CrsLookup.
- * Encapsulates reusable behavior that would otherwise be duplicated across features.
- * Centralizing this logic keeps edge-case handling consistent and easier to test.
- */
-
+/** Maps TfL stop ids to National Rail CRS codes for OpenLDBWS calls. */
 public class CrsLookup {
 
     private static final Map<String, String> tflToCrs = new HashMap<>();
@@ -169,7 +164,6 @@ public class CrsLookup {
         return tflToCrs.get(id.toLowerCase(Locale.UK));
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public static String normalizeForCrsLookup(String commonName) {
         if (commonName == null) return "";
         String n = commonName.trim().toLowerCase(Locale.UK);
@@ -205,7 +199,6 @@ public class CrsLookup {
         return null;
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String normalizeId(String id) {
         if (id.contains("/")) {
             int last = id.lastIndexOf('/');
@@ -216,5 +209,4 @@ public class CrsLookup {
         return id;
     }
 }
-
 

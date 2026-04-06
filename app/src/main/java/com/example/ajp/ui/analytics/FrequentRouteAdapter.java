@@ -9,17 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ajp.R;
 import java.util.List;
 
-/**
- * RecyclerView adapter for FrequentRoute item rendering.
- * Maps domain/UI models into row views and keeps list-specific formatting in one place.
- * This avoids repeating display logic in fragments and keeps row behavior consistent across updates.
- */
-
+/** RecyclerView rows: FrequentRoute. */
 public class FrequentRouteAdapter extends RecyclerView.Adapter<FrequentRouteAdapter.ViewHolder> {
 
     private List<FrequentRouteItem> items = List.of();
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void submitList(List<FrequentRouteItem> list) {
         this.items = list != null ? list : List.of();
         notifyDataSetChanged();
@@ -27,14 +21,14 @@ public class FrequentRouteAdapter extends RecyclerView.Adapter<FrequentRouteAdap
 
     @NonNull
     @Override
-    // Initializes screen state, wiring, and startup behavior for this lifecycle stage.
+
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_frequent_route, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FrequentRouteItem item = items.get(position);
         holder.tvRank.setText("#" + (position + 1));

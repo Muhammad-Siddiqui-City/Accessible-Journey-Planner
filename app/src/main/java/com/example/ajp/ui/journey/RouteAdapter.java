@@ -16,12 +16,7 @@ import com.example.ajp.utils.TimeFormatUtil;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * RecyclerView adapter for Route item rendering.
- * Maps domain/UI models into row views and keeps list-specific formatting in one place.
- * This avoids repeating display logic in fragments and keeps row behavior consistent across updates.
- */
-
+/** RecyclerView rows: Route. */
 public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
 
     private List<RouteItem> items;
@@ -36,7 +31,6 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         this.items = items != null ? items : java.util.Collections.emptyList();
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     public void submitList(List<RouteItem> list) {
         this.items = list != null ? list : java.util.Collections.emptyList();
         notifyDataSetChanged();
@@ -56,7 +50,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
 
     @NonNull
     @Override
-    // Initializes screen state, wiring, and startup behavior for this lifecycle stage.
+
     public RouteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_route, parent, false);
@@ -64,7 +58,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     }
 
     @Override
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
+
     public void onBindViewHolder(@NonNull RouteViewHolder holder, int position) {
         RouteItem item = items.get(position);
 
@@ -131,14 +125,12 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         return ContextCompat.getColor(context.getContext(), R.color.success);
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static String badgesAt(RouteItem item, int index) {
         String[] badges = item.getLineBadges();
         if (badges == null || index < 0 || index >= badges.length) return "";
         return badges[index];
     }
 
-    // Handles a focused part of this feature flow and keeps related logic encapsulated.
     private static void bindBadge(TextView badgeView, String code) {
         if (badgeView == null || code == null || code.trim().isEmpty()) {
             if (badgeView != null) badgeView.setVisibility(View.GONE);

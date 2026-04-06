@@ -3,12 +3,7 @@ package com.example.ajp.api;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-/**
- * API response model for SearchResponse.
- * Matches remote payload fields so parsing remains predictable and explicit.
- * This keeps network schema changes localized to model classes and mappers.
- */
-
+/** Gson DTO: SearchResponse (TfL JSON field names). */
 public class SearchResponse {
 
     @SerializedName("matches")
@@ -23,5 +18,4 @@ public class SearchResponse {
         return java.util.Collections.emptyList();
     }
 }
-
 

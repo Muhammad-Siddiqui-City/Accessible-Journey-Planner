@@ -2,12 +2,7 @@ package com.example.ajp.api;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * API response model for LineIdentifier.
- * Matches remote payload fields so parsing remains predictable and explicit.
- * This keeps network schema changes localized to model classes and mappers.
- */
-
+/** Gson DTO: LineIdentifier (TfL JSON field names). */
 public class LineIdentifier {
 
     @SerializedName("name")
@@ -15,5 +10,4 @@ public class LineIdentifier {
 
     public String getName() { return name != null ? name : ""; }
 }
-
 
